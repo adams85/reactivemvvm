@@ -1,0 +1,64 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.26730.16
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Karambolo.ReactiveMvvm.Test", "Karambolo.ReactiveMvvm.Test\Karambolo.ReactiveMvvm.Test.csproj", "{149738B2-008D-4C1B-81E2-110881FC1387}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Karambolo.ReactiveMvvm", "..\source\Karambolo.ReactiveMvvm\Karambolo.ReactiveMvvm.csproj", "{455EC8D6-AA24-4A8E-9551-16F8CC6BA764}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Karambolo.ReactiveMvvm.WinForms", "..\source\Karambolo.ReactiveMvvm.WinForms\Karambolo.ReactiveMvvm.WinForms.csproj", "{29DC123D-6D30-42EB-8E2C-DA176FA2B57B}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Karambolo.ReactiveMvvm.Wpf", "..\source\Karambolo.ReactiveMvvm.Wpf\Karambolo.ReactiveMvvm.Wpf.csproj", "{69FEFE88-0516-49FE-953D-9E52E7E42C42}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Karambolo.ReactiveMvvm.Uwp", "..\source\Karambolo.ReactiveMvvm.Uwp\Karambolo.ReactiveMvvm.Uwp.csproj", "{580D56C5-B3D1-4BE3-9027-ED140BFE3A9C}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Karambolo.ReactiveMvvm.Avalonia", "..\source\Karambolo.ReactiveMvvm.Avalonia\Karambolo.ReactiveMvvm.Avalonia.csproj", "{5E5B5659-AC9D-486D-90A2-D1ECA1DDC792}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "References", "References", "{8307C7FC-7717-463D-8E51-A6A6A7122EF5}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{149738B2-008D-4C1B-81E2-110881FC1387}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{149738B2-008D-4C1B-81E2-110881FC1387}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{149738B2-008D-4C1B-81E2-110881FC1387}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{149738B2-008D-4C1B-81E2-110881FC1387}.Release|Any CPU.Build.0 = Release|Any CPU
+		{455EC8D6-AA24-4A8E-9551-16F8CC6BA764}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{455EC8D6-AA24-4A8E-9551-16F8CC6BA764}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{455EC8D6-AA24-4A8E-9551-16F8CC6BA764}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{455EC8D6-AA24-4A8E-9551-16F8CC6BA764}.Release|Any CPU.Build.0 = Release|Any CPU
+		{29DC123D-6D30-42EB-8E2C-DA176FA2B57B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{29DC123D-6D30-42EB-8E2C-DA176FA2B57B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{29DC123D-6D30-42EB-8E2C-DA176FA2B57B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{29DC123D-6D30-42EB-8E2C-DA176FA2B57B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{69FEFE88-0516-49FE-953D-9E52E7E42C42}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{69FEFE88-0516-49FE-953D-9E52E7E42C42}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{69FEFE88-0516-49FE-953D-9E52E7E42C42}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{69FEFE88-0516-49FE-953D-9E52E7E42C42}.Release|Any CPU.Build.0 = Release|Any CPU
+		{580D56C5-B3D1-4BE3-9027-ED140BFE3A9C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{580D56C5-B3D1-4BE3-9027-ED140BFE3A9C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{580D56C5-B3D1-4BE3-9027-ED140BFE3A9C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{580D56C5-B3D1-4BE3-9027-ED140BFE3A9C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5E5B5659-AC9D-486D-90A2-D1ECA1DDC792}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5E5B5659-AC9D-486D-90A2-D1ECA1DDC792}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5E5B5659-AC9D-486D-90A2-D1ECA1DDC792}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5E5B5659-AC9D-486D-90A2-D1ECA1DDC792}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{455EC8D6-AA24-4A8E-9551-16F8CC6BA764} = {8307C7FC-7717-463D-8E51-A6A6A7122EF5}
+		{29DC123D-6D30-42EB-8E2C-DA176FA2B57B} = {8307C7FC-7717-463D-8E51-A6A6A7122EF5}
+		{69FEFE88-0516-49FE-953D-9E52E7E42C42} = {8307C7FC-7717-463D-8E51-A6A6A7122EF5}
+		{580D56C5-B3D1-4BE3-9027-ED140BFE3A9C} = {8307C7FC-7717-463D-8E51-A6A6A7122EF5}
+		{5E5B5659-AC9D-486D-90A2-D1ECA1DDC792} = {8307C7FC-7717-463D-8E51-A6A6A7122EF5}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {39C02881-B53F-4CB3-9225-CD106A1861A3}
+	EndGlobalSection
+EndGlobal

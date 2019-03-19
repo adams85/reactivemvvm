@@ -1,0 +1,32 @@
+﻿<mvvm:ReactiveWindow x:TypeArguments="viewModels:MainViewModel" x:Class="GettingStarted.Views.MainView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:mvvm="clr-namespace:Karambolo.ReactiveMvvm;assembly=Karambolo.ReactiveMvvm.Wpf"
+        xmlns:views="clr-namespace:GettingStarted.Views"
+        xmlns:viewModels="clr-namespace:GettingStarted.ViewModels"
+        mc:Ignorable="d"
+        Title="ReactiveMvvm WPF Demo" Height="450" Width="800">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="200"></ColumnDefinition>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+
+        <DockPanel Margin="10, 10">
+            <Button x:Name="ToggleChildViewButton" Margin="0, 0, 0, 8" DockPanel.Dock="Top">Toggle Child View</Button>
+            <CheckBox x:Name="CanToggleChildViewCheckBox" Margin="0, 0, 0, 8"  DockPanel.Dock="Top">Can Toggle?</CheckBox>
+            <Button x:Name="StartInteractionButton" DockPanel.Dock="Bottom">Start User Interaction</Button>
+            <TextBox x:Name="LogTextBox" Margin="0, 0, 0, 8" TextWrapping="Wrap"></TextBox>
+        </DockPanel>
+
+        <ContentControl x:Name="ChildViewContentControl" Grid.Column="1">
+            <ContentControl.Resources>
+                <DataTemplate DataType="{x:Type viewModels:ChildViewModel}">
+                    <views:ChildView />
+                </DataTemplate>
+            </ContentControl.Resources>
+        </ContentControl>
+    </Grid>
+</mvvm:ReactiveWindow>

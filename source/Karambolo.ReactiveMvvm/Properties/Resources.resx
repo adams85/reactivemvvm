@@ -1,0 +1,168 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="ChangeNotificationNotPossible" xml:space="preserve">
+    <value>None of the registered {0} implementations are able to observe changes of the data member {{MEMBER}} (BeforeChange={{BEFORE}}).</value>
+  </data>
+  <data name="CheckIfPlatformRegistered" xml:space="preserve">
+    <value>Please make sure that your platform is registered at application startup in {0}.{1}.</value>
+  </data>
+  <data name="CommandBindingNotPossible" xml:space="preserve">
+    <value>None of the registered {0} implementations are able to establish the command binding {{SOURCEPATH}} -&gt; {{TARGETPATH}}.</value>
+  </data>
+  <data name="ConstantSourceExpression" xml:space="preserve">
+    <value>Constant source expressions are not supported.</value>
+  </data>
+  <data name="DataBindingAssignmentFailed" xml:space="preserve">
+    <value>Assignment of value '{VALUE}' of type {TYPE} failed on binding {SOURCEPATH} -&gt; {TARGETPATH}.</value>
+  </data>
+  <data name="DataBindingConversionFailed" xml:space="preserve">
+    <value>Conversion of value '{VALUE}' from type {FROMTYPE} to type {TOTYPE} failed on binding {SOURCEPATH} -&gt; {TARGETPATH}.</value>
+  </data>
+  <data name="IncompatibleChain" xml:space="preserve">
+    <value>Chain is incompatible with the specified source and target types.</value>
+  </data>
+  <data name="IncompatibleCommandParamType" xml:space="preserve">
+    <value>Command accepting parameters of type {0} was invoked with an incompatible parameter value of type {1}.</value>
+  </data>
+  <data name="InitializationNotPossible" xml:space="preserve">
+    <value>Service provider is already in use, thus initialization is not possible any more.</value>
+  </data>
+  <data name="InvalidPropertyExpression" xml:space="preserve">
+    <value>Property expression is invalid. It must be specified like 'obj =&gt; obj.Property'.</value>
+  </data>
+  <data name="NonConstantIndexExpression" xml:space="preserve">
+    <value>Non-constant index expressions are not supported.</value>
+  </data>
+  <data name="NonNullableCommandParamType" xml:space="preserve">
+    <value>Command accepting parameters of non-nullable type {0} was invoked with null.</value>
+  </data>
+  <data name="PlatformNotRegistered" xml:space="preserve">
+    <value>ReactiveMvvm is not fully functional because the platform-specific components were not registered. You need to install the ReactiveMvvm.&lt;Platform&gt; package matching your application platform and register it at application startup using {0}.{1}.</value>
+  </data>
+  <data name="UnhandledObservedError" xml:space="preserve">
+    <value>An error was encountered while consuming an observable sequence. To prevent this, ensure the sequence does not produce an error or define error filtering for the consuming component by specifying a custom {0}.</value>
+  </data>
+  <data name="UnsupportedExpressionType" xml:space="preserve">
+    <value>Expression type {0} is not supported.</value>
+  </data>
+  <data name="ViewActivationNotPossible" xml:space="preserve">
+    <value>None of the registered {0} implementations are able to install view activation for views of type {{TYPE}}.</value>
+  </data>
+</root>

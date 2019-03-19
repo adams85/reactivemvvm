@@ -1,0 +1,27 @@
+﻿<views:MainViewBase xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:views="clr-namespace:GettingStarted.Views"
+        xmlns:viewModels="clr-namespace:GettingStarted.ViewModels"
+        Title="ReactiveMvvm Avalonia Demo">
+  <Grid>
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition Width="320"></ColumnDefinition>
+      <ColumnDefinition Width="*"></ColumnDefinition>
+    </Grid.ColumnDefinitions>
+
+    <DockPanel Margin="10, 10">
+      <Button Name="ToggleChildViewButton" Margin="0, 0, 0, 8" DockPanel.Dock="Top">Toggle Child View</Button>
+      <CheckBox Name="CanToggleChildViewCheckBox" Margin="0, 0, 0, 8"  DockPanel.Dock="Top">Can Toggle?</CheckBox>
+      <Button Name="StartInteractionButton" DockPanel.Dock="Bottom">Start User Interaction</Button>
+      <TextBox Name="LogTextBox" Margin="0, 0, 0, 8" TextWrapping="Wrap"></TextBox>
+    </DockPanel>
+
+    <ContentControl Name="ChildViewContentControl"  Grid.Column="1">
+      <ContentControl.DataTemplates>
+        <DataTemplate DataType="viewModels:ChildViewModel">
+          <views:ChildView />
+        </DataTemplate>
+      </ContentControl.DataTemplates>
+    </ContentControl>
+  </Grid>
+</views:MainViewBase>

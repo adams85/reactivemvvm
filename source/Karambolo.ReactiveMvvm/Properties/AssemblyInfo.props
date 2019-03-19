@@ -1,0 +1,16 @@
+<Project>
+  <PropertyGroup>
+    <PackageId>Karambolo.ReactiveMvvm</PackageId>
+    <Version>1.0.0</Version>
+    <Authors>Adam Simon</Authors>
+    <Company>Karambolo</Company>
+    <Product>Karambolo.ReactiveMvvm</Product>
+    <Description>An MVVM framework built on Reactive Extensions for .NET application platforms. Currently supports Avalonia, UWP (build 16299 and later), WinForms and WPF.</Description>
+    <Copyright>© 2018 Adam Simon</Copyright>
+    <AssemblyVersion>1.0</AssemblyVersion>
+    <FileVersion>1.0.0.0</FileVersion>
+    <PackageLicenseUrl>https://github.com/adams85/reactivemvvm/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/adams85/reactivemvvm</PackageProjectUrl>
+    <PackageTags>mvvm reactive</PackageTags>
+  </PropertyGroup>
+</Project>

@@ -1,0 +1,51 @@
+﻿<#@ template language="C#" #>
+<#@ output extension=".cs" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+using System;
+using System.Linq.Expressions;
+using System.Reactive.Linq;
+
+namespace Karambolo.ReactiveMvvm
+{
+    public static partial class ChangeNotificationExtensions
+    {
+        #region Convenience overloads
+
+<#
+    for (var i = 2; i <= 10; i++)
+    {
+        var range = Enumerable.Range(1, i);
+        var valueTypeArgs = string.Join(", ", range.Select(n => "TValue" + n));
+        var observedValueTypeArgs = string.Join(", ", range.Select(n => "ObservedValue<TValue" + n + ">"));
+#>
+        public static IObservable<ObservedValue<TResult>> WhenChange<TRoot, <#= valueTypeArgs #>, TResult>(this TRoot root, 
+<#
+        for (var j = 1; j <= i; j++)
+        {
+#>
+            Expression<Func<TRoot, TValue<#= j #>>> accessExpression<#= j #>,
+<#
+        }
+#>
+            Func<<#= observedValueTypeArgs #>, ObservedValue<TResult>> resultSelector,
+            ChangeNotificationOptions options = ChangeNotificationOptions.Default)
+        {
+            return Observable.CombineLatest(
+<#
+        for (var j = 1; j <= i; j++)
+        {
+#>
+                root.WhenChange(accessExpression<#= j #>, options),
+<#
+        }
+#>
+                resultSelector);
+        }
+
+<#
+    }
+#>
+        #endregion
+    }
+}

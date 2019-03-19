@@ -1,0 +1,150 @@
+﻿using System;
+using System.Linq.Expressions;
+using System.Reactive.Disposables;
+using System.Reactive.Linq;
+using System.Windows.Input;
+using Karambolo.Common;
+using Karambolo.ReactiveMvvm.Binding;
+using Karambolo.ReactiveMvvm.Binding.Internal;
+using Karambolo.ReactiveMvvm.ErrorHandling;
+using Karambolo.ReactiveMvvm.Expressions;
+using Karambolo.ReactiveMvvm.Properties;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
+
+namespace Karambolo.ReactiveMvvm
+{
+    public static partial class ReactiveBinding
+    {
+        static readonly ICommandBinderProvider s_commandBinderProvider = ReactiveMvvmContext.ServiceProvider.GetRequiredService<ICommandBinderProvider>();
+
+        static void OnCommandBindingFailure<TViewModel, TCommand, TView, TContainer>(CommandBindingEvent<TCommand, TContainer> bindingEvent, TView view,
+            DataMemberAccessChain commandAccessChain, DataMemberAccessChain containerAccessChain, string eventName)
+            where TViewModel : class
+            where TView : IBoundView<TViewModel>
+            where TCommand : ICommand
+        {
+            var viewModelType = view.ViewModel?.GetType() ?? typeof(TViewModel);
+            var viewType = view.GetType();
+
+            if (eventName == null)
+                eventName =
+                    (bindingEvent.Binder != null && bindingEvent.TargetValue.IsAvailable && bindingEvent.TargetValue.Value != null ?
+                    bindingEvent.Binder.GetContainerMember(bindingEvent.TargetValue.Value.GetType(), eventName) :
+                    null)?.Name ?? "<Default>";
+
+            var sourcePath = viewModelType.Name + commandAccessChain.Slice(1);
+            var targetPath = viewType.Name + containerAccessChain + '.' + eventName;
+
+            var logger = s_loggerFactory?.CreateLogger(viewType) ?? NullLogger.Instance;
+            logger.LogWarning(string.Format(Resources.CommandBindingNotPossible, nameof(ICommandBinder)), sourcePath, targetPath);
+            ReactiveMvvmContext.RecommendCheckingInitialization(logger);
+        }
+
+        public static CommandBinding<TViewModel, TCommand, TView, TContainer, TParam> BindCommand<TViewModel, TCommand, TView, TContainer, TParam>(
+                this TView view,
+                TViewModel witnessViewModel,
+                Expression<Func<TViewModel, TCommand>> commandAccessExpression,
+                Expression<Func<TView, TContainer>> containerAccessExpression,
+                IObservable<TParam> commandParameters,
+                string eventName = null,
+                ObservedErrorHandler errorHandler = null)
+            where TViewModel : class
+            where TView : IBoundView<TViewModel>
+            where TCommand : ICommand
+        {
+            if (view == null)
+                throw new ArgumentNullException(nameof(view));
+
+            if (commandAccessExpression == null)
+                throw new ArgumentNullException(nameof(commandAccessExpression));
+
+            if (containerAccessExpression == null)
+                throw new ArgumentNullException(nameof(containerAccessExpression));
+
+            Expression<Func<TView, TViewModel>> viewModelFromViewExpression = v => v.ViewModel;
+            var commandAccessChain = DataMemberAccessChain.From(viewModelFromViewExpression.Chain(commandAccessExpression));
+            var containerAccessChain = DataMemberAccessChain.From(containerAccessExpression);
+
+            var commands = view.WhenChange<TCommand>(commandAccessChain);
+            var containers = view.WhenChange<TContainer>(containerAccessChain);
+
+            if (commandParameters == null)
+                commandParameters = Observable.Empty<TParam>();
+
+            var bindingSerial = new SerialDisposable();
+
+            var bindingEvents = Observable.CombineLatest(commands, containers, (command, container) =>
+                new CommandBindingEvent<TCommand, TContainer>(command, container, eventName, s_commandBinderProvider))
+                .Catch((Exception ex) => GetViewModelErrorHandler(errorHandler, view)
+                    .Filter<CommandBindingEvent<TCommand, TContainer>>(CommandBindingErrorException.Create(view, commandAccessChain, containerAccessChain, ex)))
+                .Publish()
+                .RefCount();
+
+            var bindingSubscription = bindingEvents
+                .ObserveOnSafe(GetViewThreadScheduler())
+                .Subscribe(
+                    bindingEvent =>
+                    {
+                        // whenever command or container change, the previous binding needs to be disposed
+                        bindingSerial.Disposable = null;
+
+                        if (!bindingEvent.SourceValue.IsAvailable || bindingEvent.SourceValue.Value == null ||
+                           !bindingEvent.TargetValue.IsAvailable || bindingEvent.TargetValue.Value == null)
+                            return;
+
+                        if (bindingEvent.BindingNotPossible)
+                            OnCommandBindingFailure<TViewModel, TCommand, TView, TContainer>(bindingEvent, view, commandAccessChain, containerAccessChain, eventName);
+
+                        bindingSerial.Disposable = bindingEvent.Binder.Bind(bindingEvent.SourceValue.Value, bindingEvent.TargetValue.Value, commandParameters, eventName,
+                            GetViewThreadScheduler(), ex => GetViewModelErrorHandler(errorHandler, view).Handle(ex));
+                    },
+                    ex => GetViewModelErrorHandler(errorHandler, view).Handle(ex));
+
+            var whenBind = bindingEvents
+                .Where(bindingEvent => bindingEvent.TargetValue.IsAvailable && bindingEvent.TargetValue.Value != null);
+
+            var bindingDisposable = new CompositeDisposable(bindingSubscription, bindingSerial);
+
+            return new CommandBinding<TViewModel, TCommand, TView, TContainer, TParam>(view, commandAccessChain, containerAccessChain, commandParameters, whenBind, bindingDisposable);
+        }
+
+        public static CommandBinding<TViewModel, TCommand, TView, TContainer, TParam> BindCommand<TViewModel, TCommand, TView, TContainer, TParam>(
+                this TView view,
+                TViewModel witnessViewModel,
+                Expression<Func<TViewModel, TCommand>> commandAccessExpression,
+                Expression<Func<TView, TContainer>> containerAccessExpression,
+                Expression<Func<TViewModel, TParam>> commandParameterAccessExpression,
+                string eventName = null,
+                ObservedErrorHandler errorHandler = null)
+            where TViewModel : class
+            where TView : IBoundView<TViewModel>
+            where TCommand : ICommand
+        {
+            if (commandParameterAccessExpression == null)
+                throw new ArgumentNullException(nameof(commandParameterAccessExpression));
+
+            Expression<Func<TView, TViewModel>> viewModelFromViewExpression = v => v.ViewModel;
+            var commandParameterAccessChain = DataMemberAccessChain.From(viewModelFromViewExpression.Chain(commandParameterAccessExpression));
+            var commandParameters = view.WhenChange<TParam>(commandParameterAccessChain)
+                .Select(value => value.GetValueOrDefault());
+
+            return view.BindCommand(witnessViewModel, commandAccessExpression, containerAccessExpression, commandParameters, eventName, errorHandler);
+        }
+
+        public static CommandBinding<TViewModel, TCommand, TView, TContainer, object> BindCommand<TViewModel, TCommand, TView, TContainer>(
+            this TView view,
+            TViewModel witnessViewModel,
+            Expression<Func<TViewModel, TCommand>> commandAccessExpression,
+            Expression<Func<TView, TContainer>> containerAccessExpression,
+            string eventName = null,
+            ObservedErrorHandler errorHandler = null)
+            where TViewModel : class
+            where TView : IBoundView<TViewModel>
+            where TCommand : ICommand
+        {
+            return view.BindCommand(witnessViewModel, commandAccessExpression, containerAccessExpression, (IObservable<object>)null, eventName, errorHandler);
+        }
+    }
+}

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<CodeSnippets  xmlns="http://schemas.microsoft.com/VisualStudio/2005/CodeSnippet">
+	<CodeSnippet Format="1.0.0">
+		<Header>
+			<Title>ReactiveMvvm - Command</Title>
+			<Shortcut>rcmd</Shortcut>
+			<Description>Inserts a ReactiveMvvm command.</Description>
+			<SnippetTypes>
+				<SnippetType>Expansion</SnippetType>
+			</SnippetTypes>
+		</Header>
+		<Snippet>
+			<Declarations>
+				<Literal>
+					<ID>paramType</ID>
+					<ToolTip>Parameter type</ToolTip>
+					<Default>Unit</Default>
+				</Literal>
+				<Literal>
+					<ID>resultType</ID>
+					<ToolTip>Result type</ToolTip>
+					<Default>Unit</Default>
+				</Literal>
+				<Literal>
+					<ID>command</ID>
+					<ToolTip>Command name</ToolTip>
+					<Default>My</Default>
+				</Literal>
+			</Declarations>
+			<Code Language="csharp">
+				<![CDATA[public ReactiveCommand<$paramType$, $resultType$> $command$Command { get; }$end$]]>
+			</Code>
+		</Snippet>
+	</CodeSnippet>
+</CodeSnippets>
