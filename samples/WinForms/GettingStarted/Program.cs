@@ -19,9 +19,10 @@ namespace GettingStarted
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
-            // by default CreateViewModel creates a new, dedicated service scope for each view model instance it creates,
-            // so disposing a view model instance will dispose its scoped/transient dependencies, as well
-            using (var mainViewModel = Configure().ViewModelFactory.CreateViewModel<MainViewModel>())
+            // with the help of ViewModelFactory you can create view models with services resolved from the IoC container,
+            // (CreateViewModelScoped, as opposed to CreateViewModel, creates the view model in a dedicated service scope,
+            // so disposing view models created like this will dispose their scoped/transient dependencies, as well)
+            using (var mainViewModel = Configure().ViewModelFactory.CreateViewModelScoped<MainViewModel>())
                 Application.Run(new MainView { ViewModel = mainViewModel });
         }
 
@@ -34,10 +35,8 @@ namespace GettingStarted
                     .UseWinForms()
                     // configures logging
                     .ConfigureLogging(ConfigureLogging)
-                    // configures services
-                    .ConfigureServices(ConfigureServices)
-                    // discovers and registers view models as transient dependencies
-                    .RegisterViewModels(typeof(Program).Assembly))
+                    // configures other services for the application
+                    .ConfigureServices(ConfigureServices))
                 .GetRequiredService<IReactiveMvvmContext>();
         }
 

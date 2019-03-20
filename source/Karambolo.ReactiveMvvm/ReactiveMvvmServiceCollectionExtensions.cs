@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Karambolo.Common;
 using Karambolo.ReactiveMvvm.Binding.Internal;
 using Karambolo.ReactiveMvvm.ChangeNotification.Internal;
 using Karambolo.ReactiveMvvm.ErrorHandling;
@@ -29,27 +30,23 @@ namespace Karambolo.ReactiveMvvm
 
             public IServiceCollection Services { get; }
 
-            public IReactiveMvvmBuilder RegisterAssemblyTypes(Func<IEnumerable<Type>, IEnumerable<Type>> filter, Action<IServiceCollection, Type> register, params Assembly[] assemblies)
+            public IReactiveMvvmBuilder ConfigureServices(Action<IServiceCollection, IEnumerable<Type>> configure, params Assembly[] assemblies)
             {
-                if (filter == null)
-                    throw new ArgumentNullException(nameof(filter));
+                if (configure == null)
+                    throw new ArgumentNullException(nameof(configure));
 
-                if (register == null)
-                    throw new ArgumentNullException(nameof(register));
+                if (!ArrayUtils.IsNullOrEmpty(assemblies))
+                {
+                    var allTypes = assemblies
+                        .SelectMany(assembly =>
+                        {
+                            if (!_assemblyTypes.TryGetValue(assembly, out var types))
+                                _assemblyTypes.Add(assembly, types = assembly.GetTypes());
+                            return types;
+                        });
 
-                if (assemblies == null)
-                    throw new ArgumentNullException(nameof(assemblies));
-
-                var allTypes = assemblies
-                    .SelectMany(assembly =>
-                    {
-                        if (!_assemblyTypes.TryGetValue(assembly, out var types))
-                            _assemblyTypes.Add(assembly, types = assembly.GetTypes());
-                        return types;
-                    });
-
-                foreach (var type in filter(allTypes))
-                    register(Services, type);
+                    configure(Services, allTypes);
+                }
 
                 return this;
             }

@@ -17,22 +17,22 @@
         {
             this.ChildViewPlaceholderPanel = new System.Windows.Forms.Panel();
             this.ControlPanel = new System.Windows.Forms.Panel();
-            this.PaddingPanel3 = new System.Windows.Forms.Panel();
-            this.LogTextBox = new System.Windows.Forms.TextBox();
             this.PaddingPanel4 = new System.Windows.Forms.Panel();
             this.StartInteractionButton = new System.Windows.Forms.Button();
+            this.PaddingPanel5 = new System.Windows.Forms.Panel();
+            this.ForceGCButton = new System.Windows.Forms.Button();
+            this.PaddingPanel3 = new System.Windows.Forms.Panel();
+            this.LogTextBox = new System.Windows.Forms.TextBox();
             this.PaddingPanel2 = new System.Windows.Forms.Panel();
             this.CanToggleChildViewCheckBox = new System.Windows.Forms.CheckBox();
             this.PaddingPanel1 = new System.Windows.Forms.Panel();
             this.ToggleChildViewButton = new System.Windows.Forms.Button();
-            this.PaddingPanel5 = new System.Windows.Forms.Panel();
-            this.ForceGCButton = new System.Windows.Forms.Button();
             this.ControlPanel.SuspendLayout();
-            this.PaddingPanel3.SuspendLayout();
             this.PaddingPanel4.SuspendLayout();
+            this.PaddingPanel5.SuspendLayout();
+            this.PaddingPanel3.SuspendLayout();
             this.PaddingPanel2.SuspendLayout();
             this.PaddingPanel1.SuspendLayout();
-            this.PaddingPanel5.SuspendLayout();
             this.SuspendLayout();
             // 
             // ChildViewPlaceholderPanel
@@ -45,9 +45,9 @@
             // 
             // ControlPanel
             // 
+            this.ControlPanel.Controls.Add(this.PaddingPanel3);
             this.ControlPanel.Controls.Add(this.PaddingPanel4);
             this.ControlPanel.Controls.Add(this.PaddingPanel5);
-            this.ControlPanel.Controls.Add(this.PaddingPanel3);
             this.ControlPanel.Controls.Add(this.PaddingPanel2);
             this.ControlPanel.Controls.Add(this.PaddingPanel1);
             this.ControlPanel.Dock = System.Windows.Forms.DockStyle.Left;
@@ -55,26 +55,6 @@
             this.ControlPanel.Name = "ControlPanel";
             this.ControlPanel.Size = new System.Drawing.Size(200, 450);
             this.ControlPanel.TabIndex = 0;
-            // 
-            // PaddingPanel3
-            // 
-            this.PaddingPanel3.Controls.Add(this.LogTextBox);
-            this.PaddingPanel3.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.PaddingPanel3.Location = new System.Drawing.Point(0, 56);
-            this.PaddingPanel3.Name = "PaddingPanel3";
-            this.PaddingPanel3.Padding = new System.Windows.Forms.Padding(4);
-            this.PaddingPanel3.Size = new System.Drawing.Size(200, 394);
-            this.PaddingPanel3.TabIndex = 2;
-            // 
-            // LogTextBox
-            // 
-            this.LogTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.LogTextBox.Location = new System.Drawing.Point(4, 4);
-            this.LogTextBox.Multiline = true;
-            this.LogTextBox.Name = "LogTextBox";
-            this.LogTextBox.ReadOnly = true;
-            this.LogTextBox.Size = new System.Drawing.Size(192, 386);
-            this.LogTextBox.TabIndex = 1;
             // 
             // PaddingPanel4
             // 
@@ -96,6 +76,48 @@
             this.StartInteractionButton.TabIndex = 6;
             this.StartInteractionButton.Text = "Start User Interaction";
             this.StartInteractionButton.UseVisualStyleBackColor = true;
+            // 
+            // PaddingPanel5
+            // 
+            this.PaddingPanel5.AutoSize = true;
+            this.PaddingPanel5.Controls.Add(this.ForceGCButton);
+            this.PaddingPanel5.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.PaddingPanel5.Location = new System.Drawing.Point(0, 419);
+            this.PaddingPanel5.Name = "PaddingPanel5";
+            this.PaddingPanel5.Padding = new System.Windows.Forms.Padding(4);
+            this.PaddingPanel5.Size = new System.Drawing.Size(200, 31);
+            this.PaddingPanel5.TabIndex = 4;
+            // 
+            // ForceGCButton
+            // 
+            this.ForceGCButton.Dock = System.Windows.Forms.DockStyle.Top;
+            this.ForceGCButton.Location = new System.Drawing.Point(4, 4);
+            this.ForceGCButton.Name = "ForceGCButton";
+            this.ForceGCButton.Size = new System.Drawing.Size(192, 23);
+            this.ForceGCButton.TabIndex = 6;
+            this.ForceGCButton.Text = "Force GC";
+            this.ForceGCButton.UseVisualStyleBackColor = true;
+            this.ForceGCButton.Click += new System.EventHandler(this.ForceGCButton_Click);
+            // 
+            // PaddingPanel3
+            // 
+            this.PaddingPanel3.Controls.Add(this.LogTextBox);
+            this.PaddingPanel3.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.PaddingPanel3.Location = new System.Drawing.Point(0, 56);
+            this.PaddingPanel3.Name = "PaddingPanel3";
+            this.PaddingPanel3.Padding = new System.Windows.Forms.Padding(4);
+            this.PaddingPanel3.Size = new System.Drawing.Size(200, 332);
+            this.PaddingPanel3.TabIndex = 2;
+            // 
+            // LogTextBox
+            // 
+            this.LogTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.LogTextBox.Location = new System.Drawing.Point(4, 4);
+            this.LogTextBox.Multiline = true;
+            this.LogTextBox.Name = "LogTextBox";
+            this.LogTextBox.ReadOnly = true;
+            this.LogTextBox.Size = new System.Drawing.Size(192, 324);
+            this.LogTextBox.TabIndex = 1;
             // 
             // PaddingPanel2
             // 
@@ -139,28 +161,6 @@
             this.ToggleChildViewButton.Text = "Toggle Child View";
             this.ToggleChildViewButton.UseVisualStyleBackColor = true;
             // 
-            // PaddingPanel5
-            // 
-            this.PaddingPanel5.AutoSize = true;
-            this.PaddingPanel5.Controls.Add(this.ForceGCButton);
-            this.PaddingPanel5.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.PaddingPanel5.Location = new System.Drawing.Point(0, 419);
-            this.PaddingPanel5.Name = "PaddingPanel5";
-            this.PaddingPanel5.Padding = new System.Windows.Forms.Padding(4);
-            this.PaddingPanel5.Size = new System.Drawing.Size(200, 31);
-            this.PaddingPanel5.TabIndex = 4;
-            // 
-            // ForceGCButton
-            // 
-            this.ForceGCButton.Dock = System.Windows.Forms.DockStyle.Top;
-            this.ForceGCButton.Location = new System.Drawing.Point(4, 4);
-            this.ForceGCButton.Name = "ForceGCButton";
-            this.ForceGCButton.Size = new System.Drawing.Size(192, 23);
-            this.ForceGCButton.TabIndex = 6;
-            this.ForceGCButton.Text = "Force GC";
-            this.ForceGCButton.UseVisualStyleBackColor = true;
-            this.ForceGCButton.Click += new System.EventHandler(this.ForceGCButton_Click);
-            // 
             // MainView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -172,12 +172,12 @@
             this.Text = "ReactiveMvvm WinForms Demo";
             this.ControlPanel.ResumeLayout(false);
             this.ControlPanel.PerformLayout();
+            this.PaddingPanel4.ResumeLayout(false);
+            this.PaddingPanel5.ResumeLayout(false);
             this.PaddingPanel3.ResumeLayout(false);
             this.PaddingPanel3.PerformLayout();
-            this.PaddingPanel4.ResumeLayout(false);
             this.PaddingPanel2.ResumeLayout(false);
             this.PaddingPanel1.ResumeLayout(false);
-            this.PaddingPanel5.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }

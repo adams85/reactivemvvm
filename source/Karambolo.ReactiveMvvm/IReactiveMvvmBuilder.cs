@@ -9,6 +9,6 @@ namespace Karambolo.ReactiveMvvm
     {
         IServiceCollection Services { get; }
 
-        IReactiveMvvmBuilder RegisterAssemblyTypes(Func<IEnumerable<Type>, IEnumerable<Type>> filter, Action<IServiceCollection, Type> register, params Assembly[] assemblies);
+        IReactiveMvvmBuilder ConfigureServices(Action<IServiceCollection, IEnumerable<Type>> configure, params Assembly[] assemblies);
     }
 }

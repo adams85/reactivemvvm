@@ -80,8 +80,6 @@ namespace GettingStarted
                     .UseUwp(_mainThreadSchedulerSubject)
                     // configures logging
                     .ConfigureLogging(ConfigureLogging)
-                    // discovers and registers view models as transient dependencies
-                    .RegisterViewModels(typeof(Program).Assembly)
                 .Services;
         }
 

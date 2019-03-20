@@ -17,9 +17,10 @@ namespace GettingStarted
             MainViewModel mainViewModel = null;
             try
             {
-                // by default ViewModelFactory.CreateViewModel creates a new, dedicated service scope for each view model instance it creates,
-                // so disposing a view model instance will dispose its scoped/transient dependencies, as well
-                BuildAvaloniaApp().Start<MainView>(() => mainViewModel = ReactiveMvvmContext.Current.ViewModelFactory.CreateViewModel<MainViewModel>());
+                // with the help of ViewModelFactory you can create view models with services resolved from the IoC container,
+                // (CreateViewModelScoped, as opposed to CreateViewModel, creates the view model in a dedicated service scope,
+                // so disposing view models created like this will dispose their scoped/transient dependencies, as well)
+                BuildAvaloniaApp().Start<MainView>(() => mainViewModel = ReactiveMvvmContext.Current.ViewModelFactory.CreateViewModelScoped<MainViewModel>());
             }
             finally
             {
@@ -40,15 +41,13 @@ namespace GettingStarted
         {
             // ReactiveMvvm services needs to be configured at application startup
             var serviceProvider = ReactiveMvvmContext
-               .Initialize(builder => builder
-                   // registers platform services
-                   .UseAvalonia()
-                   // configures logging
-                   .ConfigureLogging(ConfigureLogging)
-                   // configures services
-                   .ConfigureServices(ConfigureServices)
-                   // discovers and registers view models as transient dependencies
-                   .RegisterViewModels(typeof(Program).Assembly));
+                .Initialize(builder => builder
+                    // registers platform services
+                    .UseAvalonia()
+                    // configures logging
+                    .ConfigureLogging(ConfigureLogging)
+                    // configures other services for the application
+                    .ConfigureServices(ConfigureServices));
 
             var context = serviceProvider.GetRequiredService<IReactiveMvvmContext>();
             Logger.Sink = new LogSink(context.LoggerFactory);
