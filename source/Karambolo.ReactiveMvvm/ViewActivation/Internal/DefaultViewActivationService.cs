@@ -92,7 +92,7 @@ namespace Karambolo.ReactiveMvvm.ViewActivation.Internal
             if (!s_inactivableViewTypes.ContainsKey(viewType))
             {
                 _logger.LogWarning(string.Format(Resources.ViewActivationNotPossible, nameof(IViewActivationEventProvider), viewType));
-                ReactiveMvvmContext.RecommendCheckingInitialization(_logger);
+                ReactiveMvvmContext.RecommendVerifyingInitialization(_logger);
 
                 s_inactivableViewTypes.TryAdd(viewType, Unit.Default);
             }

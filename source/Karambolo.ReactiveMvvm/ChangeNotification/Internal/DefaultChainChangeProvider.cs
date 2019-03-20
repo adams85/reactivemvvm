@@ -41,7 +41,7 @@ namespace Karambolo.ReactiveMvvm.ChangeNotification.Internal
             if (!s_nonObservableMembers.ContainsKey((link, beforeChange)))
             {
                 _logger.LogWarning(string.Format(Resources.ChangeNotificationNotPossible, nameof(ILinkChangeProvider)), link.InputType.Name + link, beforeChange);
-                ReactiveMvvmContext.RecommendCheckingInitialization(_logger);
+                ReactiveMvvmContext.RecommendVerifyingInitialization(_logger);
 
                 s_nonObservableMembers.TryAdd((link, beforeChange), Unit.Default);
             }

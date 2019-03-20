@@ -70,15 +70,6 @@ namespace Karambolo.ReactiveMvvm.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Please make sure that your platform is registered at application startup in {0}.{1}..
-        /// </summary>
-        internal static string CheckIfPlatformRegistered {
-            get {
-                return ResourceManager.GetString("CheckIfPlatformRegistered", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to None of the registered {0} implementations are able to establish the command binding {{SOURCEPATH}} -&gt; {{TARGETPATH}}..
         /// </summary>
         internal static string CommandBindingNotPossible {
@@ -192,6 +183,15 @@ namespace Karambolo.ReactiveMvvm.Properties {
         internal static string UnsupportedExpressionType {
             get {
                 return ResourceManager.GetString("UnsupportedExpressionType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please verify if your platform is registered at application startup in {0}.{1}..
+        /// </summary>
+        internal static string VerifyPlatformRegistration {
+            get {
+                return ResourceManager.GetString("VerifyPlatformRegistration", resourceCulture);
             }
         }
         

@@ -55,11 +55,11 @@ namespace Karambolo.ReactiveMvvm
             return ServiceProvider = serviceProvider;
         }
 
-        static int s_recommendCheckingInitializationFlag;
-        internal static void RecommendCheckingInitialization(ILogger logger)
+        static int s_recommendVerifyingInitialization;
+        internal static void RecommendVerifyingInitialization(ILogger logger)
         {
-            if (Interlocked.CompareExchange(ref s_recommendCheckingInitializationFlag, 1, 0) == 0)
-                logger.LogInformation(Resources.CheckIfPlatformRegistered, nameof(ReactiveMvvmContext), nameof(Initialize));
+            if (Interlocked.CompareExchange(ref s_recommendVerifyingInitialization, 1, 0) == 0)
+                logger.LogInformation(Resources.VerifyPlatformRegistration, nameof(ReactiveMvvmContext), nameof(Initialize));
         }
 
         public ReactiveMvvmContext(IPlatformSchedulerProvider platformSchedulers, IDefaultObservedErrorHandlerFactory defaultErrorHandlerFactory,

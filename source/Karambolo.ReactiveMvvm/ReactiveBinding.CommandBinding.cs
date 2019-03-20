@@ -39,7 +39,7 @@ namespace Karambolo.ReactiveMvvm
 
             var logger = s_loggerFactory?.CreateLogger(viewType) ?? NullLogger.Instance;
             logger.LogWarning(string.Format(Resources.CommandBindingNotPossible, nameof(ICommandBinder)), sourcePath, targetPath);
-            ReactiveMvvmContext.RecommendCheckingInitialization(logger);
+            ReactiveMvvmContext.RecommendVerifyingInitialization(logger);
         }
 
         public static CommandBinding<TViewModel, TCommand, TView, TContainer, TParam> BindCommand<TViewModel, TCommand, TView, TContainer, TParam>(

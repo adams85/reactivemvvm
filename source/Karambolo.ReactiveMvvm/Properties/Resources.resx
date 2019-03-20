@@ -120,9 +120,6 @@
   <data name="ChangeNotificationNotPossible" xml:space="preserve">
     <value>None of the registered {0} implementations are able to observe changes of the data member {{MEMBER}} (BeforeChange={{BEFORE}}).</value>
   </data>
-  <data name="CheckIfPlatformRegistered" xml:space="preserve">
-    <value>Please make sure that your platform is registered at application startup in {0}.{1}.</value>
-  </data>
   <data name="CommandBindingNotPossible" xml:space="preserve">
     <value>None of the registered {0} implementations are able to establish the command binding {{SOURCEPATH}} -&gt; {{TARGETPATH}}.</value>
   </data>
@@ -161,6 +158,9 @@
   </data>
   <data name="UnsupportedExpressionType" xml:space="preserve">
     <value>Expression type {0} is not supported.</value>
+  </data>
+  <data name="VerifyPlatformRegistration" xml:space="preserve">
+    <value>Please verify if your platform is registered at application startup in {0}.{1}.</value>
   </data>
   <data name="ViewActivationNotPossible" xml:space="preserve">
     <value>None of the registered {0} implementations are able to install view activation for views of type {{TYPE}}.</value>
