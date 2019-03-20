@@ -9,7 +9,6 @@ using Karambolo.ReactiveMvvm.Binding;
 using Karambolo.ReactiveMvvm.Binding.Internal;
 using Karambolo.ReactiveMvvm.ErrorHandling;
 using Karambolo.ReactiveMvvm.Expressions;
-using Karambolo.ReactiveMvvm.Internal;
 using Karambolo.ReactiveMvvm.Properties;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -30,7 +29,7 @@ namespace Karambolo.ReactiveMvvm
             {
                 var containerAccessChain = targetAccessChain.Slice(0, index);
 
-                var containers = targetRoot.WhenChange<object>(containerAccessChain);
+                var containers = targetRoot.WhenChange<object>(containerAccessChain, ChangeNotificationOptions.SuppressWarnings);
 
                 bindingChanges = Observable.CombineLatest(containers, source, (container, value) => new DataBindingChange<TSource>(value, container, targetLink))
                     .Where(bindingInfo => bindingInfo.TargetContainer.IsAvailable && bindingInfo.TargetContainer.Value != null);
@@ -285,7 +284,7 @@ namespace Karambolo.ReactiveMvvm
 
             var isReentrantChangeFlag = 0;
 
-            var bindingEvents = view.WhenChange<object>(viewContainerAccessChain)
+            var bindingEvents = view.WhenChange<object>(viewContainerAccessChain, ChangeNotificationOptions.SuppressWarnings)
                 .Where(container => container.IsAvailable && container.Value != null)
                 .Select(container => Observable.Merge(
                     view.WhenChange<TViewModelValue>(viewModelAccessChain)

@@ -68,7 +68,7 @@ namespace Karambolo.ReactiveMvvm
             var containerAccessChain = DataMemberAccessChain.From(containerAccessExpression);
 
             var commands = view.WhenChange<TCommand>(commandAccessChain);
-            var containers = view.WhenChange<TContainer>(containerAccessChain);
+            var containers = view.WhenChange<TContainer>(containerAccessChain, ChangeNotificationOptions.SuppressWarnings);
 
             if (commandParameters == null)
                 commandParameters = Observable.Empty<TParam>();

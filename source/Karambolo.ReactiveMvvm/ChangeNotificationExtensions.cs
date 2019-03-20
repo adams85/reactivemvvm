@@ -15,7 +15,7 @@ namespace Karambolo.ReactiveMvvm
     {
         static readonly IChainChangeProvider s_chainChangeProvider = ReactiveMvvmContext.ServiceProvider.GetRequiredService<IChainChangeProvider>();
 
-        static bool HasOptions(this ChangeNotificationOptions @this, ChangeNotificationOptions options)
+        internal static bool HasOptions(this ChangeNotificationOptions @this, ChangeNotificationOptions options)
         {
             return (@this & options) == options;
         }
@@ -23,7 +23,7 @@ namespace Karambolo.ReactiveMvvm
         static IObservable<ObservedValue<TValue>> GetChangesCore<TValue>(this object root, DataMemberAccessChain accessChain,
             ChangeNotificationOptions options, IEqualityComparer<TValue> comparer)
         {
-            IObservable<ObservedValue<object>> values = s_chainChangeProvider.GetChanges(root, accessChain, options.HasOptions(ChangeNotificationOptions.BeforeChange));
+            IObservable<ObservedValue<object>> values = s_chainChangeProvider.GetChanges(root, accessChain, options);
 
             if (options.HasOptions(ChangeNotificationOptions.SkipInitial))
                 values = values.Skip(1);

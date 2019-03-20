@@ -29,8 +29,10 @@ namespace Karambolo.ReactiveMvvm.ChangeNotification.Internal
             _logger = loggerFactory.CreateLogger<DefaultChainChangeProvider>();
         }
 
-        IObservable<ObservedChange> GetLinkChangesCore(object container, DataMemberAccessLink link, bool beforeChange)
+        IObservable<ObservedChange> GetLinkChangesCore(object container, DataMemberAccessLink link, ChangeNotificationOptions options)
         {
+            var beforeChange = options.HasOptions(ChangeNotificationOptions.BeforeChange);
+
             ILinkChangeProvider[] changeProviders = _changeProvidersLookup[(link.GetType(), beforeChange)];
 
             ILinkChangeProvider changeProvider;
@@ -38,7 +40,7 @@ namespace Karambolo.ReactiveMvvm.ChangeNotification.Internal
                 if ((changeProvider = changeProviders[i]).CanProvideFor(container, link))
                     return changeProvider.GetChanges(container, link);
 
-            if (!s_nonObservableMembers.ContainsKey((link, beforeChange)))
+            if (!options.HasOptions(ChangeNotificationOptions.SuppressWarnings) && !s_nonObservableMembers.ContainsKey((link, beforeChange)))
             {
                 _logger.LogWarning(string.Format(Resources.ChangeNotificationNotPossible, nameof(ILinkChangeProvider)), link.InputType.Name + link, beforeChange);
                 ReactiveMvvmContext.RecommendVerifyingInitialization(_logger);
@@ -49,24 +51,24 @@ namespace Karambolo.ReactiveMvvm.ChangeNotification.Internal
             return FallbackValueChangeProvider.Instance.GetChanges(container, link);
         }
 
-        IObservable<ObservedValue<object>> GetLinkChanges(in ObservedValue<object> container, DataMemberAccessLink link, bool beforeChange)
+        IObservable<ObservedValue<object>> GetLinkChanges(in ObservedValue<object> container, DataMemberAccessLink link, ChangeNotificationOptions options)
         {
             return
                 container.IsAvailable && container.Value != null ?
-                GetLinkChangesCore(container.Value, link, beforeChange)
+                GetLinkChangesCore(container.Value, link, options)
                     .Select(change => change.Link.ValueAccessor(change.Container))
                     .StartWith(link.ValueAccessor(container.Value)) :
                 ReactiveMvvm.Internal.Default<ObservedValue<object>>.Observable;
         }
 
-        public IObservable<ObservedValue<object>> GetChanges(object root, DataMemberAccessChain chain, bool beforeChange)
+        public IObservable<ObservedValue<object>> GetChanges(object root, DataMemberAccessChain chain, ChangeNotificationOptions options)
         {
             var initialValue = ObservedValue.Wrap(root);
 
             IObservable<ObservedValue<object>> values = Observable.Return(initialValue);
 
             return chain.Aggregate(values, (vals, link) => vals
-                .Select(value => GetLinkChanges(value, link, beforeChange))
+                .Select(value => GetLinkChanges(value, link, options))
                 .Switch());
         }
     }

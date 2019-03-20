@@ -9,6 +9,7 @@ namespace Karambolo.ReactiveMvvm
         BeforeChange = 0x1,
         SkipInitial = 0x2,
         NonDistinct = 0x4,
+        SuppressWarnings = 0x8,
         Default = None
     }
 }
