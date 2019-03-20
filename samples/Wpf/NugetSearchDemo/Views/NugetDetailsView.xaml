@@ -1,0 +1,23 @@
+﻿<mvvm:ReactiveUserControl x:TypeArguments="viewModels:NugetDetailsViewModel" x:Class="NugetSearchDemo.Views.NugetDetailsView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mvvm="clr-namespace:Karambolo.ReactiveMvvm;assembly=Karambolo.ReactiveMvvm.Wpf"
+    xmlns:views="clr-namespace:NugetSearchDemo.Views"
+    xmlns:viewModels="clr-namespace:NugetSearchDemo.ViewModels">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Image x:Name="iconImage" Margin="6" Width="64" Height="64"
+             HorizontalAlignment="Center" VerticalAlignment="Center"/>
+        <TextBlock Grid.Column="1" TextWrapping="WrapWithOverflow" 
+                 Margin="6" VerticalAlignment="Center">
+          <Run FontSize="14" FontWeight="SemiBold" x:Name="titleRun"/>
+          <LineBreak />
+          <Run FontSize="12" x:Name="descriptionRun"/>
+          <LineBreak />
+          <Hyperlink x:Name="openButton">Open</Hyperlink>
+        </TextBlock>
+    </Grid>
+</mvvm:ReactiveUserControl>
