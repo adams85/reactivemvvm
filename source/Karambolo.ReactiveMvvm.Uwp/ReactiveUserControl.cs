@@ -7,7 +7,7 @@ using Windows.UI.Xaml.Controls;
 
 namespace Karambolo.ReactiveMvvm
 {
-    public abstract class ReactiveUserControl<TViewModel> : UserControl, IReactiveView<TViewModel>, ILifetime
+    public abstract class ReactiveUserControl<TViewModel> : UserControl, IReactiveView<TViewModel>
         where TViewModel : class
     {
         public static DependencyProperty ViewModelProperty { get; } = DependencyProperty.Register(
@@ -16,27 +16,11 @@ namespace Karambolo.ReactiveMvvm
             typeof(ReactiveUserControl<TViewModel>),
             new PropertyMetadata(null, (sender, arg) => ((ReactiveUserControl<TViewModel>)sender).AdjustDataContext(@this => @this.DataContext = @this.ViewModel)));
 
-        readonly CompositeDisposable _disposables = new CompositeDisposable();
         bool _adjustingDataContext;
 
         public ReactiveUserControl()
         {
             DataContextChanged += (sender, args) => ((ReactiveUserControl<TViewModel>)sender).AdjustDataContext(@this => @this.ViewModel = @this.DataContext as TViewModel);
-        }
-
-        public void Dispose()
-        {
-            _disposables.Dispose();
-        }
-
-        public void AttachDisposable(IDisposable disposable)
-        {
-            _disposables.Add(disposable);
-        }
-
-        public void DetachDisposable(IDisposable disposable)
-        {
-            _disposables.Remove(disposable);
         }
 
         void AdjustDataContext(Action<ReactiveUserControl<TViewModel>> update)

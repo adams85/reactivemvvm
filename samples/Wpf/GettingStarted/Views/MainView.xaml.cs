@@ -7,15 +7,15 @@ using System.Windows;
 using GettingStarted.Messages;
 using GettingStarted.ViewModels;
 using Karambolo.ReactiveMvvm;
-using Karambolo.ReactiveMvvm.Helpers;
-using Karambolo.ReactiveMvvm.Internal;
 using Microsoft.Win32;
 
 namespace GettingStarted.Views
 {
     // inherit top-level views from ReactiveWindow to get type-safe data/command binding and view activation capabilities
-    public partial class MainView : ReactiveWindow<MainViewModel>
+    // (you may implement ILifetime if you want to manually control the lifetime of the view)
+    public partial class MainView : ReactiveWindow<MainViewModel>, ILifetime
     {
+        private readonly CompositeDisposable _attachedDisposables = new CompositeDisposable();
         private readonly SerialDisposable _selectFileInteractionDisposable;
 
         public MainView()
@@ -24,6 +24,7 @@ namespace GettingStarted.Views
 
             // a) view activation is opt-in: to enable it, you need to call EnableViewActivation in the constructor,
             // then override OnViewActivated to respond to activation/deactivation events
+            // (you may dispose the returned disposable if you want to cancel activition, however, it's safe to omit to dispose it otherwise)
             this.EnableViewActivation();
 
             // b) message bus enables you to broadcast messages to other (unknown) application components
@@ -57,6 +58,21 @@ namespace GettingStarted.Views
             }
         }
 
+        public void Dispose()
+        {
+            _attachedDisposables.Dispose();
+        }
+
+        public void AttachDisposable(IDisposable disposable)
+        {
+            _attachedDisposables.Add(disposable);
+        }
+
+        public void DetachDisposable(IDisposable disposable)
+        {
+            _attachedDisposables.Remove(disposable);
+        }
+
         protected override void OnViewActivated(ViewActivationLifetime activationLifetime)
         {
             // usually you set up bindings here as you want them to be active only until the view gets deactivated in most cases
@@ -87,10 +103,6 @@ namespace GettingStarted.Views
             // c) binding a view model property to a view property so that changes in the view model flow to then view but changes but not in the opposite direction
             // (use rbow snippet to quickly insert a command binding)
 
-            // ContentControl doesn't dispose our views when Content is changed, so we need take care of this manually
-            EnsureChildViewDisposal()
-                .AttachTo(activationLifetime);
-
             this.BindOneWay(ViewModel,
                 vm => vm.Child,
                 v => v.ChildViewContentControl.Content)
@@ -104,16 +116,10 @@ namespace GettingStarted.Views
                 .AttachTo(activationLifetime);
         }
 
-        private IDisposable EnsureChildViewDisposal()
+        private void ForceGCButton_Click(object sender, RoutedEventArgs e)
         {
-            var subscription = this.WhenChange(v => v.ChildViewContentControl.Content)
-                .Subscribe(value => ChildViewContentControl.FindVisualDescendant<ChildView>()?.Dispose());
-
-            return Disposable.Create(() =>
-            {
-                ChildViewContentControl.Content = null;
-                subscription.Dispose();
-            });
+            // we force GC to see if child views and view models don't leak
+            GC.Collect();
         }
     }
 }

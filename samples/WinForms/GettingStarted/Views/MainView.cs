@@ -13,8 +13,10 @@ namespace GettingStarted.Views
     // inherit top-level views from ReactiveForm to get type-safe data/command binding and view activation capabilities;
     // this brings a further benefit: ReactiveForm implements INotifyPropertyChanging/INotifyPropertyChanged interfaces,
     // what enables you to use APIs like WhenChange to observe state changes of the view
-    public partial class MainView : ReactiveForm<MainViewModel>
+    // (you may implement ILifetime if you want to manually control the lifetime of the view)
+    public partial class MainView : ReactiveForm<MainViewModel>, ILifetime
     {
+        private readonly CompositeDisposable _attachedDisposables = new CompositeDisposable();
         private readonly SerialDisposable _selectFileInteractionDisposable;
 
         public MainView()
@@ -23,6 +25,7 @@ namespace GettingStarted.Views
 
             // a) view activation is opt-in: to enable it, you need to call EnableViewActivation in the constructor,
             // then override OnViewActivated to respond to activation/deactivation events
+            // (you may dispose the returned disposable if you want to cancel activition, however, it's safe to omit to dispose it otherwise)
             this.EnableViewActivation();
 
             // b) message bus enables you to broadcast messages to other (unknown) application components
@@ -57,6 +60,26 @@ namespace GettingStarted.Views
             }
         }
 
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                _attachedDisposables.Dispose();
+                components?.Dispose();
+            }
+            base.Dispose(disposing);
+        }
+
+        public void AttachDisposable(IDisposable disposable)
+        {
+            _attachedDisposables.Add(disposable);
+        }
+
+        public void DetachDisposable(IDisposable disposable)
+        {
+            _attachedDisposables.Remove(disposable);
+        }
+
         ChildView _childView;
         public ChildView ChildView
         {
@@ -69,7 +92,13 @@ namespace GettingStarted.Views
                 if (_childView != null)
                 {
                     ChildViewPlaceholderPanel.Controls.Remove(_childView);
-                    _childView.Dispose();
+
+                    // normally we'd dispose the child view but we don't want it to suppress GC finalization to see if it gets collected by the GC
+                    // _childView.Dispose();
+
+                    // WORKAROUND: layout controls tend to leak memory in WinForms, we can prevent this by calling PerformLayout on the parent control
+                    // https://stackoverflow.com/questions/25181679/windows-form-memory-leak
+                    ChildViewPlaceholderPanel.PerformLayout();
                 }
 
                 _childView = value;
@@ -137,6 +166,12 @@ namespace GettingStarted.Views
                 ViewModel = childViewModel,
                 Dock = DockStyle.Fill
             };
+        }
+
+        private void ForceGCButton_Click(object sender, EventArgs e)
+        {
+            // we force GC to see if child views and view models don't leak
+            GC.Collect();
         }
     }
 }

@@ -15,6 +15,11 @@ namespace GettingStarted.Views
             this.EnableViewActivation();
         }
 
+        ~ChildView()
+        {
+            ReactiveMvvmContext.Current.MessageBus.Publish(new LogMessage { Message = $"{nameof(ChildView)} finalized" });
+        }
+
         protected override void OnViewActivated(ViewActivationLifetime activationLifetime)
         {
             this.BindOneWay(ViewModel, vm => vm.CurrentTime, v => v.CurrentTimeTextBlock.Text,

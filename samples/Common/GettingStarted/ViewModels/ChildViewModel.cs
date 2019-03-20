@@ -15,6 +15,11 @@ namespace GettingStarted.ViewModels
             _context = context;
         }
 
+        ~ChildViewModel()
+        {
+            ReactiveMvvmContext.Current.MessageBus.Publish(new LogMessage { Message = $"{nameof(ChildViewModel)} finalized" });
+        }
+
         // use rpropo snippet to quickly insert computed properties backed by an observable sequence
         private ReactiveProperty<DateTimeOffset> _currentTime;
         public DateTimeOffset CurrentTime => _currentTime?.Value ?? default;

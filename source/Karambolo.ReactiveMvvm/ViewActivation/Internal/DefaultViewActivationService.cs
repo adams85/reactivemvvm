@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.Linq;
 using System.Reactive;
 using System.Reactive.Disposables;
+using System.Reactive.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using Karambolo.ReactiveMvvm.Properties;
@@ -66,7 +67,8 @@ namespace Karambolo.ReactiveMvvm.ViewActivation.Internal
             var viewActivationSerial = new SerialDisposable();
 
             return new CompositeDisposable(
-                activationEvents.Subscribe(activated =>
+                activationEvents
+                .Subscribe(activated =>
                 {
                     viewActivationSerial.Disposable = null;
 

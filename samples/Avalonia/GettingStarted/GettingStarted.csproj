@@ -13,6 +13,10 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\Common\GettingStarted\ViewModels\ChildViewModel.cs" Link="ViewModels\ChildViewModel.cs" />
+    <Compile Include="..\..\Common\GettingStarted\ViewModels\MainViewModel.cs" Link="ViewModels\MainViewModel.cs" />
+  </ItemGroup>
+  <ItemGroup>
     <PackageReference Include="Avalonia" Version="0.7.0" />
     <PackageReference Include="Avalonia.Desktop" Version="0.7.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="2.2.0" />
@@ -33,5 +37,8 @@
     <None Update="Views\ChildView.xaml">
       <Generator>MSBuild:Compile</Generator>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="ViewModels\" />
   </ItemGroup>
 </Project>

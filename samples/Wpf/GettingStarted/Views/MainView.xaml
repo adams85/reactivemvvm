@@ -17,7 +17,8 @@
         <DockPanel Margin="10, 10">
             <Button x:Name="ToggleChildViewButton" Margin="0, 0, 0, 8" DockPanel.Dock="Top">Toggle Child View</Button>
             <CheckBox x:Name="CanToggleChildViewCheckBox" Margin="0, 0, 0, 8"  DockPanel.Dock="Top">Can Toggle?</CheckBox>
-            <Button x:Name="StartInteractionButton" DockPanel.Dock="Bottom">Start User Interaction</Button>
+            <Button x:Name="ForceGCButton" DockPanel.Dock="Bottom" Click="ForceGCButton_Click">Force GC</Button>
+            <Button x:Name="StartInteractionButton" Margin="0, 0, 0, 8" DockPanel.Dock="Bottom">Start User Interaction</Button>
             <TextBox x:Name="LogTextBox" Margin="0, 0, 0, 8" TextWrapping="Wrap"></TextBox>
         </DockPanel>
 

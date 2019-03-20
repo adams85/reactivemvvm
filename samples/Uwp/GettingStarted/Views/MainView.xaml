@@ -17,7 +17,8 @@
         <toolkit:DockPanel Margin="10, 10">
             <Button x:Name="ToggleChildViewButton" Margin="0, 0, 0, 8" toolkit:DockPanel.Dock="Top" HorizontalAlignment="Stretch">Toggle Child View</Button>
             <CheckBox x:Name="CanToggleChildViewCheckBox" Margin="0, 0, 0, 8"  toolkit:DockPanel.Dock="Top" HorizontalAlignment="Stretch">Can Toggle?</CheckBox>
-            <Button x:Name="StartInteractionButton" toolkit:DockPanel.Dock="Bottom" HorizontalAlignment="Stretch">Start User Interaction</Button>
+            <Button x:Name="ForceGCButton" toolkit:DockPanel.Dock="Bottom" HorizontalAlignment="Stretch" Click="ForceGCButton_Click">Force GC</Button>
+            <Button x:Name="StartInteractionButton" Margin="0, 0, 0, 8" toolkit:DockPanel.Dock="Bottom" HorizontalAlignment="Stretch">Start User Interaction</Button>
             <TextBox x:Name="LogTextBox" Margin="0, 0, 0, 8" TextWrapping="Wrap" HorizontalAlignment="Stretch"></TextBox>
         </toolkit:DockPanel>
 

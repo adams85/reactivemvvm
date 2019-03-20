@@ -14,7 +14,12 @@ namespace GettingStarted.Views
         {
             InitializeComponent();
 
-            this.EnableViewActivation();
+            var activation = this.EnableViewActivation();
+        }
+
+        ~ChildView()
+        {
+            ReactiveMvvmContext.Current.MessageBus.Publish(new LogMessage { Message = $"{nameof(ChildView)} finalized" });
         }
 
         protected override void OnViewActivated(ViewActivationLifetime activationLifetime)

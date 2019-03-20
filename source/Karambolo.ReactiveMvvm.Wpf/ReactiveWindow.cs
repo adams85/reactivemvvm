@@ -6,7 +6,7 @@ using Karambolo.ReactiveMvvm.ViewActivation;
 
 namespace Karambolo.ReactiveMvvm
 {
-    public abstract class ReactiveWindow<TViewModel> : Window, IReactiveView<TViewModel>, ILifetime
+    public abstract class ReactiveWindow<TViewModel> : Window, IReactiveView<TViewModel>
         where TViewModel : class
     {
         public static readonly DependencyProperty ViewModelProperty = DependencyProperty.Register(
@@ -15,27 +15,11 @@ namespace Karambolo.ReactiveMvvm
             typeof(ReactiveWindow<TViewModel>),
             new PropertyMetadata((sender, arg) => ((ReactiveWindow<TViewModel>)sender).AdjustDataContext(@this => @this.DataContext = @this.ViewModel)));
 
-        readonly CompositeDisposable _disposables = new CompositeDisposable();
         bool _adjustingDataContext;
 
         public ReactiveWindow()
         {
             DataContextChanged += (sender, args) => ((ReactiveWindow<TViewModel>)sender).AdjustDataContext(@this => @this.ViewModel = @this.DataContext as TViewModel);
-        }
-
-        public void Dispose()
-        {
-            _disposables.Dispose();
-        }
-
-        public void AttachDisposable(IDisposable disposable)
-        {
-            _disposables.Add(disposable);
-        }
-
-        public void DetachDisposable(IDisposable disposable)
-        {
-            _disposables.Remove(disposable);
         }
 
         void AdjustDataContext(Action<ReactiveWindow<TViewModel>> update)

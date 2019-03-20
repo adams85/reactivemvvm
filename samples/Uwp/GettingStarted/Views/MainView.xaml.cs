@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Reactive;
 using System.Reactive.Concurrency;
 using System.Reactive.Disposables;
@@ -9,20 +8,20 @@ using System.Threading.Tasks;
 using GettingStarted.Messages;
 using GettingStarted.ViewModels;
 using Karambolo.ReactiveMvvm;
-using Karambolo.ReactiveMvvm.Helpers;
 using Windows.Storage.Pickers;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Navigation;
 
 namespace GettingStarted.Views
 {
-    // inherit pages from ReactivePage to get type-safe data/command binding and view activation capabilities;
-
     // WORKAROUND: https://stackoverflow.com/questions/33550495/self-referencing-generic-type-constraint-and-xaml-in-uwp-application
     public class MainViewBase : ReactivePage<MainViewModel> { }
 
-    public sealed partial class MainView : MainViewBase
+    // inherit pages from ReactivePage to get type-safe data/command binding and view activation capabilities;
+    // (you may implement ILifetime if you want to manually control the lifetime of the view)
+    public sealed partial class MainView : MainViewBase, ILifetime
     {
+        private readonly CompositeDisposable _attachedDisposables = new CompositeDisposable();
         private readonly SerialDisposable _selectFileInteractionDisposable;
 
         public MainView()
@@ -33,6 +32,7 @@ namespace GettingStarted.Views
 
             // a) view activation is opt-in: to enable it, you need to call EnableViewActivation in the constructor,
             // then override OnViewActivated to respond to activation/deactivation events
+            // (you may dispose the returned disposable if you want to cancel activition, however, it's safe to omit to dispose it otherwise)
             this.EnableViewActivation();
 
             // b) message bus enables you to broadcast messages to other (unknown) application components
@@ -70,6 +70,21 @@ namespace GettingStarted.Views
             }
         }
 
+        public void Dispose()
+        {
+            _attachedDisposables.Dispose();
+        }
+
+        public void AttachDisposable(IDisposable disposable)
+        {
+            _attachedDisposables.Add(disposable);
+        }
+
+        public void DetachDisposable(IDisposable disposable)
+        {
+            _attachedDisposables.Remove(disposable);
+        }
+
         ChildView _childView;
         public ChildView ChildView
         {
@@ -80,10 +95,7 @@ namespace GettingStarted.Views
                     return;
 
                 if (_childView != null)
-                {
                     ChildViewContentControl.Content = null;
-                    _childView.Dispose();
-                }
 
                 _childView = value;
 
@@ -152,6 +164,12 @@ namespace GettingStarted.Views
         protected override void OnNavigatedFrom(NavigationEventArgs e)
         {
             Dispose();
+        }
+
+        private void ForceGCButton_Click(object sender, RoutedEventArgs e)
+        {
+            // we force GC to see if child views and view models don't leak
+            GC.Collect();
         }
     }
 }

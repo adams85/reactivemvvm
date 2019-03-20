@@ -9,11 +9,9 @@ using Karambolo.ReactiveMvvm.ViewActivation;
 
 namespace Karambolo.ReactiveMvvm
 {
-    public class ReactiveUserControl<TViewModel> : UserControl, IReactiveView<TViewModel>, IChangeNotifier, ILifetime
+    public class ReactiveUserControl<TViewModel> : UserControl, IReactiveView<TViewModel>, IChangeNotifier
         where TViewModel : class
     {
-        readonly CompositeDisposable _disposables = new CompositeDisposable();
-
         TViewModel _viewModel;
         [Category("ReactiveMvvm")]
         [Description("The view model.")]
@@ -30,24 +28,6 @@ namespace Karambolo.ReactiveMvvm
         {
             get => ViewModel;
             set => ViewModel = (TViewModel)value;
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            base.Dispose(disposing);
-
-            if (disposing)
-                _disposables.Dispose();
-        }
-
-        public void AttachDisposable(IDisposable disposable)
-        {
-            _disposables.Add(disposable);
-        }
-
-        public void DetachDisposable(IDisposable disposable)
-        {
-            _disposables.Remove(disposable);
         }
 
         protected virtual void OnViewActivated(ViewActivationLifetime activationLifetime) { }

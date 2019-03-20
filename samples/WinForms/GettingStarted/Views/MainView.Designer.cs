@@ -7,19 +7,6 @@
         /// </summary>
         private System.ComponentModel.IContainer components = null;
 
-        /// <summary>
-        /// Clean up any resources being used.
-        /// </summary>
-        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing && (components != null))
-            {
-                components.Dispose();
-            }
-            base.Dispose(disposing);
-        }
-
         #region Windows Form Designer generated code
 
         /// <summary>
@@ -38,11 +25,14 @@
             this.CanToggleChildViewCheckBox = new System.Windows.Forms.CheckBox();
             this.PaddingPanel1 = new System.Windows.Forms.Panel();
             this.ToggleChildViewButton = new System.Windows.Forms.Button();
+            this.PaddingPanel5 = new System.Windows.Forms.Panel();
+            this.ForceGCButton = new System.Windows.Forms.Button();
             this.ControlPanel.SuspendLayout();
             this.PaddingPanel3.SuspendLayout();
             this.PaddingPanel4.SuspendLayout();
             this.PaddingPanel2.SuspendLayout();
             this.PaddingPanel1.SuspendLayout();
+            this.PaddingPanel5.SuspendLayout();
             this.SuspendLayout();
             // 
             // ChildViewPlaceholderPanel
@@ -55,8 +45,9 @@
             // 
             // ControlPanel
             // 
-            this.ControlPanel.Controls.Add(this.PaddingPanel3);
             this.ControlPanel.Controls.Add(this.PaddingPanel4);
+            this.ControlPanel.Controls.Add(this.PaddingPanel5);
+            this.ControlPanel.Controls.Add(this.PaddingPanel3);
             this.ControlPanel.Controls.Add(this.PaddingPanel2);
             this.ControlPanel.Controls.Add(this.PaddingPanel1);
             this.ControlPanel.Dock = System.Windows.Forms.DockStyle.Left;
@@ -72,7 +63,7 @@
             this.PaddingPanel3.Location = new System.Drawing.Point(0, 56);
             this.PaddingPanel3.Name = "PaddingPanel3";
             this.PaddingPanel3.Padding = new System.Windows.Forms.Padding(4);
-            this.PaddingPanel3.Size = new System.Drawing.Size(200, 363);
+            this.PaddingPanel3.Size = new System.Drawing.Size(200, 394);
             this.PaddingPanel3.TabIndex = 2;
             // 
             // LogTextBox
@@ -82,7 +73,7 @@
             this.LogTextBox.Multiline = true;
             this.LogTextBox.Name = "LogTextBox";
             this.LogTextBox.ReadOnly = true;
-            this.LogTextBox.Size = new System.Drawing.Size(192, 355);
+            this.LogTextBox.Size = new System.Drawing.Size(192, 386);
             this.LogTextBox.TabIndex = 1;
             // 
             // PaddingPanel4
@@ -90,7 +81,7 @@
             this.PaddingPanel4.AutoSize = true;
             this.PaddingPanel4.Controls.Add(this.StartInteractionButton);
             this.PaddingPanel4.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.PaddingPanel4.Location = new System.Drawing.Point(0, 419);
+            this.PaddingPanel4.Location = new System.Drawing.Point(0, 388);
             this.PaddingPanel4.Name = "PaddingPanel4";
             this.PaddingPanel4.Padding = new System.Windows.Forms.Padding(4);
             this.PaddingPanel4.Size = new System.Drawing.Size(200, 31);
@@ -148,6 +139,28 @@
             this.ToggleChildViewButton.Text = "Toggle Child View";
             this.ToggleChildViewButton.UseVisualStyleBackColor = true;
             // 
+            // PaddingPanel5
+            // 
+            this.PaddingPanel5.AutoSize = true;
+            this.PaddingPanel5.Controls.Add(this.ForceGCButton);
+            this.PaddingPanel5.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.PaddingPanel5.Location = new System.Drawing.Point(0, 419);
+            this.PaddingPanel5.Name = "PaddingPanel5";
+            this.PaddingPanel5.Padding = new System.Windows.Forms.Padding(4);
+            this.PaddingPanel5.Size = new System.Drawing.Size(200, 31);
+            this.PaddingPanel5.TabIndex = 4;
+            // 
+            // ForceGCButton
+            // 
+            this.ForceGCButton.Dock = System.Windows.Forms.DockStyle.Top;
+            this.ForceGCButton.Location = new System.Drawing.Point(4, 4);
+            this.ForceGCButton.Name = "ForceGCButton";
+            this.ForceGCButton.Size = new System.Drawing.Size(192, 23);
+            this.ForceGCButton.TabIndex = 6;
+            this.ForceGCButton.Text = "Force GC";
+            this.ForceGCButton.UseVisualStyleBackColor = true;
+            this.ForceGCButton.Click += new System.EventHandler(this.ForceGCButton_Click);
+            // 
             // MainView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -164,6 +177,7 @@
             this.PaddingPanel4.ResumeLayout(false);
             this.PaddingPanel2.ResumeLayout(false);
             this.PaddingPanel1.ResumeLayout(false);
+            this.PaddingPanel5.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -180,6 +194,8 @@
         private System.Windows.Forms.Button ToggleChildViewButton;
         private System.Windows.Forms.Panel PaddingPanel4;
         private System.Windows.Forms.Button StartInteractionButton;
+        private System.Windows.Forms.Panel PaddingPanel5;
+        private System.Windows.Forms.Button ForceGCButton;
     }
 }
 

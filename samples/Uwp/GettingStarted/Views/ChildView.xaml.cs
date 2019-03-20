@@ -6,11 +6,10 @@ using Karambolo.ReactiveMvvm;
 
 namespace GettingStarted.Views
 {
-    // inherit child views from ReactiveUserControl to get type-safe data/command binding and view activation capabilities
-
     // WORKAROUND: https://stackoverflow.com/questions/33550495/self-referencing-generic-type-constraint-and-xaml-in-uwp-application
     public class ChildViewBase : ReactiveUserControl<ChildViewModel> { }
 
+    // inherit child views from ReactiveUserControl to get type-safe data/command binding and view activation capabilities
     public sealed partial class ChildView : ChildViewBase
     {
         public ChildView()
@@ -18,6 +17,11 @@ namespace GettingStarted.Views
             InitializeComponent();
 
             this.EnableViewActivation();
+        }
+
+        ~ChildView()
+        {
+            ReactiveMvvmContext.Current.MessageBus.Publish(new LogMessage { Message = $"{nameof(ChildView)} finalized" });
         }
 
         protected override void OnViewActivated(ViewActivationLifetime activationLifetime)
