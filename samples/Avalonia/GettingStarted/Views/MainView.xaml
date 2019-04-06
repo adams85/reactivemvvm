@@ -1,8 +1,13 @@
-﻿<views:MainViewBase xmlns="https://github.com/avaloniaui"
+﻿<Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:views="clr-namespace:GettingStarted.Views"
         xmlns:viewModels="clr-namespace:GettingStarted.ViewModels"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="GettingStarted.Views.MainView"
         Title="ReactiveMvvm Avalonia Demo">
+
   <Grid>
     <Grid.ColumnDefinitions>
       <ColumnDefinition Width="320"></ColumnDefinition>
@@ -17,7 +22,7 @@
       <TextBox Name="LogTextBox" Margin="0, 0, 0, 8" TextWrapping="Wrap"></TextBox>
     </DockPanel>
 
-    <ContentControl Name="ChildViewContentControl"  Grid.Column="1">
+    <ContentControl Name="ChildViewContentControl" Grid.Column="1">
       <ContentControl.DataTemplates>
         <DataTemplate DataType="viewModels:ChildViewModel">
           <views:ChildView />
@@ -25,4 +30,5 @@
       </ContentControl.DataTemplates>
     </ContentControl>
   </Grid>
-</views:MainViewBase>
+
+</Window>

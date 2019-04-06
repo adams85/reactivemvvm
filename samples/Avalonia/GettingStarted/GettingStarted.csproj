@@ -4,41 +4,49 @@
     <TargetFrameworks>netcoreapp2.2</TargetFrameworks>
     <LangVersion>7.3</LangVersion>
   </PropertyGroup>
-  <ItemGroup>
-    <Compile Update="**\*.xaml.cs">
-      <DependentUpon>%(Filename)</DependentUpon>
-    </Compile>
-    <EmbeddedResource Include="**\*.xaml">
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="..\..\Common\GettingStarted\ViewModels\ChildViewModel.cs" Link="ViewModels\ChildViewModel.cs" />
-    <Compile Include="..\..\Common\GettingStarted\ViewModels\MainViewModel.cs" Link="ViewModels\MainViewModel.cs" />
-  </ItemGroup>
+
   <ItemGroup>
     <PackageReference Include="Avalonia" Version="0.8.0" />
     <PackageReference Include="Avalonia.Desktop" Version="0.8.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="2.2.0" />
   </ItemGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\..\..\source\Karambolo.ReactiveMvvm.Avalonia\Karambolo.ReactiveMvvm.Avalonia.csproj" />
     <ProjectReference Include="..\..\..\source\Karambolo.ReactiveMvvm\Karambolo.ReactiveMvvm.csproj" />
   </ItemGroup>
+
   <ItemGroup>
-    <Compile Update="Views\MainView.xaml.cs">
-      <DependentUpon>MainView.xaml</DependentUpon>
+    <Compile Include="..\..\Common\GettingStarted\ViewModels\ChildViewModel.cs" Link="ViewModels\ChildViewModel.cs" />
+    <Compile Include="..\..\Common\GettingStarted\ViewModels\MainViewModel.cs" Link="ViewModels\MainViewModel.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="**\*.xaml.cs">
+      <DependentUpon>%(Filename)</DependentUpon>
     </Compile>
+    <AvaloniaResource Include="**\*.xaml">
+      <SubType>Designer</SubType>
+    </AvaloniaResource>
   </ItemGroup>
+
   <ItemGroup>
-    <None Update="Views\Childiew.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </None>
-    <None Update="Views\ChildView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </None>
+    <AvaloniaResource Remove="Views\ChildView.xaml" />
+    <AvaloniaResource Remove="Views\MainView.xaml" />
   </ItemGroup>
+
   <ItemGroup>
-    <Folder Include="ViewModels\" />
+    <None Remove="Views\ChildView.xaml" />
+    <None Remove="Views\MainView.xaml" />
   </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Views\ChildView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\MainView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </EmbeddedResource>
+  </ItemGroup>
+
 </Project>

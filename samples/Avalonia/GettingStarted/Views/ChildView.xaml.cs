@@ -7,11 +7,8 @@ using Karambolo.ReactiveMvvm;
 
 namespace GettingStarted.Views
 {
-    // WORKAROUND: Avalonia doesn't support generic types in XAML at the moment, so we resort to the intermediate base class trick
-    public class ChildViewBase : ReactiveUserControl<ChildViewModel> { }
-
-    // inherit child views from ReactiveWindow to get type-safe data/command binding and view activation capabilities
-    public class ChildView : ChildViewBase
+    // inherit child views from ReactiveUserControl to get type-safe data/command binding and view activation capabilities
+    public class ChildView : ReactiveUserControl<ChildViewModel>
     {
         public ChildView()
         {
@@ -30,7 +27,7 @@ namespace GettingStarted.Views
             ReactiveMvvmContext.Current.MessageBus.Publish(new LogMessage { Message = $"{nameof(ChildView)} finalized" });
         }
 
-        public TextBlock CurrentTimeTextBlock => this.FindControl<TextBlock>("CurrentTimeTextBlock");
+        public TextBlock CurrentTimeTextBlock => this.Get<TextBlock>("CurrentTimeTextBlock");
 
         protected override void OnViewActivated(ViewActivationLifetime activationLifetime)
         {

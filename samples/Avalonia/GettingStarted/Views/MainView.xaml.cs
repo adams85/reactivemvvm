@@ -13,27 +13,27 @@ using Avalonia.Threading;
 using GettingStarted.Messages;
 using GettingStarted.ViewModels;
 using Karambolo.ReactiveMvvm;
-using Karambolo.ReactiveMvvm.Helpers;
 
 namespace GettingStarted.Views
 {
-    // WORKAROUND: Avalonia doesn't support generic types in XAML at the moment, so we resort to the intermediate base class trick
-    public class MainViewBase : ReactiveWindow<MainViewModel> { }
-
     // inherit top-level views from ReactiveWindow to get type-safe data/command binding and view activation capabilities
     // (you may implement ILifetime if you want to manually control the lifetime of the view)
-    public class MainView : MainViewBase, ILifetime
+    public class MainView : ReactiveWindow<MainViewModel>, ILifetime
     {
         private readonly CompositeDisposable _attachedDisposables = new CompositeDisposable();
         private readonly SerialDisposable _selectFileInteractionDisposable;
 
         public MainView()
         {
-            InitializeComponent();
-
+            this.InitializeComponent();
 #if DEBUG
             this.AttachDevTools();
 #endif
+
+            // a) view activation is opt-in: to enable it, you need to call EnableViewActivation in the constructor,
+            // then override OnViewActivated to respond to activation/deactivation events
+            // (you may dispose the returned disposable if you want to cancel activition, however, it's safe to omit to dispose it otherwise)
+            this.EnableViewActivation();
 
             // a) view activation is opt-in: to enable it, you need to call EnableViewActivation in the constructor,
             // then override OnViewActivated to respond to activation/deactivation events
@@ -92,11 +92,11 @@ namespace GettingStarted.Views
             _attachedDisposables.Remove(disposable);
         }
 
-        public Button ToggleChildViewButton => this.FindControl<Button>("ToggleChildViewButton");
-        public CheckBox CanToggleChildViewCheckBox => this.FindControl<CheckBox>("CanToggleChildViewCheckBox");
-        public Button StartInteractionButton => this.FindControl<Button>("StartInteractionButton");
-        public TextBox LogTextBox => this.FindControl<TextBox>("LogTextBox");
-        public ContentControl ChildViewContentControl => this.FindControl<ContentControl>("ChildViewContentControl");
+        public Button ToggleChildViewButton => this.Get<Button>("ToggleChildViewButton");
+        public CheckBox CanToggleChildViewCheckBox => this.Get<CheckBox>("CanToggleChildViewCheckBox");
+        public Button StartInteractionButton => this.Get<Button>("StartInteractionButton");
+        public TextBox LogTextBox => this.Get<TextBox>("LogTextBox");
+        public ContentControl ChildViewContentControl => this.Get<ContentControl>("ChildViewContentControl");
 
         protected override void OnViewActivated(ViewActivationLifetime activationLifetime)
         {

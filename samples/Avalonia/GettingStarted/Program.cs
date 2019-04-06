@@ -1,6 +1,6 @@
-﻿using System;
-using Avalonia;
+﻿using Avalonia;
 using Avalonia.Logging;
+using Avalonia.Logging.Serilog;
 using GettingStarted.Infrastructure;
 using GettingStarted.ViewModels;
 using GettingStarted.Views;
@@ -12,32 +12,25 @@ namespace GettingStarted
 {
     class Program
     {
-        static void Main(string[] args)
+        // Initialization code. Don't use any Avalonia, third-party APIs or any
+        // SynchronizationContext-reliant code before AppMain is called: things aren't initialized
+        // yet and stuff might break.
+        public static void Main(string[] args)
         {
-            MainViewModel mainViewModel = null;
-            try
-            {
-                // with the help of ViewModelFactory you can create view models with services resolved from the IoC container,
-                // (CreateViewModelScoped, as opposed to CreateViewModel, creates the view model in a dedicated service scope,
-                // so disposing view models created like this will dispose their scoped/transient dependencies, as well)
-                BuildAvaloniaApp().Start<MainView>(() => mainViewModel = ReactiveMvvmContext.Current.ViewModelFactory.CreateViewModelScoped<MainViewModel>());
-            }
-            finally
-            {
-                (Application.Current.MainWindow as IDisposable)?.Dispose();
-                mainViewModel?.Dispose();
-            }
+            BuildAvaloniaApp().Start(AppMain, args);
         }
 
+        // Avalonia configuration, don't remove; also used by visual designer.
         public static AppBuilder BuildAvaloniaApp()
         {
             return AppBuilder
                 .Configure<App>()
-                .UsePlatformDetect()
-                .AfterSetup(Configure);
+                .UsePlatformDetect();
         }
 
-        static void Configure(AppBuilder appBuilder)
+        // Your application's entry point. Here you can initialize your MVVM framework, DI
+        // container, etc.
+        private static void AppMain(Application app, string[] args)
         {
             // ReactiveMvvm services needs to be configured at application startup
             var serviceProvider = ReactiveMvvmContext
@@ -50,7 +43,15 @@ namespace GettingStarted
                     .ConfigureServices(ConfigureServices));
 
             var context = serviceProvider.GetRequiredService<IReactiveMvvmContext>();
+
             Logger.Sink = new LogSink(context.LoggerFactory);
+
+            // with the help of ViewModelFactory you can create view models with services resolved from the IoC container,
+            // (CreateViewModelScoped, as opposed to CreateViewModel, creates the view model in a dedicated service scope,
+            // so disposing view models created like this will dispose their scoped/transient dependencies, as well)
+            using (var mainViewModel = context.ViewModelFactory.CreateViewModelScoped<MainViewModel>())
+            using (var mainView = new MainView { ViewModel = mainViewModel })
+                app.Run(mainView);
         }
 
         static void ConfigureLogging(ILoggingBuilder builder)
