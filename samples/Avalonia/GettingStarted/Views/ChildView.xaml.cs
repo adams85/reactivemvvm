@@ -15,10 +15,9 @@ namespace GettingStarted.Views
     {
         public ChildView()
         {
-            this.EnableViewActivation();
-
-            // for some technical reason InitializeComponent must come after EnableViewActivation at the moment (this limitation will likely be removed soon)
             InitializeComponent();
+
+            this.EnableViewActivation();
         }
 
         private void InitializeComponent()

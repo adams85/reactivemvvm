@@ -4,7 +4,6 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.VisualTree;
 using Karambolo.Common;
-using Karambolo.ReactiveMvvm.Internal;
 
 namespace Karambolo.ReactiveMvvm.ViewActivation.Internal
 {
@@ -17,11 +16,10 @@ namespace Karambolo.ReactiveMvvm.ViewActivation.Internal
 
         static IObservable<bool> ProduceActivationEvents(TopLevel topLevel)
         {
-            // TODO: use window.Opened when gets available (the nightly builds already contains it)
             return Observable
                 .FromEventPattern(
-                    handler => topLevel.Initialized += handler,
-                    handler => topLevel.Initialized -= handler)
+                    handler => topLevel.Opened += handler,
+                    handler => topLevel.Opened -= handler)
                 .Select(True<object>.Func);
         }
 

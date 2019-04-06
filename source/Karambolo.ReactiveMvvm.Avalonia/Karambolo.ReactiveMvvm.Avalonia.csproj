@@ -13,7 +13,7 @@
   <Import Project="Properties\AssemblyInfo.props" />
 
   <ItemGroup>
-    <PackageReference Include="Avalonia" Version="0.7.0" />
+    <PackageReference Include="Avalonia" Version="0.8.0" />
   </ItemGroup>
   
   <ItemGroup>

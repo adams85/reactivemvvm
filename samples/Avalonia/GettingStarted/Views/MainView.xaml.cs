@@ -29,17 +29,16 @@ namespace GettingStarted.Views
 
         public MainView()
         {
-            // a) view activation is opt-in: to enable it, you need to call EnableViewActivation in the constructor,
-            // then override OnViewActivated to respond to activation/deactivation events
-            // (you may dispose the returned disposable if you want to cancel activition, however, it's safe to omit to dispose it otherwise)
-            this.EnableViewActivation();
-
-            // for some technical reason InitializeComponent must come after EnableViewActivation at the moment (this limitation will likely be removed soon)
             InitializeComponent();
 
 #if DEBUG
             this.AttachDevTools();
 #endif
+
+            // a) view activation is opt-in: to enable it, you need to call EnableViewActivation in the constructor,
+            // then override OnViewActivated to respond to activation/deactivation events
+            // (you may dispose the returned disposable if you want to cancel activition, however, it's safe to omit to dispose it otherwise)
+            this.EnableViewActivation();
 
             // b) message bus enables you to broadcast messages to other (unknown) application components
             // (but keep in mind that usually there are better ways to share information so use message bus as a last resort!)
@@ -67,7 +66,7 @@ namespace GettingStarted.Views
             async Task HandleSelectFileAsync(InteractionContext<Unit, string> context, CancellationToken cancellationToken)
             {
                 var dialog = new OpenFileDialog();
-                var files = await dialog.ShowAsync();
+                var files = await dialog.ShowAsync(this);
                 context.Output = files.FirstOrDefault();
                 context.IsHandled = true;
             }
