@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Reactive.Linq;
 using Karambolo.ReactiveMvvm.Internal;
 using Windows.UI.Xaml;
@@ -8,7 +7,7 @@ namespace Karambolo.ReactiveMvvm.ViewActivation.Internal
 {
     public sealed class FEActivationEventProvider : IViewActivationEventProvider
     {
-        enum ActivationState
+        private enum ActivationState
         {
             WaitForActivation,
             Activated,
@@ -20,7 +19,7 @@ namespace Karambolo.ReactiveMvvm.ViewActivation.Internal
             return view is FrameworkElement;
         }
 
-        IObservable<ActivationState> ProduceActivationEvents(ActivationState state, FrameworkElement fe)
+        private IObservable<ActivationState> ProduceActivationEvents(ActivationState state, FrameworkElement fe)
         {
             // UWP app lifecycle:
             // https://docs.microsoft.com/en-us/windows/uwp/launch-resume/app-lifecycle
@@ -35,13 +34,13 @@ namespace Karambolo.ReactiveMvvm.ViewActivation.Internal
                         .Select(_ => ActivationState.Activated);
 
                 case ActivationState.Activated:
-                    var unloadedEvents = Observable
+                    IObservable<ActivationState> unloadedEvents = Observable
                         .FromEventPattern<RoutedEventHandler, object>(
                             handler => fe.Unloaded += handler,
                             handler => fe.Unloaded -= handler)
                         .Select(_ => ActivationState.WaitForActivation);
 
-                    var enteredBackgroundEvents = Observable
+                    IObservable<ActivationState> enteredBackgroundEvents = Observable
                         .FromEventPattern<EnteredBackgroundEventHandler, object>(
                             handler => Application.Current.EnteredBackground += handler,
                             handler => Application.Current.EnteredBackground -= handler)

@@ -5,7 +5,7 @@ namespace Karambolo.ReactiveMvvm.Binding.Internal
 {
     public class GenericBindingConverterAdapter<TFrom, TTo> : IBindingConverter<TFrom, TTo>
     {
-        readonly IBindingConverter _converter;
+        private readonly IBindingConverter _converter;
 
         public GenericBindingConverterAdapter(IBindingConverter converter)
         {
@@ -24,7 +24,7 @@ namespace Karambolo.ReactiveMvvm.Binding.Internal
 
         public bool TryConvert(ObservedValue<TFrom> value, object parameter, CultureInfo culture, out ObservedValue<TTo> result)
         {
-            if (TryConvert(value.Cast<object>(), typeof(TTo), parameter, culture, out var resultValue))
+            if (TryConvert(value.Cast<object>(), typeof(TTo), parameter, culture, out ObservedValue<object> resultValue))
             {
                 result = value.Cast<TTo>();
                 return true;

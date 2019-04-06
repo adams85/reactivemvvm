@@ -1,6 +1,5 @@
 ﻿using System;
 using System.ComponentModel;
-using System.Reactive.Disposables;
 using Avalonia;
 using Avalonia.Controls;
 using Karambolo.ReactiveMvvm.ViewActivation;
@@ -17,15 +16,14 @@ namespace Karambolo.ReactiveMvvm
                 if (!beforeChange)
                     ((ReactiveWindow<TViewModel>)sender).AdjustDataContext(@this => @this.DataContext = @this.ViewModel);
             });
-
-        bool _adjustingDataContext;
+        private bool _adjustingDataContext;
 
         public ReactiveWindow()
         {
             DataContextChanged += (sender, args) => ((ReactiveWindow<TViewModel>)sender).AdjustDataContext(@this => @this.ViewModel = @this.DataContext as TViewModel);
         }
 
-        void AdjustDataContext(Action<ReactiveWindow<TViewModel>> update)
+        private void AdjustDataContext(Action<ReactiveWindow<TViewModel>> update)
         {
             if (!_adjustingDataContext)
             {
@@ -42,14 +40,14 @@ namespace Karambolo.ReactiveMvvm
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public TViewModel ViewModel
         {
-            get { return GetValue(ViewModelProperty); }
-            set { SetValue(ViewModelProperty, value); }
+            get => GetValue(ViewModelProperty);
+            set => SetValue(ViewModelProperty, value);
         }
 
         object IBoundView.ViewModel
         {
-            get { return ViewModel; }
-            set { ViewModel = (TViewModel)value; }
+            get => ViewModel;
+            set => ViewModel = (TViewModel)value;
         }
 
         protected virtual void OnViewActivated(ViewActivationLifetime activationLifetime) { }

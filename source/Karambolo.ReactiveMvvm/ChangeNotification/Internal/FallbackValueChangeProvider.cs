@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Reactive.Linq;
 using Karambolo.ReactiveMvvm.Expressions;
 using Karambolo.ReactiveMvvm.Internal;
 
@@ -10,7 +9,7 @@ namespace Karambolo.ReactiveMvvm.ChangeNotification.Internal
     {
         public static readonly FallbackValueChangeProvider Instance = new FallbackValueChangeProvider();
 
-        FallbackValueChangeProvider() { }
+        private FallbackValueChangeProvider() { }
 
         public bool NotifiesBeforeChange => throw new InvalidOperationException();
 

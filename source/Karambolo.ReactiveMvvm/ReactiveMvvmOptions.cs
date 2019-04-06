@@ -9,7 +9,7 @@ namespace Karambolo.ReactiveMvvm
     public class ReactiveMvvmOptions
     {
         public ReactiveMvvmOptions()
-        {           
+        {
             BindingConverters = new List<IBindingConverter>();
             CommandBinders = new List<ICommandBinder>();
             LinkChangeProviders = new List<ILinkChangeProvider>();

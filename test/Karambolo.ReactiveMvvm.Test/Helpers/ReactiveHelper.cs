@@ -3,7 +3,7 @@ using System.Reactive;
 
 namespace Karambolo.ReactiveMvvm.Test.Helpers
 {
-    static class ReactiveHelper
+    internal static class ReactiveHelper
     {
         public static IObserver<T> CreateObserver<T>(this Sequence<T> output)
         {

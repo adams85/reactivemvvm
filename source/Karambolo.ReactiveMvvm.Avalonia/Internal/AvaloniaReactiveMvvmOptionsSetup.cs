@@ -5,7 +5,7 @@ using Microsoft.Extensions.Options;
 
 namespace Karambolo.ReactiveMvvm.Internal
 {
-    class AvaloniaReactiveMvvmOptionsSetup : IConfigureOptions<ReactiveMvvmOptions>
+    internal class AvaloniaReactiveMvvmOptionsSetup : IConfigureOptions<ReactiveMvvmOptions>
     {
         public void Configure(ReactiveMvvmOptions options)
         {

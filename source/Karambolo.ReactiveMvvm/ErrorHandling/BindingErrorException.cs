@@ -1,5 +1,4 @@
 ﻿using System;
-using Karambolo.ReactiveMvvm.Binding;
 
 namespace Karambolo.ReactiveMvvm.ErrorHandling
 {

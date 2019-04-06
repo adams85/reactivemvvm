@@ -13,14 +13,14 @@ namespace Karambolo.ReactiveMvvm
 {
     public static partial class ChangeNotificationExtensions
     {
-        static readonly IChainChangeProvider s_chainChangeProvider = ReactiveMvvmContext.ServiceProvider.GetRequiredService<IChainChangeProvider>();
+        private static readonly IChainChangeProvider s_chainChangeProvider = ReactiveMvvmContext.ServiceProvider.GetRequiredService<IChainChangeProvider>();
 
         internal static bool HasOptions(this ChangeNotificationOptions @this, ChangeNotificationOptions options)
         {
             return (@this & options) == options;
         }
 
-        static IObservable<ObservedValue<TValue>> GetChangesCore<TValue>(this object root, DataMemberAccessChain accessChain,
+        private static IObservable<ObservedValue<TValue>> GetChangesCore<TValue>(this object root, DataMemberAccessChain accessChain,
             ChangeNotificationOptions options, IEqualityComparer<TValue> comparer)
         {
             IObservable<ObservedValue<object>> values = s_chainChangeProvider.GetChanges(root, accessChain, options);
@@ -28,7 +28,7 @@ namespace Karambolo.ReactiveMvvm
             if (options.HasOptions(ChangeNotificationOptions.SkipInitial))
                 values = values.Skip(1);
 
-            var castValues = values.Select(value => value.Cast<TValue>());
+            IObservable<ObservedValue<TValue>> castValues = values.Select(value => value.Cast<TValue>());
 
             if (!options.HasOptions(ChangeNotificationOptions.NonDistinct))
             {

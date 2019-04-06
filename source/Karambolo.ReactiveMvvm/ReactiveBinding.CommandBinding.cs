@@ -17,16 +17,16 @@ namespace Karambolo.ReactiveMvvm
 {
     public static partial class ReactiveBinding
     {
-        static readonly ICommandBinderProvider s_commandBinderProvider = ReactiveMvvmContext.ServiceProvider.GetRequiredService<ICommandBinderProvider>();
+        private static readonly ICommandBinderProvider s_commandBinderProvider = ReactiveMvvmContext.ServiceProvider.GetRequiredService<ICommandBinderProvider>();
 
-        static void OnCommandBindingFailure<TViewModel, TCommand, TView, TContainer>(CommandBindingEvent<TCommand, TContainer> bindingEvent, TView view,
+        private static void OnCommandBindingFailure<TViewModel, TCommand, TView, TContainer>(CommandBindingEvent<TCommand, TContainer> bindingEvent, TView view,
             DataMemberAccessChain commandAccessChain, DataMemberAccessChain containerAccessChain, string eventName)
             where TViewModel : class
             where TView : IBoundView<TViewModel>
             where TCommand : ICommand
         {
-            var viewModelType = view.ViewModel?.GetType() ?? typeof(TViewModel);
-            var viewType = view.GetType();
+            Type viewModelType = view.ViewModel?.GetType() ?? typeof(TViewModel);
+            Type viewType = view.GetType();
 
             if (eventName == null)
                 eventName =
@@ -37,7 +37,7 @@ namespace Karambolo.ReactiveMvvm
             var sourcePath = viewModelType.Name + commandAccessChain.Slice(1);
             var targetPath = viewType.Name + containerAccessChain + '.' + eventName;
 
-            var logger = s_loggerFactory?.CreateLogger(viewType) ?? NullLogger.Instance;
+            ILogger logger = s_loggerFactory?.CreateLogger(viewType) ?? NullLogger.Instance;
             logger.LogWarning(string.Format(Resources.CommandBindingNotPossible, nameof(ICommandBinder)), sourcePath, targetPath);
             ReactiveMvvmContext.RecommendVerifyingInitialization(logger);
         }
@@ -67,22 +67,22 @@ namespace Karambolo.ReactiveMvvm
             var commandAccessChain = DataMemberAccessChain.From(viewModelFromViewExpression.Chain(commandAccessExpression));
             var containerAccessChain = DataMemberAccessChain.From(containerAccessExpression);
 
-            var commands = view.WhenChange<TCommand>(commandAccessChain);
-            var containers = view.WhenChange<TContainer>(containerAccessChain, ChangeNotificationOptions.SuppressWarnings);
+            IObservable<ObservedValue<TCommand>> commands = view.WhenChange<TCommand>(commandAccessChain);
+            IObservable<ObservedValue<TContainer>> containers = view.WhenChange<TContainer>(containerAccessChain, ChangeNotificationOptions.SuppressWarnings);
 
             if (commandParameters == null)
                 commandParameters = Observable.Empty<TParam>();
 
             var bindingSerial = new SerialDisposable();
 
-            var bindingEvents = Observable.CombineLatest(commands, containers, (command, container) =>
+            IObservable<CommandBindingEvent<TCommand, TContainer>> bindingEvents = Observable.CombineLatest(commands, containers, (command, container) =>
                 new CommandBindingEvent<TCommand, TContainer>(command, container, eventName, s_commandBinderProvider))
                 .Catch((Exception ex) => GetViewModelErrorHandler(errorHandler, view)
                     .Filter<CommandBindingEvent<TCommand, TContainer>>(CommandBindingErrorException.Create(view, commandAccessChain, containerAccessChain, ex)))
                 .Publish()
                 .RefCount();
 
-            var bindingSubscription = bindingEvents
+            IDisposable bindingSubscription = bindingEvents
                 .ObserveOnSafe(GetViewThreadScheduler())
                 .Subscribe(
                     bindingEvent =>
@@ -102,7 +102,7 @@ namespace Karambolo.ReactiveMvvm
                     },
                     ex => GetViewModelErrorHandler(errorHandler, view).Handle(ex));
 
-            var whenBind = bindingEvents
+            IObservable<CommandBindingEvent<TCommand, TContainer>> whenBind = bindingEvents
                 .Where(bindingEvent => bindingEvent.TargetValue.IsAvailable && bindingEvent.TargetValue.Value != null);
 
             var bindingDisposable = new CompositeDisposable(bindingSubscription, bindingSerial);
@@ -127,7 +127,7 @@ namespace Karambolo.ReactiveMvvm
 
             Expression<Func<TView, TViewModel>> viewModelFromViewExpression = v => v.ViewModel;
             var commandParameterAccessChain = DataMemberAccessChain.From(viewModelFromViewExpression.Chain(commandParameterAccessExpression));
-            var commandParameters = view.WhenChange<TParam>(commandParameterAccessChain)
+            IObservable<TParam> commandParameters = view.WhenChange<TParam>(commandParameterAccessChain)
                 .Select(value => value.GetValueOrDefault());
 
             return view.BindCommand(witnessViewModel, commandAccessExpression, containerAccessExpression, commandParameters, eventName, errorHandler);

@@ -9,11 +9,11 @@ namespace Karambolo.ReactiveMvvm.Helpers
 {
     public static class AvaloniaObjectHelper
     {
-        static ConcurrentDictionary<(Type, string), AvaloniaProperty> s_avaloniaPropertyCache = new ConcurrentDictionary<(Type, string), AvaloniaProperty>();
+        private static ConcurrentDictionary<(Type, string), AvaloniaProperty> s_avaloniaPropertyCache = new ConcurrentDictionary<(Type, string), AvaloniaProperty>();
 
         internal static AvaloniaProperty GetAvaloniaProperty(Type type, string propertyName)
         {
-            var field = type.GetField(propertyName + "Property", BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy);
+            FieldInfo field = type.GetField(propertyName + "Property", BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy);
             return field?.GetValue(null) as AvaloniaProperty;
         }
 
@@ -31,7 +31,7 @@ namespace Karambolo.ReactiveMvvm.Helpers
             if (match == null)
                 match = True<T>.Func;
 
-            var visual = includeRoot ? root : root.VisualParent;
+            IVisual visual = includeRoot ? root : root.VisualParent;
 
             while (visual != null)
             {
@@ -44,14 +44,14 @@ namespace Karambolo.ReactiveMvvm.Helpers
             return null;
         }
 
-        static T FindVisualDescendantCore<T>(this IVisual visual, Func<T, bool> match)
+        private static T FindVisualDescendantCore<T>(this IVisual visual, Func<T, bool> match)
             where T : class, IVisual
         {
             T result;
             int childCount = visual.VisualChildren.Count;
             for (int i = 0; i < childCount; i++)
             {
-                var child = visual.VisualChildren[i];
+                IVisual child = visual.VisualChildren[i];
                 if (child is T castChild && match(castChild))
                     return castChild;
                 else if ((result = child.FindVisualDescendantCore(match)) != null)

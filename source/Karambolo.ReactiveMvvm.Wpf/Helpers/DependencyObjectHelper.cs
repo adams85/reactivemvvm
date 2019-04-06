@@ -11,17 +11,17 @@ namespace Karambolo.ReactiveMvvm.Helpers
 {
     public static class DependencyObjectHelper
     {
-        static ConcurrentDictionary<(Type, string), DependencyPropertyDescriptor> s_dependencyPropertyCache = new ConcurrentDictionary<(Type, string), DependencyPropertyDescriptor>();
+        private static ConcurrentDictionary<(Type, string), DependencyPropertyDescriptor> s_dependencyPropertyCache = new ConcurrentDictionary<(Type, string), DependencyPropertyDescriptor>();
 
         internal static DependencyProperty GetDependencyProperty(Type type, string propertyName)
         {
-            var field = type.GetField(propertyName + "Property", BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy);
+            FieldInfo field = type.GetField(propertyName + "Property", BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy);
             return field?.GetValue(null) as DependencyProperty;
         }
 
         internal static DependencyPropertyDescriptor GetDependencyPropertyDescriptor(Type type, string propertyName)
         {
-            var dp = GetDependencyProperty(type, propertyName);
+            DependencyProperty dp = GetDependencyProperty(type, propertyName);
             return dp != null ? DependencyPropertyDescriptor.FromProperty(dp, type) : null;
         }
 
@@ -39,7 +39,7 @@ namespace Karambolo.ReactiveMvvm.Helpers
             if (match == null)
                 match = True<T>.Func;
 
-            var obj = includeRoot ? root : LogicalTreeHelper.GetParent(root);
+            DependencyObject obj = includeRoot ? root : LogicalTreeHelper.GetParent(root);
 
             while (obj != null)
             {
@@ -52,11 +52,11 @@ namespace Karambolo.ReactiveMvvm.Helpers
             return null;
         }
 
-        static T FindLogicalDescendantCore<T>(this DependencyObject obj, Func<T, bool> match)
+        private static T FindLogicalDescendantCore<T>(this DependencyObject obj, Func<T, bool> match)
             where T : DependencyObject
         {
             T result;
-            foreach (var child in LogicalTreeHelper.GetChildren(obj).OfType<DependencyObject>())
+            foreach (DependencyObject child in LogicalTreeHelper.GetChildren(obj).OfType<DependencyObject>())
                 if (child is T castChild && match(castChild))
                     return castChild;
                 else if ((result = child.FindLogicalDescendantCore(match)) != null)
@@ -89,7 +89,7 @@ namespace Karambolo.ReactiveMvvm.Helpers
             if (match == null)
                 match = True<T>.Func;
 
-            var obj = includeRoot ? root : VisualTreeHelper.GetParent(root);
+            DependencyObject obj = includeRoot ? root : VisualTreeHelper.GetParent(root);
 
             while (obj != null)
             {
@@ -102,14 +102,14 @@ namespace Karambolo.ReactiveMvvm.Helpers
             return null;
         }
 
-        static T FindVisualDescendantCore<T>(this DependencyObject obj, Func<T, bool> match)
+        private static T FindVisualDescendantCore<T>(this DependencyObject obj, Func<T, bool> match)
             where T : DependencyObject
         {
             T result;
             int childCount = VisualTreeHelper.GetChildrenCount(obj);
             for (int i = 0; i < childCount; i++)
             {
-                var child = VisualTreeHelper.GetChild(obj, i);
+                DependencyObject child = VisualTreeHelper.GetChild(obj, i);
                 if (child is T castChild && match(castChild))
                     return castChild;
                 else if ((result = child.FindVisualDescendantCore(match)) != null)

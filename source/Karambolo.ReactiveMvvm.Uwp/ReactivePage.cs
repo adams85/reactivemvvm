@@ -1,6 +1,5 @@
 ﻿using System;
 using System.ComponentModel;
-using System.Reactive.Disposables;
 using Karambolo.ReactiveMvvm.ViewActivation;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -16,14 +15,14 @@ namespace Karambolo.ReactiveMvvm
             typeof(ReactivePage<TViewModel>),
             new PropertyMetadata(null, (sender, arg) => ((ReactivePage<TViewModel>)sender).AdjustDataContext(@this => @this.DataContext = @this.ViewModel)));
 
-        bool _adjustingDataContext;
+        private bool _adjustingDataContext;
 
         public ReactivePage()
         {
             DataContextChanged += (sender, args) => ((ReactivePage<TViewModel>)sender).AdjustDataContext(@this => @this.ViewModel = @this.DataContext as TViewModel);
         }
 
-        void AdjustDataContext(Action<ReactivePage<TViewModel>> update)
+        private void AdjustDataContext(Action<ReactivePage<TViewModel>> update)
         {
             if (!_adjustingDataContext)
             {
@@ -40,14 +39,14 @@ namespace Karambolo.ReactiveMvvm
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public TViewModel ViewModel
         {
-            get { return (TViewModel)GetValue(ViewModelProperty); }
-            set { SetValue(ViewModelProperty, value); }
+            get => (TViewModel)GetValue(ViewModelProperty);
+            set => SetValue(ViewModelProperty, value);
         }
 
         object IBoundView.ViewModel
         {
-            get { return ViewModel; }
-            set { ViewModel = (TViewModel)value; }
+            get => ViewModel;
+            set => ViewModel = (TViewModel)value;
         }
 
         protected virtual void OnViewActivated(ViewActivationLifetime activationLifetime) { }

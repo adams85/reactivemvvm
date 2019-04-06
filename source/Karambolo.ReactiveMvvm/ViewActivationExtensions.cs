@@ -6,11 +6,11 @@ namespace Karambolo.ReactiveMvvm
 {
     public static class ViewActivationExtensions
     {
-        static readonly IViewActivationService _viewActivationService = ReactiveMvvmContext.ServiceProvider.GetRequiredService<IViewActivationService>();
+        private static readonly IViewActivationService s_viewActivationService = ReactiveMvvmContext.ServiceProvider.GetRequiredService<IViewActivationService>();
 
         public static IDisposable EnableViewActivation(this IActivableView view)
         {
-            return _viewActivationService.EnableViewActivation(view);
+            return s_viewActivationService.EnableViewActivation(view);
         }
     }
 }

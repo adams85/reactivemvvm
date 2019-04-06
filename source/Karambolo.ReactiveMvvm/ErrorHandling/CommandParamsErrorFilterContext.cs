@@ -10,6 +10,6 @@ namespace Karambolo.ReactiveMvvm.ErrorHandling
             return new CommandParamsErrorException(command, exception);
         }
 
-        CommandParamsErrorException(object sourceObject, Exception exception) : base(sourceObject, exception) { }
+        private CommandParamsErrorException(object sourceObject, Exception exception) : base(sourceObject, exception) { }
     }
 }

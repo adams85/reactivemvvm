@@ -8,8 +8,8 @@ namespace Karambolo.ReactiveMvvm.Internal.Concurrency
 {
     public class VariableScheduler : IScheduler
     {
-        IScheduler _scheduler;
-        IDisposable _subscription;
+        private IScheduler _scheduler;
+        private IDisposable _subscription;
 
         public VariableScheduler(IObservable<IScheduler> schedulers, IScheduler defaultScheduler = null)
         {

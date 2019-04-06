@@ -7,7 +7,7 @@ namespace Karambolo.ReactiveMvvm.ErrorHandling.Internal
 {
     public class DefaultObservedErrorHandler : ObservedErrorHandler
     {
-        readonly IPlatformSchedulerProvider _platformSchedulers;
+        private readonly IPlatformSchedulerProvider _platformSchedulers;
 
         public DefaultObservedErrorHandler(IPlatformSchedulerProvider platformSchedulers)
         {

@@ -12,7 +12,7 @@ namespace Karambolo.ReactiveMvvm.ViewActivation.Internal
             return view is FrameworkElement;
         }
 
-        static IObservable<bool> ProduceActivationEvents(FrameworkElement fe)
+        private static IObservable<bool> ProduceActivationEvents(FrameworkElement fe)
         {
             return Observable
                 .FromEventPattern<RoutedEventHandler, object>(
@@ -21,9 +21,9 @@ namespace Karambolo.ReactiveMvvm.ViewActivation.Internal
                 .Select(True<object>.Func);
         }
 
-        static IObservable<bool> ProduceDeactivationEvents(FrameworkElement fe)
+        private static IObservable<bool> ProduceDeactivationEvents(FrameworkElement fe)
         {
-            var events = Observable
+            IObservable<System.Reactive.EventPattern<object>> events = Observable
                 .FromEventPattern<RoutedEventHandler, object>(
                     handler => fe.Unloaded += handler,
                     handler => fe.Unloaded -= handler);
@@ -31,7 +31,7 @@ namespace Karambolo.ReactiveMvvm.ViewActivation.Internal
             var window = Window.GetWindow(fe);
             if (window != null)
             {
-                var rootClosedEvents = Observable
+                IObservable<System.Reactive.EventPattern<object>> rootClosedEvents = Observable
                     .FromEventPattern(
                         handler => window.Closed += handler,
                         handler => window.Closed -= handler);

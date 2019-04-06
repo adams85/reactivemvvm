@@ -14,7 +14,7 @@ namespace Karambolo.ReactiveMvvm
 {
     public static partial class ReactiveCommand
     {
-        static IDisposable InvokeCommandSyncCore<T>(this IObservable<(ICommand command, T param)> executionInfo,
+        private static IDisposable InvokeCommandSyncCore<T>(this IObservable<(ICommand command, T param)> executionInfo,
             IScheduler scheduler, ObservedErrorHandler errorHandler)
         {
             return executionInfo
@@ -42,7 +42,7 @@ namespace Karambolo.ReactiveMvvm
             if (errorHandler == null)
                 errorHandler = ReactiveMvvmContext.Current.DefaultErrorHandler;
 
-            var canExecuteChanges = Observable
+            IObservable<Unit> canExecuteChanges = Observable
                 .FromEventPattern(handler => command.CanExecuteChanged += handler, handler => command.CanExecuteChanged -= handler)
                 .Select(_ => Unit.Default)
                 .StartWith(Unit.Default);
@@ -65,9 +65,9 @@ namespace Karambolo.ReactiveMvvm
                 errorHandler = ReactiveMvvmContext.Current.DefaultErrorHandler;
 
             var chain = DataMemberAccessChain.From(propertyExpression);
-            var commandValues = source.WhenChange<ICommand>(chain);
+            IObservable<ObservedValue<ICommand>> commandValues = source.WhenChange<ICommand>(chain);
 
-            var commands = commandValues
+            IObservable<ICommand> commands = commandValues
                 .Select(command =>
                     command.IsAvailable && command.Value != null ?
                     Observable.FromEventPattern(handler => command.Value.CanExecuteChanged += handler, handler => command.Value.CanExecuteChanged -= handler)
@@ -83,7 +83,7 @@ namespace Karambolo.ReactiveMvvm
                 scheduler, errorHandler);
         }
 
-        static IDisposable InvokeCommandCore<TParam, TResult>(this IObservable<(ReactiveCommand<TParam, TResult> command, bool canExecute, TParam param)> executionInfo,
+        private static IDisposable InvokeCommandCore<TParam, TResult>(this IObservable<(ReactiveCommand<TParam, TResult> command, bool canExecute, TParam param)> executionInfo,
             IScheduler scheduler, ObservedErrorHandler errorHandler, CancellationToken cancellationToken)
         {
             return executionInfo
@@ -122,9 +122,9 @@ namespace Karambolo.ReactiveMvvm
                 errorHandler = ReactiveMvvmContext.Current.DefaultErrorHandler;
 
             var chain = DataMemberAccessChain.From(propertyExpression);
-            var commandValues = source.WhenChange<ReactiveCommand<TParam, TResult>>(chain);
+            IObservable<ObservedValue<ReactiveCommand<TParam, TResult>>> commandValues = source.WhenChange<ReactiveCommand<TParam, TResult>>(chain);
 
-            var commands = commandValues
+            IObservable<(ReactiveCommand<TParam, TResult> value, bool canExecute)> commands = commandValues
                 .Select(command =>
                     command.IsAvailable && command.Value != null ?
                     command.Value.WhenCanExecuteChanged.Select(canExecute => (value: command.Value, canExecute)) :

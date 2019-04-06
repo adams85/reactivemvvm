@@ -8,20 +8,19 @@ namespace Karambolo.ReactiveMvvm.Internal
 {
     public class DefaultViewModelFactory : IViewModelFactory
     {
-        static readonly ConcurrentDictionary<(Type, Type[]), ObjectFactory> _factoryCache = new ConcurrentDictionary<(Type, Type[]), ObjectFactory>();
-
-        readonly IServiceProvider _serviceProvider;
+        private static readonly ConcurrentDictionary<(Type, Type[]), ObjectFactory> s_factoryCache = new ConcurrentDictionary<(Type, Type[]), ObjectFactory>();
+        private readonly IServiceProvider _serviceProvider;
 
         public DefaultViewModelFactory(IServiceProvider serviceProvider)
         {
             _serviceProvider = serviceProvider;
         }
 
-        ObjectFactory GetCachedFactory<TViewModel>(object[] parameters) where TViewModel : class
+        private ObjectFactory GetCachedFactory<TViewModel>(object[] parameters) where TViewModel : class
         {
-            var paramTypes = !ArrayUtils.IsNullOrEmpty(parameters) ? parameters.Select(param => param?.GetType()).ToArray() : Type.EmptyTypes;
+            Type[] paramTypes = !ArrayUtils.IsNullOrEmpty(parameters) ? parameters.Select(param => param?.GetType()).ToArray() : Type.EmptyTypes;
 
-            return _factoryCache.GetOrAdd((typeof(TViewModel), paramTypes), key => ActivatorUtilities.CreateFactory(key.Item1, key.Item2));
+            return s_factoryCache.GetOrAdd((typeof(TViewModel), paramTypes), key => ActivatorUtilities.CreateFactory(key.Item1, key.Item2));
         }
 
         public TViewModel CreateViewModel<TViewModel>(params object[] parameters) where TViewModel : class
@@ -32,7 +31,7 @@ namespace Karambolo.ReactiveMvvm.Internal
         public TViewModel CreateViewModelScoped<TViewModel>(object[] parameters = null)
             where TViewModel : class, ILifetime
         {
-            var scope = _serviceProvider.CreateScope();
+            IServiceScope scope = _serviceProvider.CreateScope();
             TViewModel viewModel = null;
             try
             {

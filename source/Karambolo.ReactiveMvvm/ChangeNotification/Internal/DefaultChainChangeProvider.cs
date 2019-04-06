@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
-using System.Reflection;
 using Karambolo.ReactiveMvvm.Expressions;
 using Karambolo.ReactiveMvvm.Properties;
 using Microsoft.Extensions.Logging;
@@ -14,10 +13,9 @@ namespace Karambolo.ReactiveMvvm.ChangeNotification.Internal
 {
     public class DefaultChainChangeProvider : IChainChangeProvider
     {
-        static readonly ConcurrentDictionary<(DataMemberAccessLink, bool), Unit> s_nonObservableMembers = new ConcurrentDictionary<(DataMemberAccessLink, bool), Unit>();
-
-        readonly Dictionary<(Type, bool), ILinkChangeProvider[]> _changeProvidersLookup;
-        readonly ILogger _logger;
+        private static readonly ConcurrentDictionary<(DataMemberAccessLink, bool), Unit> s_nonObservableMembers = new ConcurrentDictionary<(DataMemberAccessLink, bool), Unit>();
+        private readonly Dictionary<(Type, bool), ILinkChangeProvider[]> _changeProvidersLookup;
+        private readonly ILogger _logger;
 
         public DefaultChainChangeProvider(IOptions<ReactiveMvvmOptions> options, ILoggerFactory loggerFactory)
         {
@@ -29,7 +27,7 @@ namespace Karambolo.ReactiveMvvm.ChangeNotification.Internal
             _logger = loggerFactory.CreateLogger<DefaultChainChangeProvider>();
         }
 
-        IObservable<ObservedChange> GetLinkChangesCore(object container, DataMemberAccessLink link, ChangeNotificationOptions options)
+        private IObservable<ObservedChange> GetLinkChangesCore(object container, DataMemberAccessLink link, ChangeNotificationOptions options)
         {
             var beforeChange = options.HasOptions(ChangeNotificationOptions.BeforeChange);
 
@@ -51,7 +49,7 @@ namespace Karambolo.ReactiveMvvm.ChangeNotification.Internal
             return FallbackValueChangeProvider.Instance.GetChanges(container, link);
         }
 
-        IObservable<ObservedValue<object>> GetLinkChanges(in ObservedValue<object> container, DataMemberAccessLink link, ChangeNotificationOptions options)
+        private IObservable<ObservedValue<object>> GetLinkChanges(in ObservedValue<object> container, DataMemberAccessLink link, ChangeNotificationOptions options)
         {
             return
                 container.IsAvailable && container.Value != null ?

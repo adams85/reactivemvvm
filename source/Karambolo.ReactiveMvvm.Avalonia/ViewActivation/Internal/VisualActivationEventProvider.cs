@@ -14,7 +14,7 @@ namespace Karambolo.ReactiveMvvm.ViewActivation.Internal
             return view is IVisual;
         }
 
-        static IObservable<bool> ProduceActivationEvents(TopLevel topLevel)
+        private static IObservable<bool> ProduceActivationEvents(TopLevel topLevel)
         {
             return Observable
                 .FromEventPattern(
@@ -23,7 +23,7 @@ namespace Karambolo.ReactiveMvvm.ViewActivation.Internal
                 .Select(True<object>.Func);
         }
 
-        static IObservable<bool> ProduceDeactivationEvents(TopLevel topLevel)
+        private static IObservable<bool> ProduceDeactivationEvents(TopLevel topLevel)
         {
             return Observable
                 .FromEventPattern(
@@ -32,7 +32,7 @@ namespace Karambolo.ReactiveMvvm.ViewActivation.Internal
                 .Select(False<object>.Func);
         }
 
-        static IObservable<bool> ProduceActivationEvents(IVisual visual)
+        private static IObservable<bool> ProduceActivationEvents(IVisual visual)
         {
             return Observable
                 .FromEventPattern<VisualTreeAttachmentEventArgs>(
@@ -41,7 +41,7 @@ namespace Karambolo.ReactiveMvvm.ViewActivation.Internal
                 .Select(True<object>.Func);
         }
 
-        static IObservable<bool> ProduceDeactivationEvents(IVisual visual)
+        private static IObservable<bool> ProduceDeactivationEvents(IVisual visual)
         {
             IObservable<object> events = Observable
                 .FromEventPattern<VisualTreeAttachmentEventArgs>(
@@ -50,7 +50,7 @@ namespace Karambolo.ReactiveMvvm.ViewActivation.Internal
 
             if (visual.VisualRoot is TopLevel root)
             {
-                var rootClosedEvents = Observable.FromEventPattern(
+                IObservable<System.Reactive.EventPattern<object>> rootClosedEvents = Observable.FromEventPattern(
                     handler => root.Closed += handler,
                     handler => root.Closed -= handler);
 

@@ -8,9 +8,8 @@ namespace Karambolo.ReactiveMvvm.Binding.Internal
 {
     public class DefaultCommandBinderProvider : ICommandBinderProvider
     {
-        static readonly ConcurrentDictionary<(Type, string), ICommandBinder> s_binderCache = new ConcurrentDictionary<(Type, string), ICommandBinder>();
-
-        readonly IReadOnlyList<ICommandBinder> _binders;
+        private static readonly ConcurrentDictionary<(Type, string), ICommandBinder> s_binderCache = new ConcurrentDictionary<(Type, string), ICommandBinder>();
+        private readonly IReadOnlyList<ICommandBinder> _binders;
 
         public DefaultCommandBinderProvider(IOptions<ReactiveMvvmOptions> options)
         {
@@ -23,7 +22,7 @@ namespace Karambolo.ReactiveMvvm.Binding.Internal
                 container.IsAvailable && container.Value != null ?
                 s_binderCache.GetOrAdd((container.Value.GetType(), eventName), key =>
                 {
-                    var (containerType, evtName) = key;
+                    (Type containerType, string evtName) = key;
                     ICommandBinder binder;
                     for (int i = 0, n = _binders.Count; i < n; i++)
                         if ((binder = _binders[i]).CanBind(containerType, evtName))

@@ -5,7 +5,7 @@ namespace Karambolo.ReactiveMvvm
 {
     public sealed class ViewActivationLifetime : ILifetime
     {
-        readonly CompositeDisposable _disposables = new CompositeDisposable();
+        private readonly CompositeDisposable _disposables = new CompositeDisposable();
 
         public void Dispose()
         {

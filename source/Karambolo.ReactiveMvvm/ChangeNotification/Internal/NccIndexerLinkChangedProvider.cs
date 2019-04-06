@@ -37,7 +37,7 @@ namespace Karambolo.ReactiveMvvm.ChangeNotification.Internal
                 handler => ncc.CollectionChanged += handler, handler => ncc.CollectionChanged -= handler)
                 .Where(e =>
                 {
-                    var args = e.EventArgs;
+                    NotifyCollectionChangedEventArgs args = e.EventArgs;
                     switch (args.Action)
                     {
                         case NotifyCollectionChangedAction.Reset:

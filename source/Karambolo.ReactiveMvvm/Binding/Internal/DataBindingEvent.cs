@@ -3,15 +3,15 @@ using Karambolo.ReactiveMvvm.Expressions;
 
 namespace Karambolo.ReactiveMvvm.Binding.Internal
 {
-    class DataBindingEvent<TSource, TTarget> : IDataBindingEvent<TSource, TTarget>
+    internal class DataBindingEvent<TSource, TTarget> : IDataBindingEvent<TSource, TTarget>
     {
-        readonly DataBindingEventFlags _flags;
+        private readonly DataBindingEventFlags _flags;
 
-        public DataBindingEvent(ObservedValue<TSource> sourceValue, ObservedValue<object> targetContainer, DataMemberAccessLink targetLink, 
+        public DataBindingEvent(ObservedValue<TSource> sourceValue, ObservedValue<object> targetContainer, DataMemberAccessLink targetLink,
             IBindingConverter<TSource, TTarget> converter, object converterParameter, CultureInfo converterCulture)
         {
             SourceValue = sourceValue;
-            if (converter.TryConvert(sourceValue, converterParameter, converterCulture, out var convertedValue))
+            if (converter.TryConvert(sourceValue, converterParameter, converterCulture, out ObservedValue<TTarget> convertedValue))
             {
                 TargetValue = convertedValue;
                 _flags = DataBindingEventFlags.None;
@@ -30,7 +30,7 @@ namespace Karambolo.ReactiveMvvm.Binding.Internal
             IBindingConverter<TTarget, TSource> converter, object converterParameter, CultureInfo converterCulture)
         {
             TargetValue = targetValue;
-            if (converter.TryConvert(targetValue, converterParameter, converterCulture, out var convertedValue))
+            if (converter.TryConvert(targetValue, converterParameter, converterCulture, out ObservedValue<TSource> convertedValue))
             {
                 SourceValue = convertedValue;
                 _flags = DataBindingEventFlags.FlowsToSource;

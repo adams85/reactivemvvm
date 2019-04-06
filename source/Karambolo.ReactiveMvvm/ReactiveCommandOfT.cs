@@ -7,7 +7,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Karambolo.Common;
 using Karambolo.ReactiveMvvm.ErrorHandling;
-using Karambolo.ReactiveMvvm.Internal;
 using Karambolo.ReactiveMvvm.Properties;
 
 namespace Karambolo.ReactiveMvvm
@@ -35,13 +34,12 @@ namespace Karambolo.ReactiveMvvm
             }
         }
 
-        static readonly bool s_paramCanBeNull = typeof(TParam) == typeof(Unit) || typeof(TParam).AllowsNull();
-
-        readonly Func<TParam, CancellationToken, Task<TResult>> _execute;
-        readonly Subject<ExecutionEvent<TResult>> _executionEventSubject;
-        readonly ISubject<ExecutionEvent<TResult>> _executionEventSubjectSync;
-        readonly IObservable<TResult> _results;
-        readonly IDisposable _onCanExecuteChangedSubscription;
+        private static readonly bool s_paramCanBeNull = typeof(TParam) == typeof(Unit) || typeof(TParam).AllowsNull();
+        private readonly Func<TParam, CancellationToken, Task<TResult>> _execute;
+        private readonly Subject<ExecutionEvent<TResult>> _executionEventSubject;
+        private readonly ISubject<ExecutionEvent<TResult>> _executionEventSubjectSync;
+        private readonly IObservable<TResult> _results;
+        private readonly IDisposable _onCanExecuteChangedSubscription;
 
         protected ReactiveCommand(Initializer initializer,
             Func<TParam, CancellationToken, Task<TResult>> execute, IObservable<bool> canExecute = null,
@@ -73,14 +71,14 @@ namespace Karambolo.ReactiveMvvm
             IScheduler scheduler = null, ObservedErrorHandler errorHandler = null)
             : this(Initializer.Default, execute ?? throw new ArgumentNullException(nameof(execute)), canExecute, scheduler, errorHandler) { }
 
-        IObservable<TResult> CreateResults()
+        private IObservable<TResult> CreateResults()
         {
             return _executionEventSubjectSync
                 .Where(info => info.Kind == ExecutionEventKind.Result)
                 .Select(info => info.Value);
         }
 
-        IObservable<bool> CreateWhenIsBusyChanged()
+        private IObservable<bool> CreateWhenIsBusyChanged()
         {
             return _executionEventSubjectSync
                 .Scan(0, (busyCount, info) =>
@@ -94,7 +92,7 @@ namespace Karambolo.ReactiveMvvm
                 .RefCount();
         }
 
-        IObservable<bool> CreateWhenCanExecuteChanged(IObservable<bool> canExecute)
+        private IObservable<bool> CreateWhenCanExecuteChanged(IObservable<bool> canExecute)
         {
             return canExecute
                 .StartWith(false)
@@ -120,7 +118,7 @@ namespace Karambolo.ReactiveMvvm
 
         public sealed override IObservable<bool> WhenIsBusyChanged { get; }
 
-        void OnError(Exception exception)
+        private void OnError(Exception exception)
         {
             ErrorHandler.Handle(exception);
         }
@@ -135,7 +133,7 @@ namespace Karambolo.ReactiveMvvm
             _executionEventSubjectSync.OnNext(ExecutionEvent<TResult>.Begin());
             try
             {
-                var result = await _execute(parameter, cancellationToken).ConfigureAwait(false);
+                TResult result = await _execute(parameter, cancellationToken).ConfigureAwait(false);
                 _executionEventSubjectSync.OnNext(ExecutionEvent<TResult>.Result(result));
                 return result;
             }

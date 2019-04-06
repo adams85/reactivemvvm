@@ -1,5 +1,4 @@
 ﻿using System;
-using Karambolo.ReactiveMvvm.Binding;
 using Karambolo.ReactiveMvvm.Expressions;
 
 namespace Karambolo.ReactiveMvvm.ErrorHandling
@@ -11,7 +10,7 @@ namespace Karambolo.ReactiveMvvm.ErrorHandling
             return new ObservableSourceBindingErrorException(source, targetRoot, targetAccessChain, exception);
         }
 
-        ObservableSourceBindingErrorException(object sourceObject, object targetRoot, DataMemberAccessChain targetAccessChain, Exception exception)
+        private ObservableSourceBindingErrorException(object sourceObject, object targetRoot, DataMemberAccessChain targetAccessChain, Exception exception)
             : base(sourceObject, ReactiveBindingMode.OneWay, exception)
         {
             TargetRoot = targetRoot;

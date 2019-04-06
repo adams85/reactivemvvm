@@ -6,7 +6,7 @@ namespace Karambolo.ReactiveMvvm
     public abstract class ReactiveBinding<TSource, TTarget, TEvent> : IDisposable
         where TEvent : IReactiveBindingEvent<TSource, TTarget>
     {
-        IDisposable _bindingDisposable;
+        private IDisposable _bindingDisposable;
 
         internal ReactiveBinding(ReactiveBindingMode bindingMode, IObservable<TEvent> whenBind, IDisposable bindingDisposable)
         {

@@ -19,15 +19,13 @@ namespace Karambolo.ReactiveMvvm.Binding.Internal
             public Type EventArgType;
         }
 
-        static readonly string[] s_defaultEvents =
+        private static readonly string[] s_defaultEvents =
         {
             "Click",
-            "MouseUp",           
+            "MouseUp",
         };
-
-        static readonly ConcurrentDictionary<(Type, string), ContainerMetadata> s_containerMetadataCache = new ConcurrentDictionary<(Type, string), ContainerMetadata>();
-
-        static readonly MethodInfo s_bindImplMethodDefinition = Lambda.Method((EventCommandBinder binder) => binder.Bind<Delegate, object, object>(null, null, null, null, null, null))
+        private static readonly ConcurrentDictionary<(Type, string), ContainerMetadata> s_containerMetadataCache = new ConcurrentDictionary<(Type, string), ContainerMetadata>();
+        private static readonly MethodInfo s_bindImplMethodDefinition = Lambda.Method((EventCommandBinder binder) => binder.Bind<Delegate, object, object>(null, null, null, null, null, null))
             .GetGenericMethodDefinition();
 
         protected virtual IEnumerable<string> DefaultEventNames => s_defaultEvents;
@@ -42,11 +40,11 @@ namespace Karambolo.ReactiveMvvm.Binding.Internal
             };
         }
 
-        ContainerMetadata GetCachedContainerMetadata(Type containerType, string eventName)
+        private ContainerMetadata GetCachedContainerMetadata(Type containerType, string eventName)
         {
-            if (!s_containerMetadataCache.TryGetValue((containerType, eventName), out var containerMetadata))
+            if (!s_containerMetadataCache.TryGetValue((containerType, eventName), out ContainerMetadata containerMetadata))
             {
-                var @event =
+                EventInfo @event =
                     eventName == null ?
                     DefaultEventNames.Select(evtName => containerType.GetEvent(evtName)).FirstOrDefault(evt => evt != null) :
                     containerType.GetEvent(eventName);
@@ -54,17 +52,17 @@ namespace Karambolo.ReactiveMvvm.Binding.Internal
                 if (@event == null)
                     return null;
 
-                var eventHandlerType = @event.EventHandlerType;
+                Type eventHandlerType = @event.EventHandlerType;
 
                 ParameterInfo eventArgParam;
-                var invokeMethod = eventHandlerType.GetMethod("Invoke");
-                var invokeMethodParams = invokeMethod.GetParameters();
+                MethodInfo invokeMethod = eventHandlerType.GetMethod("Invoke");
+                ParameterInfo[] invokeMethodParams = invokeMethod.GetParameters();
                 if (invokeMethodParams.Length != 2 ||
                     !invokeMethodParams[0].ParameterType.IsAssignableFrom(containerType) ||
                     (eventArgParam = invokeMethodParams[1]).ParameterType.IsByRef)
                     return null;
 
-                var eventArgType = eventArgParam.ParameterType;
+                Type eventArgType = eventArgParam.ParameterType;
 
                 s_containerMetadataCache[(containerType, eventName)] = containerMetadata = CreateContainerMetadata(containerType, @event, eventHandlerType, eventArgType);
             }
@@ -79,13 +77,13 @@ namespace Karambolo.ReactiveMvvm.Binding.Internal
 
         public IDisposable Bind<TParam>(ICommand command, object container, IObservable<TParam> commandParameters, string eventName, IScheduler scheduler, Action<Exception> onError)
         {
-            var containerMetadata = GetCachedContainerMetadata(container.GetType(), eventName);
+            ContainerMetadata containerMetadata = GetCachedContainerMetadata(container.GetType(), eventName);
 
-            var bindImplMethod = s_bindImplMethodDefinition.MakeGenericMethod(containerMetadata.EventHandlerType, containerMetadata.EventArgType, typeof(TParam));
+            MethodInfo bindImplMethod = s_bindImplMethodDefinition.MakeGenericMethod(containerMetadata.EventHandlerType, containerMetadata.EventArgType, typeof(TParam));
             return (IDisposable)bindImplMethod.Invoke(this, new[] { command, container, commandParameters, containerMetadata, scheduler, onError });
         }
 
-        protected virtual IDisposable Bind<TEventHandler, TEventArgs, TParam>(ICommand command, object container, IObservable<TParam> commandParameters, ContainerMetadata containerMetadata, 
+        protected virtual IDisposable Bind<TEventHandler, TEventArgs, TParam>(ICommand command, object container, IObservable<TParam> commandParameters, ContainerMetadata containerMetadata,
             IScheduler scheduler, Action<Exception> onError)
             where TEventHandler : Delegate
         {

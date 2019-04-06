@@ -12,7 +12,7 @@ namespace Karambolo.ReactiveMvvm.ErrorHandling
             return new CommandBindingErrorException(view, commandAccessChain, containerAccessChain, exception);
         }
 
-        CommandBindingErrorException(object sourceObject, DataMemberAccessChain commandAccessChain, DataMemberAccessChain containerAccessChain, Exception exception)
+        private CommandBindingErrorException(object sourceObject, DataMemberAccessChain commandAccessChain, DataMemberAccessChain containerAccessChain, Exception exception)
             : base(sourceObject, ReactiveBindingMode.OneWay, exception)
         {
             CommandAccessChain = commandAccessChain;

@@ -18,9 +18,9 @@ namespace Karambolo.ReactiveMvvm
 {
     public static class ReactiveMvvmServiceCollectionExtensions
     {
-        class Builder : IReactiveMvvmBuilder
+        private class Builder : IReactiveMvvmBuilder
         {
-            readonly Dictionary<Assembly, Type[]> _assemblyTypes;
+            private readonly Dictionary<Assembly, Type[]> _assemblyTypes;
 
             public Builder(IServiceCollection services)
             {
@@ -37,10 +37,10 @@ namespace Karambolo.ReactiveMvvm
 
                 if (!ArrayUtils.IsNullOrEmpty(assemblies))
                 {
-                    var allTypes = assemblies
+                    IEnumerable<Type> allTypes = assemblies
                         .SelectMany(assembly =>
                         {
-                            if (!_assemblyTypes.TryGetValue(assembly, out var types))
+                            if (!_assemblyTypes.TryGetValue(assembly, out Type[] types))
                                 _assemblyTypes.Add(assembly, types = assembly.GetTypes());
                             return types;
                         });

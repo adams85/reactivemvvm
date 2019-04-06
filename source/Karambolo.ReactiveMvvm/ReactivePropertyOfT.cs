@@ -6,25 +6,22 @@ using System.Reactive.Linq;
 using System.Threading;
 using Karambolo.Common;
 using Karambolo.ReactiveMvvm.ErrorHandling;
-using Karambolo.ReactiveMvvm.Internal;
 
 namespace Karambolo.ReactiveMvvm
 {
     public sealed class ReactiveProperty<T> : IObservedErrorSource, IDisposable
     {
-        static readonly IDisposable s_notSubscribed = Disposable.Create(Noop.Action);
-        static readonly IDisposable s_subscribing = Disposable.Create(Noop.Action);
-
-        readonly IObservable<T> _source;
-        readonly Action<T> _onChanging;
-        readonly Action<T> _onChanged;
-        readonly IScheduler _scheduler;
-        readonly IEqualityComparer<T> _comparer;
-        readonly ReactivePropertyOptions _options;
-
-        bool _hasChanged;
-        T _currentValue;
-        IDisposable _subscription;
+        private static readonly IDisposable s_notSubscribed = Disposable.Create(Noop.Action);
+        private static readonly IDisposable s_subscribing = Disposable.Create(Noop.Action);
+        private readonly IObservable<T> _source;
+        private readonly Action<T> _onChanging;
+        private readonly Action<T> _onChanged;
+        private readonly IScheduler _scheduler;
+        private readonly IEqualityComparer<T> _comparer;
+        private readonly ReactivePropertyOptions _options;
+        private bool _hasChanged;
+        private T _currentValue;
+        private IDisposable _subscription;
 
         public ReactiveProperty(IObservable<T> source, T initialValue = default, Action<T> onChanging = null, Action<T> onChanged = null,
             ReactivePropertyOptions options = ReactivePropertyOptions.Default, IScheduler scheduler = null, ObservedErrorHandler errorHandler = null, IEqualityComparer<T> comparer = null)
@@ -48,7 +45,7 @@ namespace Karambolo.ReactiveMvvm
             Volatile.Write(ref _subscription, !HasOptions(ReactivePropertyOptions.DeferSubscription) ? Subscribe() : s_notSubscribed);
         }
 
-        IObservable<T> CreateSource(IObservable<T> source, T initialValue)
+        private IObservable<T> CreateSource(IObservable<T> source, T initialValue)
         {
             source = source.Catch<T, Exception>(ex => ErrorHandler.Filter<T>(PropertySourceErrorException.Create(this, ex)));
 
@@ -72,7 +69,7 @@ namespace Karambolo.ReactiveMvvm
                 // ensuring that only one thread can trigger the subscription
                 if (Interlocked.CompareExchange(ref _subscription, s_subscribing, s_notSubscribed) == s_notSubscribed)
                 {
-                    var subscription = Subscribe();
+                    IDisposable subscription = Subscribe();
 
                     // on the very unlikely occasion when dispose happens during subscribing,
                     // our best effort is to dispose the subscription immediately,
@@ -91,24 +88,24 @@ namespace Karambolo.ReactiveMvvm
         {
             get
             {
-                var subscription = Volatile.Read(ref _subscription);
+                IDisposable subscription = Volatile.Read(ref _subscription);
                 return subscription != s_notSubscribed && subscription != s_subscribing && _subscription != null;
             }
         }
 
-        IDisposable Subscribe()
+        private IDisposable Subscribe()
         {
             return _source
                 .ObserveOnSafe(_scheduler)
                 .Subscribe(OnNext, OnError);
         }
 
-        void OnError(Exception exception)
+        private void OnError(Exception exception)
         {
             ErrorHandler.Handle(exception);
         }
 
-        void OnNext(T value)
+        private void OnNext(T value)
         {
             if (!_hasChanged || !_comparer.Equals(_currentValue, value))
             {
@@ -120,7 +117,7 @@ namespace Karambolo.ReactiveMvvm
             }
         }
 
-        bool HasOptions(ReactivePropertyOptions options)
+        private bool HasOptions(ReactivePropertyOptions options)
         {
             return (_options & options) == options;
         }

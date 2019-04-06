@@ -7,9 +7,8 @@ namespace Karambolo.ReactiveMvvm.Binding.Internal
     public class FallbackBindingConverter<TFrom, TTo> : BindingConverter<TFrom, TTo>
     {
         public static readonly FallbackBindingConverter<TFrom, TTo> Instance = new FallbackBindingConverter<TFrom, TTo>();
-
-        readonly TypeConverter _typeConverter;
-        readonly Func<TFrom, CultureInfo, TTo> _converter;
+        private readonly TypeConverter _typeConverter;
+        private readonly Func<TFrom, CultureInfo, TTo> _converter;
 
         private FallbackBindingConverter()
         {

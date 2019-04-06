@@ -3,7 +3,7 @@
 namespace Karambolo.ReactiveMvvm.Binding
 {
     [Flags]
-    enum DataBindingEventFlags
+    internal enum DataBindingEventFlags
     {
         None = 0,
         FlowsToSource = 0x1,

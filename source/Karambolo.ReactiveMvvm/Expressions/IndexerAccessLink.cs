@@ -9,14 +9,14 @@ namespace Karambolo.ReactiveMvvm.Expressions
 {
     public class IndexerAccessLink : DataMemberAccessLink
     {
-        static ValueAccessor BuildValueAccessor(IndexExpression indexExpression)
+        private static ValueAccessor BuildValueAccessor(IndexExpression indexExpression)
         {
             // declaring type must be used instead of parameter type!!!
             // https://github.com/dotnet/roslyn/issues/30636
-            var containerType = indexExpression.Indexer.DeclaringType;
-            var param = Expression.Parameter(typeof(object));
+            Type containerType = indexExpression.Indexer.DeclaringType;
+            ParameterExpression param = Expression.Parameter(typeof(object));
 
-            var defaultResult = Expression.Default(typeof(ObservedValue<object>));
+            DefaultExpression defaultResult = Expression.Default(typeof(ObservedValue<object>));
             Expression body = Expression.Condition(
                 Expression.TypeIs(param, containerType),
                 Expression.New(ObservedValueCtor, Expression.Convert(indexExpression.Update(Expression.Convert(param, containerType), indexExpression.Arguments), param.Type)),
@@ -31,21 +31,21 @@ namespace Karambolo.ReactiveMvvm.Expressions
             return lambda.Compile();
         }
 
-        static ValueAssigner BuildValueAssigner(IndexExpression indexExpression)
+        private static ValueAssigner BuildValueAssigner(IndexExpression indexExpression)
         {
             // declaring type must be used instead of parameter type!!!
             // https://github.com/dotnet/roslyn/issues/30636
-            var containerType = indexExpression.Indexer.DeclaringType;
-            var param = Expression.Parameter(typeof(object));
-            var valueParam = Expression.Parameter(typeof(object));
+            Type containerType = indexExpression.Indexer.DeclaringType;
+            ParameterExpression param = Expression.Parameter(typeof(object));
+            ParameterExpression valueParam = Expression.Parameter(typeof(object));
 
-            var returnTarget = Expression.Label(typeof(bool));
+            LabelTarget returnTarget = Expression.Label(typeof(bool));
 
             Expression valueParamCheck = Expression.TypeIs(valueParam, indexExpression.Type);
             if (indexExpression.Type.AllowsNull())
                 valueParamCheck = Expression.OrElse(Expression.Equal(valueParam, Expression.Constant(null, typeof(object))), valueParamCheck);
 
-            var body = Expression.Block(typeof(bool),
+            BlockExpression body = Expression.Block(typeof(bool),
                 Expression.IfThenElse(
                     Expression.AndAlso(Expression.TypeIs(param, containerType), valueParamCheck),
                     Expression.Assign(Expression.MakeIndex(Expression.Convert(param, containerType), indexExpression.Indexer, indexExpression.Arguments), Expression.Convert(valueParam, indexExpression.Type)),
@@ -57,7 +57,7 @@ namespace Karambolo.ReactiveMvvm.Expressions
             return lambda.Compile();
         }
 
-        readonly IndexExpression _expression;
+        private readonly IndexExpression _expression;
 
         public IndexerAccessLink(IndexExpression expression)
             : base(expression != null ? GetCachedValueAccessor(expression.Indexer, _ => BuildValueAccessor(expression)) : throw new ArgumentNullException(nameof(expression)))

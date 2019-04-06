@@ -1,5 +1,4 @@
 ﻿using System;
-using Karambolo.ReactiveMvvm.Binding;
 using Karambolo.ReactiveMvvm.Expressions;
 
 namespace Karambolo.ReactiveMvvm.ErrorHandling
@@ -13,7 +12,7 @@ namespace Karambolo.ReactiveMvvm.ErrorHandling
             return new ViewModelToViewBindingErrorException(view, viewModelAccessChain, viewAccessChain, bindingMode, exception);
         }
 
-        ViewModelToViewBindingErrorException(object sourceObject, DataMemberAccessChain viewModelAccessChain, DataMemberAccessChain viewAccessChain, ReactiveBindingMode bindingMode, Exception exception)
+        private ViewModelToViewBindingErrorException(object sourceObject, DataMemberAccessChain viewModelAccessChain, DataMemberAccessChain viewAccessChain, ReactiveBindingMode bindingMode, Exception exception)
             : base(sourceObject, bindingMode, exception)
         {
             ViewModelAccessChain = viewModelAccessChain;

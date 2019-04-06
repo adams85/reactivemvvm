@@ -15,7 +15,7 @@ namespace Karambolo.ReactiveMvvm
 
         protected readonly struct ExecutionEvent<TResult>
         {
-            ExecutionEvent(ExecutionEventKind kind, TResult value)
+            private ExecutionEvent(ExecutionEventKind kind, TResult value)
             {
                 Kind = kind;
                 Value = value;

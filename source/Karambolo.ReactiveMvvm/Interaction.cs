@@ -10,20 +10,20 @@ namespace Karambolo.ReactiveMvvm
 {
     public class Interaction<TInput, TOutput>
     {
-        readonly List<Func<InteractionContext<TInput, TOutput>, CancellationToken, Task>> _handlers;
+        private readonly List<Func<InteractionContext<TInput, TOutput>, CancellationToken, Task>> _handlers;
 
         public Interaction()
         {
             _handlers = new List<Func<InteractionContext<TInput, TOutput>, CancellationToken, Task>>();
         }
 
-        void AddHandler(Func<InteractionContext<TInput, TOutput>, CancellationToken, Task> handler)
+        private void AddHandler(Func<InteractionContext<TInput, TOutput>, CancellationToken, Task> handler)
         {
             lock (_handlers)
                 _handlers.Add(handler);
         }
 
-        void RemoveHandler(Func<InteractionContext<TInput, TOutput>, CancellationToken, Task> handler)
+        private void RemoveHandler(Func<InteractionContext<TInput, TOutput>, CancellationToken, Task> handler)
         {
             lock (_handlers)
                 _handlers.Remove(handler);
@@ -60,7 +60,7 @@ namespace Karambolo.ReactiveMvvm
 
         public virtual async Task<TOutput> HandleAsync(TInput input, CancellationToken cancellationToken = default)
         {
-            var handlers = GetHandlers();
+            Func<InteractionContext<TInput, TOutput>, CancellationToken, Task>[] handlers = GetHandlers();
             var context = new InteractionContext<TInput, TOutput>(input);
 
             for (int i = handlers.Length - 1; i >= 0; i--)

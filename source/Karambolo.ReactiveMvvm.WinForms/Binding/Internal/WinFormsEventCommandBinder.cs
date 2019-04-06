@@ -6,7 +6,6 @@ using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Reflection;
 using System.Windows.Input;
-using Karambolo.ReactiveMvvm.Internal;
 
 namespace Karambolo.ReactiveMvvm.Binding.Internal
 {
@@ -31,19 +30,19 @@ namespace Karambolo.ReactiveMvvm.Binding.Internal
             };
         }
 
-        protected override IDisposable Bind<TEventHandler, TEventArgs, TParam>(ICommand command, object container, IObservable<TParam> commandParameters, EventCommandBinder.ContainerMetadata containerMetadata, 
+        protected override IDisposable Bind<TEventHandler, TEventArgs, TParam>(ICommand command, object container, IObservable<TParam> commandParameters, EventCommandBinder.ContainerMetadata containerMetadata,
             IScheduler scheduler, Action<Exception> onError)
         {
             var actualContainerMetadata = (ContainerMetadata)containerMetadata;
 
-            var commandBindingDisposable = base.Bind<TEventHandler, TEventArgs, TParam>(command, container, commandParameters, actualContainerMetadata, scheduler, onError);
+            IDisposable commandBindingDisposable = base.Bind<TEventHandler, TEventArgs, TParam>(command, container, commandParameters, actualContainerMetadata, scheduler, onError);
 
             if (actualContainerMetadata.EnabledProperty == null)
                 return commandBindingDisposable;
 
             var originalEnabled = actualContainerMetadata.EnabledProperty.GetValue(container, null);
 
-            var enabledBindingSubscription = Observable.FromEventPattern(handler => command.CanExecuteChanged += handler, handler => command.CanExecuteChanged -= handler)
+            IDisposable enabledBindingSubscription = Observable.FromEventPattern(handler => command.CanExecuteChanged += handler, handler => command.CanExecuteChanged -= handler)
                 .StartWith(default(EventPattern<object>))
                 .WithLatestFrom(commandParameters.StartWith(default(TParam)), (_, param) => param)
                 .Select(param => command.CanExecute(param))
@@ -52,7 +51,7 @@ namespace Karambolo.ReactiveMvvm.Binding.Internal
                     canExec => actualContainerMetadata.EnabledProperty.SetValue(container, canExec, null),
                     onError);
 
-            var restoreDisposable = Disposable.Create(() => actualContainerMetadata.EnabledProperty.SetValue(container, originalEnabled, null));
+            IDisposable restoreDisposable = Disposable.Create(() => actualContainerMetadata.EnabledProperty.SetValue(container, originalEnabled, null));
 
             return new CompositeDisposable
             {

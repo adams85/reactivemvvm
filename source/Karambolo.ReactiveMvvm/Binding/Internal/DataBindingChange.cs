@@ -2,7 +2,7 @@
 
 namespace Karambolo.ReactiveMvvm.Binding.Internal
 {
-    readonly struct DataBindingChange<TSource>
+    internal readonly struct DataBindingChange<TSource>
     {
         public DataBindingChange(ObservedValue<TSource> sourceValue, ObservedValue<object> targetContainer, DataMemberAccessLink targetLink)
         {

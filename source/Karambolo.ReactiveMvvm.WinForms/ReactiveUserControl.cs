@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel;
-using System.Reactive.Disposables;
 using System.Runtime.CompilerServices;
 using System.Windows.Forms;
 using Karambolo.ReactiveMvvm.ChangeNotification;
@@ -12,7 +10,7 @@ namespace Karambolo.ReactiveMvvm
     public class ReactiveUserControl<TViewModel> : UserControl, IReactiveView<TViewModel>, IChangeNotifier
         where TViewModel : class
     {
-        TViewModel _viewModel;
+        private TViewModel _viewModel;
         [Category("ReactiveMvvm")]
         [Description("The view model.")]
         [DefaultValue(null)]

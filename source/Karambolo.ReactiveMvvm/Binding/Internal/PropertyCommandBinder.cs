@@ -5,7 +5,6 @@ using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Reflection;
 using System.Windows.Input;
-using Karambolo.ReactiveMvvm.Internal;
 
 namespace Karambolo.ReactiveMvvm.Binding.Internal
 {
@@ -17,12 +16,11 @@ namespace Karambolo.ReactiveMvvm.Binding.Internal
             public PropertyInfo CommandParameterProperty;
         }
 
-        static readonly (string Name, Type ReturnType) s_commandProperty = ("Command", typeof(ICommand));
-        static readonly (string Name, Type ReturnType) s_commandParameterProperty = ("CommandParameter", typeof(object));
+        private static readonly (string Name, Type ReturnType) s_commandProperty = ("Command", typeof(ICommand));
+        private static readonly (string Name, Type ReturnType) s_commandParameterProperty = ("CommandParameter", typeof(object));
+        private static readonly ConcurrentDictionary<Type, ContainerMetadata> s_containerMetadataCache = new ConcurrentDictionary<Type, ContainerMetadata>();
 
-        static readonly ConcurrentDictionary<Type, ContainerMetadata> s_containerMetadataCache = new ConcurrentDictionary<Type, ContainerMetadata>();
-
-        ContainerMetadata CreateContainerMetadata(PropertyInfo commandProperty, PropertyInfo commandParameterProperty)
+        private ContainerMetadata CreateContainerMetadata(PropertyInfo commandProperty, PropertyInfo commandParameterProperty)
         {
             return new ContainerMetadata
             {
@@ -31,15 +29,15 @@ namespace Karambolo.ReactiveMvvm.Binding.Internal
             };
         }
 
-        ContainerMetadata GetCachedContainerMetadata(Type containerType, string eventName)
+        private ContainerMetadata GetCachedContainerMetadata(Type containerType, string eventName)
         {
             if (eventName != null)
                 return null;
 
-            if (!s_containerMetadataCache.TryGetValue(containerType, out var containerMetadata))
+            if (!s_containerMetadataCache.TryGetValue(containerType, out ContainerMetadata containerMetadata))
             {
-                var commandProperty = containerType.GetProperty(s_commandProperty.Name, s_commandProperty.ReturnType);
-                var commandParameterProperty = containerType.GetProperty(s_commandParameterProperty.Name, s_commandParameterProperty.ReturnType);
+                PropertyInfo commandProperty = containerType.GetProperty(s_commandProperty.Name, s_commandProperty.ReturnType);
+                PropertyInfo commandParameterProperty = containerType.GetProperty(s_commandParameterProperty.Name, s_commandParameterProperty.ReturnType);
 
                 if (commandProperty == null || commandParameterProperty == null)
                     return null;
@@ -61,13 +59,13 @@ namespace Karambolo.ReactiveMvvm.Binding.Internal
             var originalCommand = containerMetadata.CommandProperty.GetValue(container, null);
             var originalCommandParam = containerMetadata.CommandParameterProperty.GetValue(container, null);
 
-            var restoreDisposable = Disposable.Create(() =>
+            IDisposable restoreDisposable = Disposable.Create(() =>
             {
                 containerMetadata.CommandProperty.SetValue(container, originalCommand, null);
                 containerMetadata.CommandParameterProperty.SetValue(container, originalCommandParam, null);
             });
 
-            var commandParameterSubscription = commandParameters
+            IDisposable commandParameterSubscription = commandParameters
                 .ObserveOnSafe(scheduler)
                 .Subscribe(
                     param => containerMetadata.CommandParameterProperty.SetValue(container, param, null),
@@ -80,7 +78,7 @@ namespace Karambolo.ReactiveMvvm.Binding.Internal
 
         public IDisposable Bind<TParam>(ICommand command, object container, IObservable<TParam> commandParameters, string eventName, IScheduler scheduler, Action<Exception> onError)
         {
-            var containerMetadata = GetCachedContainerMetadata(container.GetType(), eventName);
+            ContainerMetadata containerMetadata = GetCachedContainerMetadata(container.GetType(), eventName);
             return Bind(command, container, commandParameters, containerMetadata, scheduler, onError);
         }
 

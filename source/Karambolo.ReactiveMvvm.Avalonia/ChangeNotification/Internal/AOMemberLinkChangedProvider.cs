@@ -21,7 +21,7 @@ namespace Karambolo.ReactiveMvvm.ChangeNotification.Internal
 
         public IObservable<ObservedChange> GetChanges(object container, DataMemberAccessLink link)
         {
-            var ap = AvaloniaObjectHelper.GetAvaloniaPropertyCached(container.GetType(), ((FieldOrPropertyAccessLink)link).Member.Name);
+            AvaloniaProperty ap = AvaloniaObjectHelper.GetAvaloniaPropertyCached(container.GetType(), ((FieldOrPropertyAccessLink)link).Member.Name);
 
             return ap.Changed
                 .Where(change => change.Sender == container)

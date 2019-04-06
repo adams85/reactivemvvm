@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reactive.Linq;
 using Karambolo.ReactiveMvvm.ChangeNotification;
@@ -18,7 +17,7 @@ namespace Karambolo.ReactiveMvvm
             var model = "test";
 
             var chain = new DataMemberAccessChain(Enumerable.Empty<DataMemberAccessLink>());
-            var sequence = model.WhenChange<object>(chain);
+            IObservable<ObservedValue<object>> sequence = model.WhenChange<object>(chain);
 
             var observedValues = new List<ObservedValue<object>>();
             using (sequence.Subscribe(value => observedValues.Add(value))) { }
@@ -32,7 +31,7 @@ namespace Karambolo.ReactiveMvvm
         {
             MainVM mainVM = null;
 
-            var sequence = mainVM.WhenChange(vm => vm.Item);
+            IObservable<ObservedValue<ItemVM>> sequence = mainVM.WhenChange(vm => vm.Item);
 
             var observedValues = new List<ObservedValue<ItemVM>>();
             using (sequence.Subscribe(value => observedValues.Add(value)))
@@ -52,7 +51,7 @@ namespace Karambolo.ReactiveMvvm
 
             var chain = DataMemberAccessChain.From(mainVM, vm => vm.Item.WrappedProperty);
 
-            var sequence = mainVM.WhenChange<int?>(chain);
+            IObservable<ObservedValue<int?>> sequence = mainVM.WhenChange<int?>(chain);
 
             var observedValues = new List<ObservedValue<int?>>();
             using (sequence.Subscribe(value => observedValues.Add(value)))
@@ -78,7 +77,7 @@ namespace Karambolo.ReactiveMvvm
             var itemVM = new ItemVM(new Item { Property = 0 });
             var mainVM = new MainVM { ItemWrapper = new Wrapper<ItemVM> { Value = itemVM } };
 
-            var sequence = mainVM.WhenChange<MainVM, int?>(vm => vm.ItemWrapper.Value.WrappedProperty);
+            IObservable<ObservedValue<int?>> sequence = mainVM.WhenChange<MainVM, int?>(vm => vm.ItemWrapper.Value.WrappedProperty);
 
             var observedValues = new List<ObservedValue<int?>>();
             using (sequence.Subscribe(value => observedValues.Add(value)))
@@ -103,7 +102,7 @@ namespace Karambolo.ReactiveMvvm
             var itemVM = new ItemVM(new Item { Property = 0 });
             var mainVM = new MainVM { ItemWrapper = new Wrapper<ItemVM> { Value = itemVM } };
 
-            var sequence = mainVM.WhenChange<MainVM, int?>(vm => vm.ItemWrapper.Value.WrappedProperty, ChangeNotificationOptions.BeforeChange);
+            IObservable<ObservedValue<int?>> sequence = mainVM.WhenChange<MainVM, int?>(vm => vm.ItemWrapper.Value.WrappedProperty, ChangeNotificationOptions.BeforeChange);
 
             var observedValues = new List<ObservedValue<int?>>();
             using (sequence.Subscribe(value => observedValues.Add(value)))
@@ -132,7 +131,7 @@ namespace Karambolo.ReactiveMvvm
             var itemVM = new ItemVM(new Item()) { Collection = collection };
             var mainVM = new MainVM { Item = itemVM };
 
-            var sequence = mainVM.WhenChange(vm => vm.Item.Collection[0]);
+            IObservable<ObservedValue<object>> sequence = mainVM.WhenChange(vm => vm.Item.Collection[0]);
 
             var observedValues = new List<ObservedValue<object>>();
             using (sequence.Subscribe(value => observedValues.Add(value)))
@@ -173,7 +172,7 @@ namespace Karambolo.ReactiveMvvm
 
             var chain = DataMemberAccessChain.From<ChangeNotifier, string>(mainVM, vm => ((LeafVM)((MainVM)vm).Item.Collection[0]).Value);
 
-            var sequence = mainVM.WhenChange<object>(chain);
+            IObservable<ObservedValue<object>> sequence = mainVM.WhenChange<object>(chain);
 
             var observedValues = new List<ObservedValue<object>>();
             using (sequence.Subscribe(value => observedValues.Add(value)))
@@ -195,7 +194,7 @@ namespace Karambolo.ReactiveMvvm
                 mainVM.Item.Collection.Move(0, 1);
             }
 
-            var expectedValues = new ObservedValue<object>[] { "test", ObservedValue.None, "test", "abc", ObservedValue.None, "abc", "123", "abc"};
+            var expectedValues = new ObservedValue<object>[] { "test", ObservedValue.None, "test", "abc", ObservedValue.None, "abc", "123", "abc" };
             Assert.Equal(expectedValues, observedValues);
 
             Assert.Null(mainVM._propertyChanged);

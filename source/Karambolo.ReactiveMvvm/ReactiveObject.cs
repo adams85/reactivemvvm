@@ -11,9 +11,8 @@ namespace Karambolo.ReactiveMvvm
 {
     public abstract class ReactiveObject : ChangeNotifier, IObservedErrorSource, ILifetime
     {
-        readonly CompositeDisposable _disposables;
-
-        int _suppressChangeNotificationsFlag;
+        private readonly CompositeDisposable _disposables;
+        private int _suppressChangeNotificationsFlag;
 
         protected ReactiveObject() : this(null) { }
 
@@ -27,12 +26,12 @@ namespace Karambolo.ReactiveMvvm
             _disposables = new CompositeDisposable();
         }
 
-        IObservable<EventPattern<PropertyChangingEventArgs>> CreateWhenChanging()
+        private IObservable<EventPattern<PropertyChangingEventArgs>> CreateWhenChanging()
         {
             return Observable.FromEventPattern<PropertyChangingEventHandler, PropertyChangingEventArgs>(handler => _propertyChanging += handler, handler => _propertyChanging -= handler);
         }
 
-        IObservable<EventPattern<PropertyChangedEventArgs>> CreateWhenChanged()
+        private IObservable<EventPattern<PropertyChangedEventArgs>> CreateWhenChanged()
         {
             return Observable.FromEventPattern<PropertyChangedEventHandler, PropertyChangedEventArgs>(handler => _propertyChanged += handler, handler => _propertyChanged -= handler);
         }

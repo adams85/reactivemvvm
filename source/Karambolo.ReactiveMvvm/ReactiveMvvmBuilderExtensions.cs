@@ -35,7 +35,7 @@ namespace Karambolo.ReactiveMvvm
             return builder.ConfigureServices(
                 (services, types) =>
                 {
-                    foreach (var type in types)
+                    foreach (Type type in types)
                         configure(services, type);
                 },
                 assemblies);

@@ -8,9 +8,8 @@ namespace Karambolo.ReactiveMvvm.Binding.Internal
 {
     public class DefaultBindingConverterProvider : IBindingConverterProvider
     {
-        static readonly ConcurrentDictionary<(Type, Type), IBindingConverter> s_converterCache = new ConcurrentDictionary<(Type, Type), IBindingConverter>();
-
-        readonly IReadOnlyList<IBindingConverter> _globalConverters;
+        private static readonly ConcurrentDictionary<(Type, Type), IBindingConverter> s_converterCache = new ConcurrentDictionary<(Type, Type), IBindingConverter>();
+        private readonly IReadOnlyList<IBindingConverter> _globalConverters;
 
         public DefaultBindingConverterProvider(IOptions<ReactiveMvvmOptions> options)
         {
@@ -21,7 +20,7 @@ namespace Karambolo.ReactiveMvvm.Binding.Internal
         {
             return (IBindingConverter<TFrom, TTo>)s_converterCache.GetOrAdd((typeof(TFrom), typeof(TTo)), key =>
             {
-                var (fromType, toType) = key;
+                (Type fromType, Type toType) = key;
                 IBindingConverter converter;
                 for (int i = 0, n = _globalConverters.Count; i < n; i++)
                     if ((converter = _globalConverters[i]).CanConvert(fromType, toType))

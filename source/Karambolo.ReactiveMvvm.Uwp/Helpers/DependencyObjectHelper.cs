@@ -9,11 +9,11 @@ namespace Karambolo.ReactiveMvvm.Helpers
 {
     public static class DependencyObjectHelper
     {
-        static ConcurrentDictionary<(Type, string), DependencyProperty> s_dependencyPropertyCache = new ConcurrentDictionary<(Type, string), DependencyProperty>();
+        private static ConcurrentDictionary<(Type, string), DependencyProperty> s_dependencyPropertyCache = new ConcurrentDictionary<(Type, string), DependencyProperty>();
 
         internal static DependencyProperty GetDependencyProperty(Type type, string propertyName)
         {
-            var property = type.GetProperty(propertyName + "Property", BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy, null, typeof(DependencyProperty), Type.EmptyTypes, null);
+            PropertyInfo property = type.GetProperty(propertyName + "Property", BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy, null, typeof(DependencyProperty), Type.EmptyTypes, null);
             return (DependencyProperty)property?.GetValue(null);
         }
 
@@ -31,7 +31,7 @@ namespace Karambolo.ReactiveMvvm.Helpers
             if (match == null)
                 match = True<T>.Func;
 
-            var obj = includeRoot ? root : VisualTreeHelper.GetParent(root);
+            DependencyObject obj = includeRoot ? root : VisualTreeHelper.GetParent(root);
 
             while (obj != null)
             {
@@ -44,14 +44,14 @@ namespace Karambolo.ReactiveMvvm.Helpers
             return null;
         }
 
-        static T FindVisualDescendantCore<T>(this DependencyObject obj, Func<T, bool> match)
+        private static T FindVisualDescendantCore<T>(this DependencyObject obj, Func<T, bool> match)
             where T : DependencyObject
         {
             T result;
             int childCount = VisualTreeHelper.GetChildrenCount(obj);
             for (int i = 0; i < childCount; i++)
             {
-                var child = VisualTreeHelper.GetChild(obj, i);
+                DependencyObject child = VisualTreeHelper.GetChild(obj, i);
                 if (child is T castChild && match(castChild))
                     return castChild;
                 else if ((result = child.FindVisualDescendantCore(match)) != null)

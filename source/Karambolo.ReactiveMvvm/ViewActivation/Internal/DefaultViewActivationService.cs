@@ -5,7 +5,6 @@ using System.Reactive;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Runtime.CompilerServices;
-using System.Threading;
 using Karambolo.ReactiveMvvm.Properties;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -15,13 +14,11 @@ namespace Karambolo.ReactiveMvvm.ViewActivation.Internal
 {
     public class DefaultViewActivationService : IViewActivationService
     {
-        static readonly ConditionalWeakTable<IActivableView, ViewActivationTargetActivator> s_viewActivators = new ConditionalWeakTable<IActivableView, ViewActivationTargetActivator>();
-        static readonly ConditionalWeakTable<IActivableViewModel, ViewActivationTargetActivator> s_viewModelActivators = new ConditionalWeakTable<IActivableViewModel, ViewActivationTargetActivator>();
-
-        static readonly ConcurrentDictionary<Type, Unit> s_inactivableViewTypes = new ConcurrentDictionary<Type, Unit>();
-
-        readonly IViewActivationEventProvider[] _eventProviders;
-        readonly ILogger _logger;
+        private static readonly ConditionalWeakTable<IActivableView, ViewActivationTargetActivator> s_viewActivators = new ConditionalWeakTable<IActivableView, ViewActivationTargetActivator>();
+        private static readonly ConditionalWeakTable<IActivableViewModel, ViewActivationTargetActivator> s_viewModelActivators = new ConditionalWeakTable<IActivableViewModel, ViewActivationTargetActivator>();
+        private static readonly ConcurrentDictionary<Type, Unit> s_inactivableViewTypes = new ConcurrentDictionary<Type, Unit>();
+        private readonly IViewActivationEventProvider[] _eventProviders;
+        private readonly ILogger _logger;
 
         public DefaultViewActivationService(IOptions<ReactiveMvvmOptions> options, ILoggerFactory loggerFactory)
         {
@@ -47,7 +44,7 @@ namespace Karambolo.ReactiveMvvm.ViewActivation.Internal
 
                                 if (value.IsAvailable && value.Value is IActivableViewModel viewModel)
                                 {
-                                    var viewModelActivator = s_viewModelActivators.GetValue(viewModel, vm => new ViewActivationTargetActivator(vm));
+                                    ViewActivationTargetActivator viewModelActivator = s_viewModelActivators.GetValue(viewModel, vm => new ViewActivationTargetActivator(vm));
                                     viewModelActivationSerial.Disposable = viewModelActivator.Activate();
                                 }
                             });
@@ -74,7 +71,7 @@ namespace Karambolo.ReactiveMvvm.ViewActivation.Internal
 
                     if (activated)
                     {
-                        var viewActivator = s_viewActivators.GetValue(view, v => new ViewActivationTargetActivator(v));
+                        ViewActivationTargetActivator viewActivator = s_viewActivators.GetValue(view, v => new ViewActivationTargetActivator(v));
                         viewActivationSerial.Disposable = viewActivator.Activate();
                     }
                 }),
@@ -90,7 +87,7 @@ namespace Karambolo.ReactiveMvvm.ViewActivation.Internal
                 if ((eventProvider = _eventProviders[i]).CanProvideFor(view))
                     return eventProvider.GetActivationEvents(view);
 
-            var viewType = view.GetType();
+            Type viewType = view.GetType();
             if (!s_inactivableViewTypes.ContainsKey(viewType))
             {
                 _logger.LogWarning(string.Format(Resources.ViewActivationNotPossible, nameof(IViewActivationEventProvider), viewType));
@@ -107,14 +104,14 @@ namespace Karambolo.ReactiveMvvm.ViewActivation.Internal
             if (view == null)
                 throw new ArgumentNullException(nameof(view));
 
-            var activationEvents = GetActivationEvents(view);
+            IObservable<bool> activationEvents = GetActivationEvents(view);
 
-            var viewModelActivation =
+            IDisposable viewModelActivation =
                 view is IBoundView boundView ?
                 SetupViewModelActivation(activationEvents, boundView) :
                 null;
 
-            var viewActivation = SetupViewActivation(activationEvents, view);
+            IDisposable viewActivation = SetupViewActivation(activationEvents, view);
 
             return viewModelActivation != null ? new CompositeDisposable(viewModelActivation, viewActivation) : viewActivation;
         }

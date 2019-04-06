@@ -10,15 +10,14 @@ namespace Karambolo.ReactiveMvvm.Internal
 {
     public class DefaultMessageBus : IMessageBus
     {
-        class Registration
+        private class Registration
         {
             public IDisposable Subject;
             public int RefCount;
         }
 
-        readonly ILogger _logger;
-
-        readonly Dictionary<(Type MessageType, object Discriminator), Registration> _registrations;
+        private readonly ILogger _logger;
+        private readonly Dictionary<(Type MessageType, object Discriminator), Registration> _registrations;
 
         public DefaultMessageBus(ILoggerFactory loggerFactory)
         {
@@ -26,15 +25,15 @@ namespace Karambolo.ReactiveMvvm.Internal
             _registrations = new Dictionary<(Type, object), Registration>();
         }
 
-        (BehaviorSubject<T>, IDisposable) GetOrAddRegistration<T>(object discriminator)
+        private (BehaviorSubject<T>, IDisposable) GetOrAddRegistration<T>(object discriminator)
         {
-            var key = (typeof(T), discriminator);
+            (Type, object discriminator) key = (typeof(T), discriminator);
             lock (_registrations)
             {
-                if (!_registrations.TryGetValue(key, out var registration))
+                if (!_registrations.TryGetValue(key, out Registration registration))
                     _registrations.Add(key, registration = new Registration { Subject = new BehaviorSubject<T>(default) });
 
-                var refCountDisposable = Disposable.Create(() =>
+                IDisposable refCountDisposable = Disposable.Create(() =>
                 {
                     lock (_registrations)
                         if (--registration.RefCount <= 0)
@@ -50,12 +49,12 @@ namespace Karambolo.ReactiveMvvm.Internal
             }
         }
 
-        IDisposable PublishCore<TMessage>(IObservable<TMessage> source, object discriminator = null)
+        private IDisposable PublishCore<TMessage>(IObservable<TMessage> source, object discriminator = null)
         {
-            var (subject, refCountDisposable) = GetOrAddRegistration<TMessage>(discriminator);
+            (BehaviorSubject<TMessage> subject, IDisposable refCountDisposable) = GetOrAddRegistration<TMessage>(discriminator);
             try
             {
-                var subscription = source.Subscribe(subject);
+                IDisposable subscription = source.Subscribe(subject);
                 return new CompositeDisposable(subscription, refCountDisposable);
             }
             catch
@@ -67,7 +66,7 @@ namespace Karambolo.ReactiveMvvm.Internal
 
         public void Publish<TMessage>(TMessage message, object discriminator = null)
         {
-            var source = Observable.Create<TMessage>(observer =>
+            IObservable<TMessage> source = Observable.Create<TMessage>(observer =>
             {
                 observer.OnNext(message);
                 return Disposable.Empty;
@@ -88,10 +87,10 @@ namespace Karambolo.ReactiveMvvm.Internal
         {
             return Observable.Create<TMessage>(observer =>
             {
-                var (subject, refCountDisposable) = GetOrAddRegistration<TMessage>(discriminator);
+                (BehaviorSubject<TMessage> subject, IDisposable refCountDisposable) = GetOrAddRegistration<TMessage>(discriminator);
                 try
                 {
-                    var subscription = subject.Skip(1).Subscribe(observer);
+                    IDisposable subscription = subject.Skip(1).Subscribe(observer);
                     return new CompositeDisposable(subscription, refCountDisposable);
                 }
                 catch

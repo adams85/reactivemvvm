@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Karambolo.ReactiveMvvm.Binding.Internal
+﻿namespace Karambolo.ReactiveMvvm.Binding.Internal
 {
     public interface ICommandBinderProvider
     {

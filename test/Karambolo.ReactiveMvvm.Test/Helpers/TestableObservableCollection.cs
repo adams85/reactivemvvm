@@ -4,7 +4,7 @@ using System.Collections.Specialized;
 
 namespace Karambolo.ReactiveMvvm.Test.Helpers
 {
-    class TestableObservableCollection<T> : ObservableCollection<T>
+    internal class TestableObservableCollection<T> : ObservableCollection<T>
     {
         public TestableObservableCollection() { }
 

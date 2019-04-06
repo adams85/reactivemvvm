@@ -2,11 +2,11 @@
 
 namespace Karambolo.ReactiveMvvm.ErrorHandling.Internal
 {
-    sealed class DerivedObservedErrorHandler<T> : ObservedErrorHandler
+    internal sealed class DerivedObservedErrorHandler<T> : ObservedErrorHandler
     {
-        readonly ObservedErrorHandler _base;
-        readonly ObservedErrorFilter<T> _filter;
-        readonly Action<Exception> _handler;
+        private readonly ObservedErrorHandler _base;
+        private readonly ObservedErrorFilter<T> _filter;
+        private readonly Action<Exception> _handler;
 
         public DerivedObservedErrorHandler(ObservedErrorHandler @base, ObservedErrorFilter<T> filter, Action<Exception> handler)
         {

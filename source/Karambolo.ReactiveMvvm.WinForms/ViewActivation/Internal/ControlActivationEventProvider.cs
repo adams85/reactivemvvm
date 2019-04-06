@@ -10,14 +10,14 @@ namespace Karambolo.ReactiveMvvm.ViewActivation.Internal
 {
     public sealed class ControlActivationEventProvider : IViewActivationEventProvider
     {
-        Func<bool> _isDesignMode; // a little trick involving cached delegates because LazyInitializer supports only reference types
+        private Func<bool> _isDesignMode; // a little trick involving cached delegates because LazyInitializer supports only reference types
 
         public bool CanProvideFor(IActivableView view)
         {
             return view is Control;
         }
 
-        static IObservable<bool> ProduceActivationEvents(Form form)
+        private static IObservable<bool> ProduceActivationEvents(Form form)
         {
             return Observable
                 .FromEventPattern(
@@ -26,7 +26,7 @@ namespace Karambolo.ReactiveMvvm.ViewActivation.Internal
                 .Select(True<object>.Func);
         }
 
-        static IObservable<bool> ProduceDeactivationEvents(Form form)
+        private static IObservable<bool> ProduceDeactivationEvents(Form form)
         {
             return Observable
                 .FromEventPattern<FormClosedEventHandler, object>(
@@ -35,7 +35,7 @@ namespace Karambolo.ReactiveMvvm.ViewActivation.Internal
                 .Select(False<object>.Func);
         }
 
-        static IObservable<bool> ProduceActivationEvents(Control control)
+        private static IObservable<bool> ProduceActivationEvents(Control control)
         {
             return Observable
                 .FromEventPattern(
@@ -45,18 +45,18 @@ namespace Karambolo.ReactiveMvvm.ViewActivation.Internal
                 .Select(True<object>.Func);
         }
 
-        static IObservable<bool> ProduceDeactivationEvents(Control control)
+        private static IObservable<bool> ProduceDeactivationEvents(Control control)
         {
-            var events = Observable
+            IObservable<System.Reactive.EventPattern<object>> events = Observable
                 .FromEventPattern(
                     handler => control.ParentChanged += handler,
                     handler => control.ParentChanged -= handler)
                 .Where(e => ((Control)e.Sender).Parent == null);
 
-            var form = control.FindForm();
+            Form form = control.FindForm();
             if (form != null)
             {
-                var rootClosedEvents = Observable
+                IObservable<System.Reactive.EventPattern<object>> rootClosedEvents = Observable
                     .FromEventPattern<FormClosedEventHandler, object>(
                        handler => form.FormClosed += handler,
                        handler => form.FormClosed -= handler);
@@ -75,7 +75,7 @@ namespace Karambolo.ReactiveMvvm.ViewActivation.Internal
 
             var control = (Control)view;
 
-            var isDesignMode = LazyInitializer.EnsureInitialized(ref _isDesignMode, () => GetIsDesignMode(control));
+            Func<bool> isDesignMode = LazyInitializer.EnsureInitialized(ref _isDesignMode, () => GetIsDesignMode(control));
             if (isDesignMode())
                 return Empty<bool>.Observable;
 
@@ -110,7 +110,7 @@ namespace Karambolo.ReactiveMvvm.ViewActivation.Internal
                 .DistinctUntilChanged();
         }
 
-        Func<bool> GetIsDesignMode(Control control)
+        private Func<bool> GetIsDesignMode(Control control)
         {
             if (LicenseManager.UsageMode == LicenseUsageMode.Designtime)
                 return Common.True.Func;

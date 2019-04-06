@@ -18,18 +18,18 @@ namespace Karambolo.ReactiveMvvm
 {
     public static partial class ReactiveBinding
     {
-        static readonly IBindingConverterProvider s_bindingConverterProvider = ReactiveMvvmContext.ServiceProvider.GetRequiredService<IBindingConverterProvider>();
+        private static readonly IBindingConverterProvider s_bindingConverterProvider = ReactiveMvvmContext.ServiceProvider.GetRequiredService<IBindingConverterProvider>();
 
-        static IObservable<DataBindingChange<TSource>> GetObservableSourceBindingChanges<TSource>(IObservable<ObservedValue<TSource>> source, object targetRoot, DataMemberAccessChain targetAccessChain)
+        private static IObservable<DataBindingChange<TSource>> GetObservableSourceBindingChanges<TSource>(IObservable<ObservedValue<TSource>> source, object targetRoot, DataMemberAccessChain targetAccessChain)
         {
             var index = targetAccessChain.Length - 1;
-            var targetLink = targetAccessChain[index];
+            DataMemberAccessLink targetLink = targetAccessChain[index];
             IObservable<DataBindingChange<TSource>> bindingChanges;
             if (index > 0)
             {
-                var containerAccessChain = targetAccessChain.Slice(0, index);
+                DataMemberAccessChain containerAccessChain = targetAccessChain.Slice(0, index);
 
-                var containers = targetRoot.WhenChange<object>(containerAccessChain, ChangeNotificationOptions.SuppressWarnings);
+                IObservable<ObservedValue<object>> containers = targetRoot.WhenChange<object>(containerAccessChain, ChangeNotificationOptions.SuppressWarnings);
 
                 bindingChanges = Observable.CombineLatest(containers, source, (container, value) => new DataBindingChange<TSource>(value, container, targetLink))
                     .Where(bindingInfo => bindingInfo.TargetContainer.IsAvailable && bindingInfo.TargetContainer.Value != null);
@@ -40,7 +40,7 @@ namespace Karambolo.ReactiveMvvm
             return bindingChanges;
         }
 
-        static void OnDataBindingFailure<TSource, TTarget>(DataBindingEvent<TSource, TTarget> bindingEvent, string sourcePath, string targetPath, ILogger logger)
+        private static void OnDataBindingFailure<TSource, TTarget>(DataBindingEvent<TSource, TTarget> bindingEvent, string sourcePath, string targetPath, ILogger logger)
         {
             if (bindingEvent.ConversionFailed)
             {
@@ -80,28 +80,28 @@ namespace Karambolo.ReactiveMvvm
             }
         }
 
-        static void OnObservableSourceBindingFailure<TSource, TTargetRoot, TTarget>(DataBindingEvent<TSource, TTarget> bindingEvent, TTargetRoot targetRoot, DataMemberAccessChain targetAccessChain)
+        private static void OnObservableSourceBindingFailure<TSource, TTargetRoot, TTarget>(DataBindingEvent<TSource, TTarget> bindingEvent, TTargetRoot targetRoot, DataMemberAccessChain targetAccessChain)
         {
-            var targetRootType = targetRoot.GetType();
-            var logger = s_loggerFactory?.CreateLogger(targetRootType) ?? NullLogger.Instance;
+            Type targetRootType = targetRoot.GetType();
+            ILogger logger = s_loggerFactory?.CreateLogger(targetRootType) ?? NullLogger.Instance;
 
             var targetPath = targetRootType.Name + targetAccessChain;
 
             OnDataBindingFailure(bindingEvent, "(n/a)", targetPath, logger);
         }
 
-        static void OnViewModelToViewBindingFailure<TViewModel, TViewModelValue, TView, TViewValue>(DataBindingEvent<TViewModelValue, TViewValue> bindingEvent, TView view,
+        private static void OnViewModelToViewBindingFailure<TViewModel, TViewModelValue, TView, TViewValue>(DataBindingEvent<TViewModelValue, TViewValue> bindingEvent, TView view,
             DataMemberAccessChain viewModelAccessChain, DataMemberAccessChain viewAccessChain)
             where TViewModel : class
             where TView : IBoundView<TViewModel>
         {
-            var viewModelType = view.ViewModel?.GetType() ?? typeof(TViewModel);
-            var viewType = view.GetType();
+            Type viewModelType = view.ViewModel?.GetType() ?? typeof(TViewModel);
+            Type viewType = view.GetType();
 
             var sourcePath = viewModelType.Name + viewModelAccessChain.Slice(1);
             var targetPath = viewType.Name + viewAccessChain;
 
-            var logger = s_loggerFactory?.CreateLogger(viewType) ?? NullLogger.Instance;
+            ILogger logger = s_loggerFactory?.CreateLogger(viewType) ?? NullLogger.Instance;
 
             OnDataBindingFailure(bindingEvent, sourcePath, targetPath, logger);
         }
@@ -133,14 +133,14 @@ namespace Karambolo.ReactiveMvvm
             if (errorHandler == null)
                 errorHandler = (targetRoot as IObservedErrorSource)?.ErrorHandler ?? ReactiveMvvmContext.Current.DefaultErrorHandler;
 
-            var bindingEvents = GetObservableSourceBindingChanges(source.Select(value => ObservedValue.From(value)), targetRoot, targetAccessChain)
+            IObservable<DataBindingEvent<TSource, TTarget>> bindingEvents = GetObservableSourceBindingChanges(source.Select(value => ObservedValue.From(value)), targetRoot, targetAccessChain)
                 .Select(change => new DataBindingEvent<TSource, TTarget>(change.SourceValue, change.TargetContainer, change.TargetLink, converter, converterParameter, converterCulture))
                 .Catch((Exception ex) => errorHandler
                     .Filter<DataBindingEvent<TSource, TTarget>>(ObservableSourceBindingErrorException.Create(source, targetRoot, targetAccessChain, ex)))
                 .Publish()
                 .RefCount();
 
-            var bindingDisposable = bindingEvents
+            IDisposable bindingDisposable = bindingEvents
                 .ObserveOnSafe(scheduler)
                 .Subscribe(
                     bindingEvent =>
@@ -197,16 +197,16 @@ namespace Karambolo.ReactiveMvvm
             if (converter == null)
                 converter = s_bindingConverterProvider.Provide<TViewModelValue, TViewValue>();
 
-            var viewModelValues = view.WhenChange<TViewModelValue>(viewModelAccessChain);
+            IObservable<ObservedValue<TViewModelValue>> viewModelValues = view.WhenChange<TViewModelValue>(viewModelAccessChain);
 
-            var bindingEvents = GetObservableSourceBindingChanges(viewModelValues, view, viewAccessChain)
+            IObservable<DataBindingEvent<TViewModelValue, TViewValue>> bindingEvents = GetObservableSourceBindingChanges(viewModelValues, view, viewAccessChain)
                 .Select(change => new DataBindingEvent<TViewModelValue, TViewValue>(change.SourceValue, change.TargetContainer, change.TargetLink, converter, converterParameter, converterCulture))
                 .Catch((Exception ex) => GetViewModelErrorHandler(errorHandler, view)
                     .Filter<DataBindingEvent<TViewModelValue, TViewValue>>(ViewModelToViewBindingErrorException.Create(view, viewModelAccessChain, viewAccessChain, ReactiveBindingMode.OneWay, ex)))
                 .Publish()
                 .RefCount();
 
-            var bindingDisposable = bindingEvents
+            IDisposable bindingDisposable = bindingEvents
                 .ObserveOnSafe(GetViewThreadScheduler())
                 .Subscribe(
                     bindingEvent =>
@@ -262,13 +262,13 @@ namespace Karambolo.ReactiveMvvm
             Expression<Func<TView, TViewModel>> viewModelFromViewExpression = v => v.ViewModel;
             var viewModelAccessChain = DataMemberAccessChain.From(viewModelFromViewExpression.Chain(viewModelAccessExpression));
             var index = viewModelAccessChain.Length - 1;
-            var viewModelContainerAccessChain = viewModelAccessChain.Slice(0, index);
-            var viewModelValueAccessLink = viewModelAccessChain[index];
+            DataMemberAccessChain viewModelContainerAccessChain = viewModelAccessChain.Slice(0, index);
+            DataMemberAccessLink viewModelValueAccessLink = viewModelAccessChain[index];
 
             var viewAccessChain = DataMemberAccessChain.From(viewAccessExpression);
             index = viewAccessChain.Length - 1;
-            var viewContainerAccessChain = viewAccessChain.Slice(0, index);
-            var viewValueAccessChain = viewAccessChain.Slice(index);
+            DataMemberAccessChain viewContainerAccessChain = viewAccessChain.Slice(0, index);
+            DataMemberAccessChain viewValueAccessChain = viewAccessChain.Slice(index);
 
             if (converter == null)
                 converter = s_bindingConverterProvider.Provide<TViewModelValue, TViewValue>();
@@ -284,7 +284,7 @@ namespace Karambolo.ReactiveMvvm
 
             var isReentrantChangeFlag = 0;
 
-            var bindingEvents = view.WhenChange<object>(viewContainerAccessChain, ChangeNotificationOptions.SuppressWarnings)
+            IObservable<DataBindingEvent<TViewModelValue, TViewValue>> bindingEvents = view.WhenChange<object>(viewContainerAccessChain, ChangeNotificationOptions.SuppressWarnings)
                 .Where(container => container.IsAvailable && container.Value != null)
                 .Select(container => Observable.Merge(
                     view.WhenChange<TViewModelValue>(viewModelAccessChain)
@@ -300,7 +300,7 @@ namespace Karambolo.ReactiveMvvm
                 .Publish()
                 .RefCount();
 
-            var bindingDisposable = bindingEvents
+            IDisposable bindingDisposable = bindingEvents
                 .ObserveOnSafe(GetViewThreadScheduler())
                 .Subscribe(
                     bindingEvent =>

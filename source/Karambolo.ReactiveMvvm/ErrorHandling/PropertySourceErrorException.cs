@@ -9,6 +9,6 @@ namespace Karambolo.ReactiveMvvm.ErrorHandling
             return new PropertySourceErrorException(property, exception);
         }
 
-        PropertySourceErrorException(object sourceObject, Exception exception) : base(sourceObject, exception) { }
+        private PropertySourceErrorException(object sourceObject, Exception exception) : base(sourceObject, exception) { }
     }
 }

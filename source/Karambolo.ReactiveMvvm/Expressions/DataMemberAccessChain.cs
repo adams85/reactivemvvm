@@ -22,16 +22,16 @@ namespace Karambolo.ReactiveMvvm.Expressions
             return From(expression);
         }
 
-        readonly IReadOnlyList<DataMemberAccessLink> _links;
+        private readonly IReadOnlyList<DataMemberAccessLink> _links;
 
-        DataMemberAccessChain(Expression normalizedExpression)
+        private DataMemberAccessChain(Expression normalizedExpression)
         {
-            var links = Dissect(normalizedExpression).ToArray();
+            DataMemberAccessLink[] links = Dissect(normalizedExpression).ToArray();
             Array.Reverse(links);
             _links = new ArraySegment<DataMemberAccessLink>(links);
         }
 
-        DataMemberAccessChain(ArraySegment<DataMemberAccessLink> links)
+        private DataMemberAccessChain(ArraySegment<DataMemberAccessLink> links)
         {
             _links = links;
         }

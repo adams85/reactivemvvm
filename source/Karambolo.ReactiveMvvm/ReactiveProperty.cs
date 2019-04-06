@@ -17,7 +17,7 @@ namespace Karambolo.ReactiveMvvm
             return new ReactiveProperty<TProperty>(Never<TProperty>.Observable, initialValue: initialValue, scheduler: scheduler);
         }
 
-        static ReactiveProperty<TProperty> ToPropertyCore<TContainer, TProperty>(IObservable<TProperty> source,
+        private static ReactiveProperty<TProperty> ToPropertyCore<TContainer, TProperty>(IObservable<TProperty> source,
             TContainer container, string propertyName,
             TProperty initialValue, ReactivePropertyOptions options,
             IScheduler scheduler, ObservedErrorHandler errorHandler, IEqualityComparer<TProperty> comparer)

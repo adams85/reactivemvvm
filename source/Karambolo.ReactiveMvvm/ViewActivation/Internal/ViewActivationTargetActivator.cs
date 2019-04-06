@@ -3,12 +3,12 @@ using System.Reactive.Disposables;
 
 namespace Karambolo.ReactiveMvvm.ViewActivation.Internal
 {
-    sealed class ViewActivationTargetActivator
+    internal sealed class ViewActivationTargetActivator
     {
-        readonly IViewActivationTarget _target;
-        readonly SerialDisposable _activationLifetimeSerial; // serves as lock object, as well
+        private readonly IViewActivationTarget _target;
+        private readonly SerialDisposable _activationLifetimeSerial; // serves as lock object, as well
 
-        int _refCount;
+        private int _refCount;
 
         public ViewActivationTargetActivator(IViewActivationTarget target)
         {
@@ -31,7 +31,7 @@ namespace Karambolo.ReactiveMvvm.ViewActivation.Internal
             return Disposable.Create(Deactivate);
         }
 
-        void Deactivate()
+        private void Deactivate()
         {
             lock (_activationLifetimeSerial)
                 if (--_refCount == 0)

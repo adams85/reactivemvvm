@@ -22,7 +22,7 @@ namespace Karambolo.ReactiveMvvm.ChangeNotification.Internal
 
         public IObservable<ObservedChange> GetChanges(object container, DataMemberAccessLink link)
         {
-            var dpd = DependencyObjectHelper.GetDependencyPropertyDescriptorCached(container.GetType(), ((FieldOrPropertyAccessLink)link).Member.Name);
+            System.ComponentModel.DependencyPropertyDescriptor dpd = DependencyObjectHelper.GetDependencyPropertyDescriptorCached(container.GetType(), ((FieldOrPropertyAccessLink)link).Member.Name);
 
             return Observable.Create<ObservedChange>(observer =>
             {

@@ -6,7 +6,7 @@ using Karambolo.Common;
 
 namespace Karambolo.ReactiveMvvm.Test.Helpers
 {
-    class Sequence<T> : List<Notification<T>>
+    internal class Sequence<T> : List<Notification<T>>
     {
         public IEnumerable<(NotificationKind, TResult, Exception)> AsTuple<TResult>(Func<T, TResult> convert)
         {

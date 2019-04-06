@@ -7,7 +7,7 @@ namespace Karambolo.ReactiveMvvm.ViewActivation.Internal
     {
         public static readonly FallbackViewActivationEventProvider Instance = new FallbackViewActivationEventProvider();
 
-        FallbackViewActivationEventProvider() { }
+        private FallbackViewActivationEventProvider() { }
 
         public bool CanProvideFor(IActivableView view)
         {

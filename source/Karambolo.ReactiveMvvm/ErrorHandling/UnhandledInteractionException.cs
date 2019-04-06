@@ -9,7 +9,7 @@ namespace Karambolo.ReactiveMvvm.ErrorHandling
             return new UnhandledInteractionException(interaction, input);
         }
 
-        UnhandledInteractionException(object interaction, object input)
+        private UnhandledInteractionException(object interaction, object input)
         {
             Interaction = interaction;
             Input = input;

@@ -18,7 +18,7 @@ namespace Karambolo.ReactiveMvvm.Binding
         public bool TryConvert(ObservedValue<object> value, Type toType, object parameter, CultureInfo culture, out ObservedValue<object> result)
         {
             if ((!value.IsAvailable || typeof(TFrom).IsAssignableFrom(value.Value)) &&
-                TryConvert(value.Cast<TFrom>(), parameter, culture, out var resultValue))
+                TryConvert(value.Cast<TFrom>(), parameter, culture, out ObservedValue<TTo> resultValue))
             {
                 result = resultValue.Cast<object>();
                 return true;
@@ -36,7 +36,7 @@ namespace Karambolo.ReactiveMvvm.Binding
             {
                 result = ObservedValue.None;
             }
-            else if (TryConvertValue(value.Value, parameter, culture, out var convertedValue))
+            else if (TryConvertValue(value.Value, parameter, culture, out TTo convertedValue))
             {
                 result = convertedValue;
             }

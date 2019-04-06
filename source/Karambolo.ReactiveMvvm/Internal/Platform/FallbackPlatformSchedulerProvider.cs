@@ -14,7 +14,7 @@ namespace Karambolo.ReactiveMvvm.Internal.Platform
 
             Trace.WriteLine(message);
 
-            var logger = loggerFactory?.CreateLogger<FallbackPlatformSchedulerProvider>() ?? (ILogger)NullLogger.Instance;
+            ILogger logger = loggerFactory?.CreateLogger<FallbackPlatformSchedulerProvider>() ?? (ILogger)NullLogger.Instance;
             logger.LogWarning(message);
         }
 

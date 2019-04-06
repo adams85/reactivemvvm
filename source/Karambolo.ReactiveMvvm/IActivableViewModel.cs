@@ -1,5 +1,4 @@
-﻿using System;
-using Karambolo.ReactiveMvvm.ViewActivation;
+﻿using Karambolo.ReactiveMvvm.ViewActivation;
 
 namespace Karambolo.ReactiveMvvm
 {

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Reactive;
 using System.Reactive.Concurrency;
 using System.Threading;
 using Karambolo.Common;
@@ -13,12 +12,12 @@ namespace Karambolo.ReactiveMvvm
 {
     public class ReactiveMvvmContext : IReactiveMvvmContext
     {
-        static readonly Func<IReactiveMvvmContext> s_getCurrentCached = () => ServiceProvider.GetRequiredService<IReactiveMvvmContext>();
-        static IReactiveMvvmContext s_current;
+        private static readonly Func<IReactiveMvvmContext> s_getCurrentCached = () => ServiceProvider.GetRequiredService<IReactiveMvvmContext>();
+        private static IReactiveMvvmContext s_current;
         public static IReactiveMvvmContext Current => LazyInitializer.EnsureInitialized(ref s_current, s_getCurrentCached);
 
-        static int s_serviceProviderBuilt;
-        static IServiceProvider s_serviceProvider;
+        private static int s_serviceProviderBuilt;
+        private static IServiceProvider s_serviceProvider;
 
         public static IServiceProvider ServiceProvider
         {
@@ -38,9 +37,9 @@ namespace Karambolo.ReactiveMvvm
             }
         }
 
-        static IServiceProvider BuildServiceProvider(Action<IReactiveMvvmBuilder> configure)
+        private static IServiceProvider BuildServiceProvider(Action<IReactiveMvvmBuilder> configure)
         {
-            var builder = new ServiceCollection().AddReactiveMvvm();
+            IReactiveMvvmBuilder builder = new ServiceCollection().AddReactiveMvvm();
             configure(builder);
             return builder.Services.BuildServiceProvider();
         }
@@ -55,7 +54,7 @@ namespace Karambolo.ReactiveMvvm
             return ServiceProvider = serviceProvider;
         }
 
-        static int s_recommendVerifyingInitialization;
+        private static int s_recommendVerifyingInitialization;
         internal static void RecommendVerifyingInitialization(ILogger logger)
         {
             if (Interlocked.CompareExchange(ref s_recommendVerifyingInitialization, 1, 0) == 0)

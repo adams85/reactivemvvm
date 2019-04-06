@@ -7,9 +7,8 @@ namespace Karambolo.ReactiveMvvm.Expressions
     public abstract class DataMemberAccessLink
     {
         protected static readonly ConstructorInfo ObservedValueCtor = typeof(ObservedValue<object>).GetConstructor(new[] { typeof(object).MakeByRefType() });
-
-        static readonly ConcurrentDictionary<MemberInfo, ValueAccessor> s_valueAccessorCache = new ConcurrentDictionary<MemberInfo, ValueAccessor>();
-        static readonly ConcurrentDictionary<MemberInfo, ValueAssigner> s_valueAssignerCache = new ConcurrentDictionary<MemberInfo, ValueAssigner>();
+        private static readonly ConcurrentDictionary<MemberInfo, ValueAccessor> s_valueAccessorCache = new ConcurrentDictionary<MemberInfo, ValueAccessor>();
+        private static readonly ConcurrentDictionary<MemberInfo, ValueAssigner> s_valueAssignerCache = new ConcurrentDictionary<MemberInfo, ValueAssigner>();
 
         protected static ValueAccessor GetCachedValueAccessor(MemberInfo member, Func<MemberInfo, ValueAccessor> valueAccessorFactory)
         {

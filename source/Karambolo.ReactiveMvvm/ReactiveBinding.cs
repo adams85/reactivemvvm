@@ -8,16 +8,16 @@ namespace Karambolo.ReactiveMvvm
 {
     public static partial class ReactiveBinding
     {
-        static readonly ILoggerFactory s_loggerFactory = ReactiveMvvmContext.ServiceProvider.GetService<ILoggerFactory>();
+        private static readonly ILoggerFactory s_loggerFactory = ReactiveMvvmContext.ServiceProvider.GetService<ILoggerFactory>();
 
-        static IScheduler GetViewThreadScheduler()
+        private static IScheduler GetViewThreadScheduler()
         {
             return SynchronizationContext.Current != null ?
                 new SynchronizationContextScheduler(SynchronizationContext.Current, alwaysPost: false) :
                 ReactiveMvvmContext.Current.MainThreadScheduler;
         }
 
-        static ObservedErrorHandler GetViewModelErrorHandler<TViewModel>(ObservedErrorHandler errorHandler, IBoundView<TViewModel> view)
+        private static ObservedErrorHandler GetViewModelErrorHandler<TViewModel>(ObservedErrorHandler errorHandler, IBoundView<TViewModel> view)
             where TViewModel : class
         {
             return

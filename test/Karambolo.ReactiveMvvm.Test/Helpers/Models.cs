@@ -1,33 +1,28 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.ObjectModel;
 using Karambolo.ReactiveMvvm.ChangeNotification;
 
 namespace Karambolo.ReactiveMvvm.Test.Helpers
 {
-    class Wrapper<T>
+    internal class Wrapper<T>
     {
         public T Value { get; set; }
     }
 
-    class Item
+    internal class Item
     {
         public int Property { get; set; }
     }
 
-    class MainVM : ChangeNotifier
+    internal class MainVM : ChangeNotifier
     {
-        ItemVM _item;
+        private ItemVM _item;
         public ItemVM Item
         {
             get => _item;
             set => Change(ref _item, value);
         }
 
-        Wrapper<ItemVM> _itemWrapper;
+        private Wrapper<ItemVM> _itemWrapper;
         public Wrapper<ItemVM> ItemWrapper
         {
             get => _itemWrapper;
@@ -35,9 +30,9 @@ namespace Karambolo.ReactiveMvvm.Test.Helpers
         }
     }
 
-    class ItemVM : ChangeNotifier
+    internal class ItemVM : ChangeNotifier
     {
-        readonly Item _model;
+        private readonly Item _model;
 
         public ItemVM(Item model)
         {
@@ -58,7 +53,7 @@ namespace Karambolo.ReactiveMvvm.Test.Helpers
             }
         }
 
-        ObservableCollection<object> _collection;
+        private ObservableCollection<object> _collection;
         public ObservableCollection<object> Collection
         {
             get => _collection;
@@ -66,9 +61,9 @@ namespace Karambolo.ReactiveMvvm.Test.Helpers
         }
     }
 
-    class LeafVM : ChangeNotifier
+    internal class LeafVM : ChangeNotifier
     {
-        string _value;
+        private string _value;
         public string Value
         {
             get => _value;

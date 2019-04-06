@@ -7,14 +7,14 @@ namespace Karambolo.ReactiveMvvm.Expressions
 {
     public class FieldOrPropertyAccessLink : DataMemberAccessLink
     {
-        static ValueAccessor BuildValueAccessor(MemberExpression memberExpression)
+        private static ValueAccessor BuildValueAccessor(MemberExpression memberExpression)
         {
             // declaring type must be used instead of parameter type!!!
             // https://github.com/dotnet/roslyn/issues/30636
-            var containerType = memberExpression.Member.DeclaringType;
-            var param = Expression.Parameter(typeof(object));
+            Type containerType = memberExpression.Member.DeclaringType;
+            ParameterExpression param = Expression.Parameter(typeof(object));
 
-            var body = Expression.Condition(
+            ConditionalExpression body = Expression.Condition(
                 Expression.TypeIs(param, containerType),
                 Expression.New(ObservedValueCtor, Expression.Convert(memberExpression.Update(Expression.Convert(param, containerType)), param.Type)),
                 Expression.Default(typeof(ObservedValue<object>)));
@@ -24,21 +24,21 @@ namespace Karambolo.ReactiveMvvm.Expressions
             return lambda.Compile();
         }
 
-        static ValueAssigner BuildValueAssigner(MemberExpression memberExpression)
+        private static ValueAssigner BuildValueAssigner(MemberExpression memberExpression)
         {
             // declaring type must be used instead of parameter type!!!
             // https://github.com/dotnet/roslyn/issues/30636
-            var containerType = memberExpression.Member.DeclaringType;
-            var param = Expression.Parameter(typeof(object));
-            var valueParam = Expression.Parameter(typeof(object));
+            Type containerType = memberExpression.Member.DeclaringType;
+            ParameterExpression param = Expression.Parameter(typeof(object));
+            ParameterExpression valueParam = Expression.Parameter(typeof(object));
 
-            var returnTarget = Expression.Label(typeof(bool));
+            LabelTarget returnTarget = Expression.Label(typeof(bool));
 
             Expression valueParamCheck = Expression.TypeIs(valueParam, memberExpression.Type);
             if (memberExpression.Type.AllowsNull())
                 valueParamCheck = Expression.OrElse(Expression.Equal(valueParam, Expression.Constant(null, typeof(object))), valueParamCheck);
 
-            var body = Expression.Block(typeof(bool),
+            BlockExpression body = Expression.Block(typeof(bool),
                 Expression.IfThenElse(
                     Expression.AndAlso(Expression.TypeIs(param, containerType), valueParamCheck),
                     Expression.Assign(Expression.MakeMemberAccess(Expression.Convert(param, containerType), memberExpression.Member), Expression.Convert(valueParam, memberExpression.Type)),
@@ -50,7 +50,7 @@ namespace Karambolo.ReactiveMvvm.Expressions
             return lambda.Compile();
         }
 
-        readonly MemberExpression _expression;
+        private readonly MemberExpression _expression;
 
         public FieldOrPropertyAccessLink(MemberExpression expression)
             : base(expression != null ? GetCachedValueAccessor(expression.Member, _ => BuildValueAccessor(expression)) : throw new ArgumentNullException(nameof(expression)))

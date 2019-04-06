@@ -12,9 +12,9 @@ namespace Karambolo.ReactiveMvvm
 {
     public sealed class CombinedReactiveCommand<TParam, TResult> : ReactiveCommand<TParam, TResult[]>
     {
-        new class Initializer : ReactiveCommand<TParam, TResult[]>.Initializer
+        private new class Initializer : ReactiveCommand<TParam, TResult[]>.Initializer
         {
-            readonly ReactiveCommand<TParam, TResult>[] _commands;
+            private readonly ReactiveCommand<TParam, TResult>[] _commands;
 
             public Initializer(ReactiveCommand<TParam, TResult>[] commands)
             {
@@ -28,7 +28,7 @@ namespace Karambolo.ReactiveMvvm
 
             public override IObservable<bool> GetCanExecute(IObservable<bool> canExecute, Func<Exception, IObservable<bool>> errorFilter)
             {
-                var combinedCanExecute = Observable
+                IObservable<bool> combinedCanExecute = Observable
                     .CombineLatest(_commands.Select(command => command.WhenCanExecuteChanged))
                     .Select(canExecs => canExecs.TrueForAll(canExec => canExec));
 
