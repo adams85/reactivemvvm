@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Karambolo.ReactiveMvvm.Binding
+namespace Karambolo.ReactiveMvvm.Binding.Internal
 {
     [Flags]
     internal enum DataBindingEventFlags

@@ -1,4 +1,4 @@
-﻿namespace Karambolo.ReactiveMvvm
+﻿namespace Karambolo.ReactiveMvvm.Binding
 {
     public interface IDataBindingEvent<TSource, TTarget> : IReactiveBindingEvent<TSource, TTarget>
     {
