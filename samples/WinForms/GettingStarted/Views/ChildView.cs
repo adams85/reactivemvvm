@@ -14,7 +14,7 @@ namespace GettingStarted.Views
         {
             InitializeComponent();
 
-            var activation = this.EnableViewActivation();
+            this.EnableViewActivation();
         }
 
         ~ChildView()
