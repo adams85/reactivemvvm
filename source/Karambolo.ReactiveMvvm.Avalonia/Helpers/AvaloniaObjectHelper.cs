@@ -9,7 +9,7 @@ namespace Karambolo.ReactiveMvvm.Helpers
 {
     public static class AvaloniaObjectHelper
     {
-        private static ConcurrentDictionary<(Type, string), AvaloniaProperty> s_avaloniaPropertyCache = new ConcurrentDictionary<(Type, string), AvaloniaProperty>();
+        private static readonly ConcurrentDictionary<(Type, string), AvaloniaProperty> s_avaloniaPropertyCache = new ConcurrentDictionary<(Type, string), AvaloniaProperty>();
 
         internal static AvaloniaProperty GetAvaloniaProperty(Type type, string propertyName)
         {

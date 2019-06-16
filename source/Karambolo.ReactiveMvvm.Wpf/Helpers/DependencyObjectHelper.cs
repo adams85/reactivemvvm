@@ -11,7 +11,7 @@ namespace Karambolo.ReactiveMvvm.Helpers
 {
     public static class DependencyObjectHelper
     {
-        private static ConcurrentDictionary<(Type, string), DependencyPropertyDescriptor> s_dependencyPropertyCache = new ConcurrentDictionary<(Type, string), DependencyPropertyDescriptor>();
+        private static readonly ConcurrentDictionary<(Type, string), DependencyPropertyDescriptor> s_dependencyPropertyCache = new ConcurrentDictionary<(Type, string), DependencyPropertyDescriptor>();
 
         internal static DependencyProperty GetDependencyProperty(Type type, string propertyName)
         {
