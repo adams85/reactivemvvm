@@ -17,11 +17,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Include="..\..\Common\GettingStarted\ViewModels\ChildViewModel.cs" Link="ViewModels\ChildViewModel.cs" />
-    <Compile Include="..\..\Common\GettingStarted\ViewModels\MainViewModel.cs" Link="ViewModels\MainViewModel.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Compile Update="**\*.xaml.cs">
       <DependentUpon>%(Filename)</DependentUpon>
     </Compile>
@@ -48,5 +43,7 @@
       <Generator>MSBuild:Compile</Generator>
     </EmbeddedResource>
   </ItemGroup>
+
+  <Import Project="..\..\Common\GettingStarted\GettingStarted.Common.projitems" Label="Shared" />
 
 </Project>

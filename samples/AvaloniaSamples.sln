@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28307.489
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29009.5
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Karambolo.ReactiveMvvm", "..\source\Karambolo.ReactiveMvvm\Karambolo.ReactiveMvvm.csproj", "{398712CB-0565-4386-BBD0-81DFE37C903E}"
 EndProject
@@ -11,7 +11,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "References", "References", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GettingStarted", "Avalonia\GettingStarted\GettingStarted.csproj", "{33E74B3A-086C-40AF-9CA5-3FE4C750C314}"
 EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "GettingStarted.Common", "Common\GettingStarted\GettingStarted.Common.shproj", "{A7CEEA83-0773-4E7B-A8D7-A54BEDB7F44D}"
+EndProject
 Global
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		Common\GettingStarted\GettingStarted.Common.projitems*{a7ceea83-0773-4e7b-a8d7-a54bedb7f44d}*SharedItemsImports = 13
+	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU

@@ -117,15 +117,6 @@
     <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="..\..\Common\GettingStarted\Messages\LogMessage.cs">
-      <Link>Messages\LogMessage.cs</Link>
-    </Compile>
-    <Compile Include="..\..\Common\GettingStarted\ViewModels\ChildViewModel.cs">
-      <Link>ViewModels\ChildViewModel.cs</Link>
-    </Compile>
-    <Compile Include="..\..\Common\GettingStarted\ViewModels\MainViewModel.cs">
-      <Link>ViewModels\MainViewModel.cs</Link>
-    </Compile>
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
@@ -210,6 +201,7 @@
       <Name>Karambolo.ReactiveMvvm</Name>
     </ProjectReference>
   </ItemGroup>
+  <Import Project="..\..\Common\GettingStarted\GettingStarted.Common.projitems" Label="Shared" />
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>
   </PropertyGroup>

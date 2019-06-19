@@ -123,15 +123,6 @@
     <Page Include="App.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Compile Include="..\..\Common\GettingStarted\Messages\LogMessage.cs">
-      <Link>Messages\LogMessage.cs</Link>
-    </Compile>
-    <Compile Include="..\..\Common\GettingStarted\ViewModels\ChildViewModel.cs">
-      <Link>ViewModels\ChildViewModel.cs</Link>
-    </Compile>
-    <Compile Include="..\..\Common\GettingStarted\ViewModels\MainViewModel.cs">
-      <Link>ViewModels\MainViewModel.cs</Link>
-    </Compile>
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -184,5 +175,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />
+  <Import Project="..\..\Common\GettingStarted\GettingStarted.Common.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
