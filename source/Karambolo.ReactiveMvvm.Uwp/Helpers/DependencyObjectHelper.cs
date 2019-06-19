@@ -41,7 +41,7 @@ namespace Karambolo.ReactiveMvvm.Helpers
                 obj = VisualTreeHelper.GetParent(obj);
             }
 
-            return null;
+            return default;
         }
 
         private static T FindVisualDescendantCore<T>(this DependencyObject obj, Func<T, bool> match)
@@ -58,7 +58,7 @@ namespace Karambolo.ReactiveMvvm.Helpers
                     return result;
             }
 
-            return null;
+            return default;
         }
 
         public static T FindVisualDescendant<T>(this DependencyObject root, Func<T, bool> match = null, bool includeRoot = true)

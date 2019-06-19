@@ -2,13 +2,25 @@
   <PropertyGroup>
     <AssemblyName>Karambolo.ReactiveMvvm.Uwp</AssemblyName>
     <RootNamespace>Karambolo.ReactiveMvvm</RootNamespace>
-    <TargetFrameworks>uap10.0.16299</TargetFrameworks>
+    <TargetFrameworks>uap10.0.16299;MonoAndroid80;MonoAndroid90</TargetFrameworks>
+    <LangVersion>7.3</LangVersion>
+    <UseUno Condition="'$(TargetFramework)' != 'uap10.0.16299'">true</UseUno>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(UseUno)' == 'true'">
+    <DefineConstants>UNO</DefineConstants>
+  </PropertyGroup>
+  
+  <PropertyGroup Condition="'$(UseUno)' != 'true'">
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\Karambolo.ReactiveMvvm\Karambolo.Public.snk</AssemblyOriginatorKeyFile>
-    <LangVersion>7.3</LangVersion>
   </PropertyGroup>
 
   <Import Project="Properties\AssemblyInfo.props" />
+
+  <ItemGroup Condition="'$(UseUno)' == 'true'">
+    <PackageReference Include="Uno.UI" Version="1.44.1" />
+  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Karambolo.ReactiveMvvm\Karambolo.ReactiveMvvm.csproj" />

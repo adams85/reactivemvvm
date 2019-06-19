@@ -6,7 +6,7 @@ using Windows.UI.Xaml.Controls;
 
 namespace Karambolo.ReactiveMvvm
 {
-    public abstract class ReactiveUserControl<TViewModel> : UserControl, IReactiveView<TViewModel>
+    public abstract partial class ReactiveUserControl<TViewModel> : UserControl, IReactiveView<TViewModel>
         where TViewModel : class
     {
         public static DependencyProperty ViewModelProperty { get; } = DependencyProperty.Register(
