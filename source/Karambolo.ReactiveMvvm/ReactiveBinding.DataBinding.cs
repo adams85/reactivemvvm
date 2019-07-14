@@ -282,16 +282,16 @@ namespace Karambolo.ReactiveMvvm
             else
                 getViewValues = _ => viewValues.Select(value => ObservedValue.From(value));
 
-            var isReentrantChangeFlag = 0;
+            Thread dataBindingThread = null;
 
             IObservable<DataBindingEvent<TViewModelValue, TViewValue>> bindingEvents = view.WhenChange<object>(viewContainerAccessChain, ChangeNotificationOptions.SuppressWarnings)
                 .Where(container => container.IsAvailable && container.Value != null)
                 .Select(container => Observable.Merge(
                     view.WhenChange<TViewModelValue>(viewModelAccessChain)
-                        .Where(_ => Thread.VolatileRead(ref isReentrantChangeFlag) == 0)
+                        .Where(_ => !IsCurrentThread(Volatile.Read(ref dataBindingThread)))
                         .Select(value => new DataBindingEvent<TViewModelValue, TViewValue>(value, container, viewValueAccessChain.Head, converter, converterParameter, converterCulture)),
                     getViewValues(container)
-                        .Where(_ => Thread.VolatileRead(ref isReentrantChangeFlag) == 0)
+                        .Where(_ => !IsCurrentThread(Volatile.Read(ref dataBindingThread)))
                         .Select(value => new DataBindingEvent<TViewModelValue, TViewValue>(value, viewModelContainerAccessChain.GetValue<object>(view), viewModelValueAccessLink, reverseConverter, converterParameter, converterCulture))
                         .Where(bindingEvent => bindingEvent.Container.IsAvailable && bindingEvent.Container.Value != null)))
                 .Switch()
@@ -310,9 +310,10 @@ namespace Karambolo.ReactiveMvvm
                         {
                             var value = bindingEvent.FlowsToSource ? bindingEvent.SourceValue.GetValueOrDefault() : (object)bindingEvent.TargetValue.GetValueOrDefault();
 
-                            Thread.VolatileWrite(ref isReentrantChangeFlag, 1);
+                            // preventing re-entrancy (assuming that change notifications occur on the current thread)
+                            Interlocked.Exchange(ref dataBindingThread, Thread.CurrentThread);
                             try { success = bindingEvent.Link.ValueAssigner(bindingEvent.Container.Value, value); }
-                            finally { Thread.VolatileWrite(ref isReentrantChangeFlag, 0); }
+                            finally { Interlocked.Exchange(ref dataBindingThread, null); }
                         }
                         else
                             success = false;
@@ -323,6 +324,11 @@ namespace Karambolo.ReactiveMvvm
                     ex => GetViewModelErrorHandler(errorHandler, view).Handle(ex));
 
             return new ViewModelToViewBinding<TViewModel, TViewModelValue, TView, TViewValue>(view, viewModelAccessChain, viewAccessChain, ReactiveBindingMode.TwoWay, bindingEvents, bindingDisposable);
+
+            bool IsCurrentThread(Thread thread)
+            {
+                return thread != null && thread.ManagedThreadId == Thread.CurrentThread.ManagedThreadId;
+            }
         }
 
         public static ViewModelToViewBinding<TViewModel, TViewModelValue, TView, TViewValue> BindTwoWay<TViewModel, TViewModelValue, TView, TViewValue>(
