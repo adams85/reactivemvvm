@@ -16,24 +16,46 @@ namespace Karambolo.ReactiveMvvm
         private static IReactiveMvvmContext s_current;
         public static IReactiveMvvmContext Current => LazyInitializer.EnsureInitialized(ref s_current, s_getCurrentCached);
 
-        private static int s_serviceProviderBuilt;
+        private static readonly Func<IServiceProvider> s_defaultServiceProviderFactory = () => BuildServiceProvider(Noop<IReactiveMvvmBuilder>.Action);
+        private static Func<IServiceProvider> s_serviceProviderFactory = s_defaultServiceProviderFactory;
         private static IServiceProvider s_serviceProvider;
 
         public static IServiceProvider ServiceProvider
         {
             get
             {
-                if (Interlocked.CompareExchange(ref s_serviceProviderBuilt, 1, 0) != 0)
-                    return s_serviceProvider;
+                IServiceProvider serviceProvider;
+
+                Func<IServiceProvider> serviceProviderFactory = Interlocked.Exchange(ref s_serviceProviderFactory, null);
+                if (serviceProviderFactory != null)
+                {
+                    serviceProvider = serviceProviderFactory();
+                    Volatile.Write(ref s_serviceProvider, serviceProvider);
+                    return serviceProvider;
+                }
                 else
-                    return s_serviceProvider ?? (s_serviceProvider = BuildServiceProvider(Noop<IReactiveMvvmBuilder>.Action));
+                    for (; ; )
+                        if ((serviceProvider = Volatile.Read(ref s_serviceProvider)) != null)
+                            return serviceProvider;
             }
             private set
             {
-                if (Volatile.Read(ref s_serviceProviderBuilt) == 0)
-                    s_serviceProvider = value;
-                else
-                    throw new InvalidOperationException(Resources.InitializationNotPossible);
+                Func<IServiceProvider> newServiceProviderFactory = value != null ? () => value : s_defaultServiceProviderFactory;
+
+                Func<IServiceProvider> originalServiceProviderFactory = Volatile.Read(ref s_serviceProviderFactory);
+                for (; ; )
+                {
+                    if (originalServiceProviderFactory == null)
+                        throw new InvalidOperationException(Resources.InitializationNotPossible);
+
+                    Func<IServiceProvider> currentServiceProviderFactory =
+                        Interlocked.CompareExchange(ref s_serviceProviderFactory, newServiceProviderFactory, originalServiceProviderFactory);
+
+                    if (originalServiceProviderFactory == currentServiceProviderFactory)
+                        return;
+
+                    originalServiceProviderFactory = currentServiceProviderFactory;
+                }
             }
         }
 
@@ -46,12 +68,14 @@ namespace Karambolo.ReactiveMvvm
 
         public static IServiceProvider Initialize(Action<IReactiveMvvmBuilder> configure)
         {
-            return ServiceProvider = BuildServiceProvider(configure);
+            ServiceProvider = BuildServiceProvider(configure);
+            return ServiceProvider;
         }
 
         public static IServiceProvider Initialize(IServiceProvider serviceProvider)
         {
-            return ServiceProvider = serviceProvider;
+            ServiceProvider = serviceProvider;
+            return ServiceProvider;
         }
 
         private static int s_recommendVerifyingInitialization;
