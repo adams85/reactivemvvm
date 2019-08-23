@@ -7,6 +7,11 @@
     <UseUno Condition="'$(TargetFramework)' != 'uap10.0.16299'">true</UseUno>
   </PropertyGroup>
 
+  <!-- https://www.jocheojeda.com/2019/07/31/how-to-fix-error-msb4044-the-filterassemblies-task-was-not-given-a-value-for-the-required-parameter-designtimebuild/ -->
+  <PropertyGroup Label="Android DesignTimeBuild error workaround">
+    <DesignTimeBuild>false</DesignTimeBuild>
+  </PropertyGroup>
+
   <PropertyGroup Condition="'$(UseUno)' == 'true'">
     <DefineConstants>UNO</DefineConstants>
   </PropertyGroup>

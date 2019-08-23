@@ -1,27 +1,19 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
   <PropertyGroup>
     <AssemblyName>Karambolo.ReactiveMvvm.Wpf</AssemblyName>
     <RootNamespace>Karambolo.ReactiveMvvm</RootNamespace>
-    <TargetFrameworks>net461</TargetFrameworks>
+    <TargetFrameworks>net461;netcoreapp3.0</TargetFrameworks>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\Karambolo.ReactiveMvvm\Karambolo.Public.snk</AssemblyOriginatorKeyFile>
     <DebugType>full</DebugType>
     <DebugSymbols>true</DebugSymbols>
     <LangVersion>7.3</LangVersion>
+    <UseWpf>true</UseWpf>
   </PropertyGroup>
 
   <Import Project="Properties\AssemblyInfo.props" />
 
   <ItemGroup>
     <ProjectReference Include="..\Karambolo.ReactiveMvvm\Karambolo.ReactiveMvvm.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Reference Include="PresentationCore" />
-    <Reference Include="PresentationFramework" />
-    <Reference Include="System.Xaml" />
-    <Reference Include="WindowsBase">
-      <HintPath>C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.6\WindowsBase.dll</HintPath>
-    </Reference>
   </ItemGroup>
 </Project>
