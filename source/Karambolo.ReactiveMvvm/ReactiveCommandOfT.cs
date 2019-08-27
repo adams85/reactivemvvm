@@ -133,7 +133,7 @@ namespace Karambolo.ReactiveMvvm
             _executionEventSubjectSync.OnNext(ExecutionEvent<TResult>.Begin());
             try
             {
-                TResult result = await _execute(parameter, cancellationToken).ConfigureAwait(false);
+                TResult result = await _execute(parameter, cancellationToken);
                 _executionEventSubjectSync.OnNext(ExecutionEvent<TResult>.Result(result));
                 return result;
             }

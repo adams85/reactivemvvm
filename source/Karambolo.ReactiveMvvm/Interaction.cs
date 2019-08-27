@@ -65,7 +65,7 @@ namespace Karambolo.ReactiveMvvm
 
             for (int i = handlers.Length - 1; i >= 0; i--)
             {
-                await handlers[i](context, cancellationToken).ConfigureAwait(false);
+                await handlers[i](context, cancellationToken);
 
                 if (context.IsHandled)
                     return context.Output;
