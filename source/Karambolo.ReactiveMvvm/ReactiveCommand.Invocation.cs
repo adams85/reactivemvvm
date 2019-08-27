@@ -84,16 +84,16 @@ namespace Karambolo.ReactiveMvvm
         }
 
         private static IDisposable InvokeCommandCore<TParam, TResult>(this IObservable<(ReactiveCommand<TParam, TResult> command, bool canExecute, TParam param)> executionInfo,
-            IScheduler scheduler, ObservedErrorHandler errorHandler, CancellationToken cancellationToken)
+            IScheduler scheduler, ObservedErrorHandler errorHandler, Func<TParam, CancellationToken> cancellationTokenFactory)
         {
             return executionInfo
                 .Where(info => info.canExecute)
                 .ObserveOnSafe(scheduler)
-                .Subscribe(info => info.command.ExecuteAsync(info.param, cancellationToken).FireAndForget(errorHandler.Handle), errorHandler.Handle);
+                .Subscribe(info => info.command.ExecuteAsync(info.param, cancellationTokenFactory(info.param)).FireAndForget(errorHandler.Handle), errorHandler.Handle);
         }
 
         public static IDisposable InvokeCommand<TParam, TResult>(this IObservable<TParam> parameters, ReactiveCommand<TParam, TResult> command,
-            IScheduler scheduler = null, ObservedErrorHandler errorHandler = null, CancellationToken cancellationToken = default)
+            IScheduler scheduler = null, ObservedErrorHandler errorHandler = null, Func<TParam, CancellationToken> cancellationTokenFactory = null)
         {
             if (parameters == null)
                 throw new ArgumentNullException(nameof(parameters));
@@ -108,12 +108,12 @@ namespace Karambolo.ReactiveMvvm
                 parameters
                     .Catch<TParam, Exception>(ex => errorHandler.Filter<TParam>(CommandParamsErrorException.Create(command, ex)))
                     .WithLatestFrom(command.WhenCanExecuteChanged, (param, canExecute) => (command, canExecute, param)),
-                scheduler, errorHandler, cancellationToken);
+                scheduler, errorHandler, cancellationTokenFactory ?? (_ => default));
         }
 
         public static IDisposable InvokeCommand<TParam, TSource, TResult>(this IObservable<TParam> parameters, TSource source,
             Expression<Func<TSource, ReactiveCommand<TParam, TResult>>> propertyExpression,
-            IScheduler scheduler = null, ObservedErrorHandler errorHandler = null, CancellationToken cancellationToken = default)
+            IScheduler scheduler = null, ObservedErrorHandler errorHandler = null, Func<TParam, CancellationToken> cancellationTokenFactory = null)
         {
             if (parameters == null)
                 throw new ArgumentNullException(nameof(parameters));
@@ -135,7 +135,7 @@ namespace Karambolo.ReactiveMvvm
                 parameters
                     .Catch<TParam, Exception>(ex => errorHandler.Filter<TParam>(CommandParamsErrorException.Create(chain.GetValue<ICommand>(source).GetValueOrDefault(), ex)))
                     .WithLatestFrom(commands, (param, command) => (command.value, command.canExecute, param)),
-                scheduler, errorHandler, cancellationToken);
+                scheduler, errorHandler, cancellationTokenFactory ?? (_ => default));
         }
     }
 }
