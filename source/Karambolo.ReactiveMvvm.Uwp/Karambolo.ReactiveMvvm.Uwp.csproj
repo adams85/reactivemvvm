@@ -13,7 +13,7 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(UseUno)' == 'true'">
-    <DefineConstants>UNO</DefineConstants>
+    <DefineConstants>$(DefineConstants);UNO</DefineConstants>
   </PropertyGroup>
   
   <PropertyGroup Condition="'$(UseUno)' != 'true'">

@@ -16,12 +16,11 @@ namespace Karambolo.ReactiveMvvm.Binding.Internal
             public PropertyInfo EnabledProperty;
         }
 
-        protected override EventCommandBinder.ContainerMetadata CreateContainerMetadata(Type containerType, EventInfo @event, Type eventHandlerType, Type eventArgType)
+        protected override EventCommandBinder.ContainerMetadata CreateContainerMetadata(Type containerType, EventInfo @event, Type eventArgType)
         {
             return new ContainerMetadata
             {
                 Event = @event,
-                EventHandlerType = eventHandlerType,
                 EventArgType = eventArgType,
                 EnabledProperty =
                     typeof(Component).IsAssignableFrom(containerType) ?

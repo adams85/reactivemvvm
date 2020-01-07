@@ -10,7 +10,7 @@ namespace Karambolo.ReactiveMvvm.Internal
         public void Configure(ReactiveMvvmOptions options)
         {
             options.CommandBinders.Add(new PropertyCommandBinder());
-            options.CommandBinders.Add(new EventCommandBinder());
+            options.CommandBinders.Add(new UwpEventCommandBinder());
 
             options.LinkChangeProviders.Insert(0, new DOMemberLinkChangedProvider());
 

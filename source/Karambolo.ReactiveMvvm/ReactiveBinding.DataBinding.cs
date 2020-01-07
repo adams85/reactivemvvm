@@ -169,7 +169,7 @@ namespace Karambolo.ReactiveMvvm
 
         #endregion
 
-        #region One-Way (view model <-> view)
+        #region One-Way (view model -> view)
 
         public static ViewModelToViewBinding<TViewModel, TViewModelValue, TView, TViewValue> BindOneWay<TViewModel, TViewModelValue, TView, TViewValue>(
                 this TView view, TViewModel witnessViewModel,
@@ -236,7 +236,7 @@ namespace Karambolo.ReactiveMvvm
 
         #endregion
 
-        #region Two-Way (view model -> view)
+        #region Two-Way (view model <-> view)
 
         public static ViewModelToViewBinding<TViewModel, TViewModelValue, TView, TViewValue> BindTwoWay<TViewModel, TViewModelValue, TView, TViewValue>(
             this TView view, TViewModel witnessViewModel,

@@ -2,6 +2,7 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reactive;
 using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Reflection;
@@ -15,7 +16,6 @@ namespace Karambolo.ReactiveMvvm.Binding.Internal
         protected class ContainerMetadata
         {
             public EventInfo Event;
-            public Type EventHandlerType;
             public Type EventArgType;
         }
 
@@ -30,12 +30,11 @@ namespace Karambolo.ReactiveMvvm.Binding.Internal
 
         protected virtual IEnumerable<string> DefaultEventNames => s_defaultEvents;
 
-        protected virtual ContainerMetadata CreateContainerMetadata(Type containerType, EventInfo @event, Type eventHandlerType, Type eventArgType)
+        protected virtual ContainerMetadata CreateContainerMetadata(Type containerType, EventInfo @event, Type eventArgType)
         {
             return new ContainerMetadata
             {
                 Event = @event,
-                EventHandlerType = eventHandlerType,
                 EventArgType = eventArgType
             };
         }
@@ -52,19 +51,17 @@ namespace Karambolo.ReactiveMvvm.Binding.Internal
                 if (@event == null)
                     return null;
 
-                Type eventHandlerType = @event.EventHandlerType;
-
                 ParameterInfo eventArgParam;
-                MethodInfo invokeMethod = eventHandlerType.GetMethod("Invoke");
+                MethodInfo invokeMethod = @event.EventHandlerType.GetMethod("Invoke");
                 ParameterInfo[] invokeMethodParams = invokeMethod.GetParameters();
+
                 if (invokeMethodParams.Length != 2 ||
                     !invokeMethodParams[0].ParameterType.IsAssignableFrom(containerType) ||
-                    (eventArgParam = invokeMethodParams[1]).ParameterType.IsByRef)
+                    (eventArgParam = invokeMethodParams[1]).ParameterType.IsByRef ||
+                    (containerMetadata = CreateContainerMetadata(containerType, @event, eventArgParam.ParameterType)) == null)
                     return null;
 
-                Type eventArgType = eventArgParam.ParameterType;
-
-                s_containerMetadataCache[(containerType, eventName)] = containerMetadata = CreateContainerMetadata(containerType, @event, eventHandlerType, eventArgType);
+                s_containerMetadataCache[(containerType, eventName)] = containerMetadata;
             }
 
             return containerMetadata;
@@ -79,17 +76,23 @@ namespace Karambolo.ReactiveMvvm.Binding.Internal
         {
             ContainerMetadata containerMetadata = GetCachedContainerMetadata(container.GetType(), eventName);
 
-            MethodInfo bindImplMethod = s_bindImplMethodDefinition.MakeGenericMethod(containerMetadata.EventHandlerType, containerMetadata.EventArgType, typeof(TParam));
+            MethodInfo bindImplMethod = s_bindImplMethodDefinition.MakeGenericMethod(containerMetadata.Event.EventHandlerType, containerMetadata.EventArgType, typeof(TParam));
             return (IDisposable)bindImplMethod.Invoke(this, new[] { command, container, commandParameters, containerMetadata, scheduler, onError });
+        }
+
+        protected virtual IObservable<EventPattern<TEventArgs>> GetEvents<TEventHandler, TEventArgs>(object container, ContainerMetadata containerMetadata)
+            where TEventHandler : Delegate
+        {
+            return Observable.FromEventPattern<TEventHandler, TEventArgs>(
+                handler => containerMetadata.Event.AddEventHandler(container, handler),
+                handler => containerMetadata.Event.RemoveEventHandler(container, handler));
         }
 
         protected virtual IDisposable Bind<TEventHandler, TEventArgs, TParam>(ICommand command, object container, IObservable<TParam> commandParameters, ContainerMetadata containerMetadata,
             IScheduler scheduler, Action<Exception> onError)
             where TEventHandler : Delegate
         {
-            return Observable.FromEventPattern<TEventHandler, TEventArgs>(
-                handler => containerMetadata.Event.AddEventHandler(container, handler),
-                handler => containerMetadata.Event.RemoveEventHandler(container, handler))
+            return GetEvents<TEventHandler, TEventArgs>(container, containerMetadata)
                 .WithLatestFrom(commandParameters.StartWith(default(TParam)), (_, param) => param)
                 .Subscribe(
                     param =>

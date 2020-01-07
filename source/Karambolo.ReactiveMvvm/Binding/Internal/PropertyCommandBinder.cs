@@ -39,10 +39,12 @@ namespace Karambolo.ReactiveMvvm.Binding.Internal
                 PropertyInfo commandProperty = containerType.GetProperty(s_commandProperty.Name, s_commandProperty.ReturnType);
                 PropertyInfo commandParameterProperty = containerType.GetProperty(s_commandParameterProperty.Name, s_commandParameterProperty.ReturnType);
 
-                if (commandProperty == null || commandParameterProperty == null)
+                if (commandProperty == null ||
+                    commandParameterProperty == null ||
+                    (containerMetadata = CreateContainerMetadata(commandProperty, commandParameterProperty)) == null)
                     return null;
 
-                s_containerMetadataCache[containerType] = containerMetadata = CreateContainerMetadata(commandProperty, commandParameterProperty);
+                s_containerMetadataCache[containerType] = containerMetadata;
             }
 
             return containerMetadata;
