@@ -45,8 +45,8 @@ namespace Karambolo.ReactiveMvvm
             if (bindingEvent.ConversionFailed)
             {
                 string value;
-                var fromType = typeof(TSource).FullName;
-                var toType = typeof(TTarget).FullName;
+                Type fromType = typeof(TSource);
+                Type toType = typeof(TTarget);
 
                 if (bindingEvent.FlowsToSource)
                 {
@@ -62,18 +62,18 @@ namespace Karambolo.ReactiveMvvm
             else
             {
                 string value;
-                string type;
+                Type type;
 
                 if (bindingEvent.FlowsToSource)
                 {
                     value = bindingEvent.TargetValue.ToString();
-                    type = typeof(TSource).Name;
+                    type = typeof(TSource);
                     GeneralUtils.Swap(ref sourcePath, ref targetPath);
                 }
                 else
                 {
                     value = bindingEvent.TargetValue.ToString();
-                    type = typeof(TTarget).Name;
+                    type = typeof(TTarget);
                 }
 
                 logger.LogWarning(Resources.DataBindingAssignmentFailed, value, type, sourcePath, targetPath);

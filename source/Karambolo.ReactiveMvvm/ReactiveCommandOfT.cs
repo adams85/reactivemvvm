@@ -152,14 +152,14 @@ namespace Karambolo.ReactiveMvvm
             if (parameter == null)
             {
                 if (!s_paramCanBeNull)
-                    throw new ArgumentException(string.Format(Resources.NonNullableCommandParamType, typeof(TParam).FullName), nameof(parameter));
+                    throw new ArgumentException(string.Format(Resources.NonNullableCommandParamType, typeof(TParam)), nameof(parameter));
 
                 param = default;
             }
             else if (parameter is TParam castParam)
                 param = castParam;
             else
-                throw new ArgumentException(string.Format(Resources.IncompatibleCommandParamType, typeof(TParam).FullName, parameter.GetType().FullName), nameof(parameter));
+                throw new ArgumentException(string.Format(Resources.IncompatibleCommandParamType, typeof(TParam), parameter.GetType()), nameof(parameter));
 
             ExecuteAsync(param).FireAndForget(ex =>
             {
