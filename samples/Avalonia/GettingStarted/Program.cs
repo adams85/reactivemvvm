@@ -1,6 +1,6 @@
 ﻿using Avalonia;
+using Avalonia.Controls;
 using Avalonia.Logging;
-using Avalonia.Logging.Serilog;
 using GettingStarted.Infrastructure;
 using GettingStarted.ViewModels;
 using GettingStarted.Views;
@@ -12,25 +12,18 @@ namespace GettingStarted
 {
     class Program
     {
-        // Initialization code. Don't use any Avalonia, third-party APIs or any
-        // SynchronizationContext-reliant code before AppMain is called: things aren't initialized
-        // yet and stuff might break.
-        public static void Main(string[] args)
-        {
-            BuildAvaloniaApp().Start(AppMain, args);
-        }
-
-        // Avalonia configuration, don't remove; also used by visual designer.
+        // This method is needed for IDE previewer infrastructure
         public static AppBuilder BuildAvaloniaApp()
-        {
-            return AppBuilder
-                .Configure<App>()
-                .UsePlatformDetect();
-        }
+          => AppBuilder.Configure<App>().UsePlatformDetect();
 
-        // Your application's entry point. Here you can initialize your MVVM framework, DI
-        // container, etc.
-        private static void AppMain(Application app, string[] args)
+        // The entry point. Things aren't ready yet, so at this point
+        // you shouldn't use any Avalonia types or anything that expects
+        // a SynchronizationContext to be ready
+        public static void Main(string[] args)
+          => BuildAvaloniaApp().Start(AppMain, args);
+
+        // Application entry point. Avalonia is completely initialized.
+        static void AppMain(Application app, string[] args)
         {
             // ReactiveMvvm services needs to be configured at application startup
             var serviceProvider = ReactiveMvvmContext

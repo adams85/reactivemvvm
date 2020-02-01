@@ -1,14 +1,14 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFrameworks>netcoreapp2.2</TargetFrameworks>
+    <TargetFrameworks>netcoreapp3.1</TargetFrameworks>
     <LangVersion>7.3</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Avalonia" Version="0.8.0" />
-    <PackageReference Include="Avalonia.Desktop" Version="0.8.0" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="2.2.0" />
+    <PackageReference Include="Avalonia" Version="0.9.2" />
+    <PackageReference Include="Avalonia.Desktop" Version="0.9.2" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="3.1.1" />
   </ItemGroup>
 
   <ItemGroup>
@@ -23,25 +23,7 @@
     <AvaloniaResource Include="**\*.xaml">
       <SubType>Designer</SubType>
     </AvaloniaResource>
-  </ItemGroup>
-
-  <ItemGroup>
-    <AvaloniaResource Remove="Views\ChildView.xaml" />
-    <AvaloniaResource Remove="Views\MainView.xaml" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Remove="Views\ChildView.xaml" />
-    <None Remove="Views\MainView.xaml" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Include="Views\ChildView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Views\MainView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </EmbeddedResource>
+    <AvaloniaResource Include="Assets\**" />
   </ItemGroup>
 
   <Import Project="..\..\Common\GettingStarted\GettingStarted.Common.projitems" Label="Shared" />
