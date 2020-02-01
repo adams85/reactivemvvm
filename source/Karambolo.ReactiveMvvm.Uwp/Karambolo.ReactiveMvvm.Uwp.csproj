@@ -24,9 +24,9 @@
   <Import Project="Properties\AssemblyInfo.props" />
 
   <ItemGroup Condition="'$(UseUno)' == 'true'">
-    <PackageReference Include="Uno.UI" Version="1.44.1" />
+    <PackageReference Include="Uno.UI" Version="2.0.532" />
   </ItemGroup>
-
+  
   <ItemGroup>
     <ProjectReference Include="..\Karambolo.ReactiveMvvm\Karambolo.ReactiveMvvm.csproj" />
   </ItemGroup>
