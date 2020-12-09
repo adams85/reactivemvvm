@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Abstractions;
 
 namespace Karambolo.ReactiveMvvm.Internal
 {
@@ -16,18 +14,16 @@ namespace Karambolo.ReactiveMvvm.Internal
             public int RefCount;
         }
 
-        private readonly ILogger _logger;
         private readonly Dictionary<(Type MessageType, object Discriminator), Registration> _registrations;
 
-        public DefaultMessageBus(ILoggerFactory loggerFactory)
+        public DefaultMessageBus()
         {
-            _logger = loggerFactory?.CreateLogger<DefaultMessageBus>() ?? (ILogger)NullLogger.Instance;
             _registrations = new Dictionary<(Type, object), Registration>();
         }
 
         private (BehaviorSubject<T>, IDisposable) GetOrAddRegistration<T>(object discriminator)
         {
-            (Type, object discriminator) key = (typeof(T), discriminator);
+            (Type, object) key = (typeof(T), discriminator);
             lock (_registrations)
             {
                 if (!_registrations.TryGetValue(key, out Registration registration))
@@ -66,13 +62,7 @@ namespace Karambolo.ReactiveMvvm.Internal
 
         public void Publish<TMessage>(TMessage message, object discriminator = null)
         {
-            IObservable<TMessage> source = Observable.Create<TMessage>(observer =>
-            {
-                observer.OnNext(message);
-                return Disposable.Empty;
-            });
-
-            using (PublishCore(source, discriminator)) { }
+            PublishCore(Never<TMessage>.Observable.StartWith(message), discriminator).Dispose();
         }
 
         public IDisposable Publish<TMessage>(IObservable<TMessage> messages, object discriminator = null)
@@ -83,14 +73,18 @@ namespace Karambolo.ReactiveMvvm.Internal
             return PublishCore(messages.Concat(Never<TMessage>.Observable), discriminator);
         }
 
-        public IObservable<TMessage> Listen<TMessage>(object discriminator = null)
+        public IObservable<TMessage> Listen<TMessage>(object discriminator = null, bool includeLatest = false)
         {
             return Observable.Create<TMessage>(observer =>
             {
-                (BehaviorSubject<TMessage> subject, IDisposable refCountDisposable) = GetOrAddRegistration<TMessage>(discriminator);
+                (IObservable<TMessage> messages, IDisposable refCountDisposable) = GetOrAddRegistration<TMessage>(discriminator);
+               
+                if (!includeLatest)
+                    messages = messages.Skip(1);
+                
                 try
                 {
-                    IDisposable subscription = subject.Skip(1).Subscribe(observer);
+                    IDisposable subscription = messages.Subscribe(observer);
                     return new CompositeDisposable(subscription, refCountDisposable);
                 }
                 catch

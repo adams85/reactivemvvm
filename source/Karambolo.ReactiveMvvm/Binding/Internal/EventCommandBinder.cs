@@ -7,7 +7,6 @@ using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Reflection;
 using System.Windows.Input;
-using Karambolo.Common;
 
 namespace Karambolo.ReactiveMvvm.Binding.Internal
 {
@@ -24,9 +23,12 @@ namespace Karambolo.ReactiveMvvm.Binding.Internal
             "Click",
             "MouseUp",
         };
+
         private static readonly ConcurrentDictionary<(Type, string), ContainerMetadata> s_containerMetadataCache = new ConcurrentDictionary<(Type, string), ContainerMetadata>();
-        private static readonly MethodInfo s_bindImplMethodDefinition = Lambda.Method((EventCommandBinder binder) => binder.Bind<Delegate, object, object>(null, null, null, null, null, null))
-            .GetGenericMethodDefinition();
+        
+        private static readonly MethodInfo s_bindImplMethodDefinition = 
+            new Func<ICommand, object, IObservable<object>, ContainerMetadata, IScheduler, Action<Exception>, IDisposable>(new EventCommandBinder().Bind<Delegate, object, object>)
+                .Method.GetGenericMethodDefinition();
 
         protected virtual IEnumerable<string> DefaultEventNames => s_defaultEvents;
 
