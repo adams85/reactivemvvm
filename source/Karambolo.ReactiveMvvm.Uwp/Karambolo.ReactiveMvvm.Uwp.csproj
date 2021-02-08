@@ -2,7 +2,7 @@
   <PropertyGroup>
     <AssemblyName>Karambolo.ReactiveMvvm.Uwp</AssemblyName>
     <RootNamespace>Karambolo.ReactiveMvvm</RootNamespace>
-    <TargetFrameworks>uap10.0.16299;MonoAndroid80;MonoAndroid90</TargetFrameworks>
+    <TargetFrameworks>uap10.0.16299;MonoAndroid8.0;MonoAndroid9.0;MonoAndroid10.0</TargetFrameworks>
     <LangVersion>7.3</LangVersion>
     <UseUno Condition="'$(TargetFramework)' != 'uap10.0.16299'">true</UseUno>
   </PropertyGroup>
@@ -12,22 +12,29 @@
     <DesignTimeBuild>false</DesignTimeBuild>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(UseUno)' == 'true'">
-    <DefineConstants>$(DefineConstants);UNO</DefineConstants>
-  </PropertyGroup>
-  
-  <PropertyGroup Condition="'$(UseUno)' != 'true'">
-    <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>..\Karambolo.ReactiveMvvm\Karambolo.Public.snk</AssemblyOriginatorKeyFile>
-  </PropertyGroup>
+  <Choose>
+    <When Condition="'$(UseUno)' == 'true'">
+      <PropertyGroup>
+        <DefineConstants>$(DefineConstants);UNO</DefineConstants>
+      </PropertyGroup>
 
-  <Import Project="Properties\AssemblyInfo.props" />
+      <ItemGroup>
+        <PackageReference Include="Uno.UI" Version="2.0.527" Condition="'$(TargetFramework)' == 'MonoAndroid8.0' OR '$(TargetFramework)' == 'MonoAndroid9.0'" />
+        <PackageReference Include="Uno.UI" Version="2.3.2" Condition="'$(TargetFramework)' == 'MonoAndroid10.0'" />
+      </ItemGroup>
+    </When>
 
-  <ItemGroup Condition="'$(UseUno)' == 'true'">
-    <PackageReference Include="Uno.UI" Version="2.0.532" />
-  </ItemGroup>
-  
+    <Otherwise>
+      <PropertyGroup>
+        <SignAssembly>true</SignAssembly>
+        <AssemblyOriginatorKeyFile>..\Karambolo.ReactiveMvvm\Karambolo.Public.snk</AssemblyOriginatorKeyFile>
+      </PropertyGroup>
+    </Otherwise>
+  </Choose>
+
   <ItemGroup>
     <ProjectReference Include="..\Karambolo.ReactiveMvvm\Karambolo.ReactiveMvvm.csproj" />
   </ItemGroup>
+
+  <Import Project="Properties\AssemblyInfo.props" />
 </Project>
