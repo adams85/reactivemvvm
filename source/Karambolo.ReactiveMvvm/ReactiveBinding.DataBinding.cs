@@ -282,16 +282,16 @@ namespace Karambolo.ReactiveMvvm
             else
                 getViewValues = _ => viewValues.Select(value => ObservedValue.From(value));
 
-            Thread dataBindingThread = null;
+            var isUpdatingBinding = new AsyncLocal<bool>();
 
             IObservable<DataBindingEvent<TViewModelValue, TViewValue>> bindingEvents = view.WhenChange<object>(viewContainerAccessChain, ChangeNotificationOptions.SuppressWarnings)
                 .Where(container => container.IsAvailable && container.Value != null)
                 .Select(container => Observable.Merge(
                     view.WhenChange<TViewModelValue>(viewModelAccessChain)
-                        .Where(_ => !IsCurrentThread(Volatile.Read(ref dataBindingThread)))
+                        .Where(_ => !isUpdatingBinding.Value)
                         .Select(value => new DataBindingEvent<TViewModelValue, TViewValue>(value, container, viewValueAccessChain.Head, converter, converterParameter, converterCulture)),
                     getViewValues(container)
-                        .Where(_ => !IsCurrentThread(Volatile.Read(ref dataBindingThread)))
+                        .Where(_ => !isUpdatingBinding.Value)
                         .Select(value => new DataBindingEvent<TViewModelValue, TViewValue>(value, viewModelContainerAccessChain.GetValue<object>(view), viewModelValueAccessLink, reverseConverter, converterParameter, converterCulture))
                         .Where(bindingEvent => bindingEvent.Container.IsAvailable && bindingEvent.Container.Value != null)))
                 .Switch()
@@ -310,10 +310,14 @@ namespace Karambolo.ReactiveMvvm
                         {
                             var value = bindingEvent.FlowsToSource ? bindingEvent.SourceValue.GetValueOrDefault() : (object)bindingEvent.TargetValue.GetValueOrDefault();
 
-                            // preventing re-entrancy (assuming that change notifications occur on the current thread)
-                            Interlocked.Exchange(ref dataBindingThread, Thread.CurrentThread);
+                            // updating the value will likely trigger a change notification, which would cause an update of the binding in the opposite direction,
+                            // that is, result in undesired recursion (even worse, infinite recursion if the new value cannot be agreed);
+                            // this should be avoided if possible, so a flag is stored into the current ExecutionContext (via AsyncLocal.Value)
+                            // which can be used to detect recursive updates (unless the bound property's setter does something very weird
+                            // like scheduling the change notification to another thread while not flowing ExecutionContext)
+                            isUpdatingBinding.Value = true;
                             try { success = bindingEvent.Link.ValueAssigner(bindingEvent.Container.Value, value); }
-                            finally { Interlocked.Exchange(ref dataBindingThread, null); }
+                            finally { isUpdatingBinding.Value = false; }
                         }
                         else
                             success = false;
@@ -324,11 +328,6 @@ namespace Karambolo.ReactiveMvvm
                     ex => GetViewModelErrorHandler(errorHandler, view).Handle(ex));
 
             return new ViewModelToViewBinding<TViewModel, TViewModelValue, TView, TViewValue>(view, viewModelAccessChain, viewAccessChain, ReactiveBindingMode.TwoWay, bindingEvents, bindingDisposable);
-
-            bool IsCurrentThread(Thread thread)
-            {
-                return thread != null && thread.ManagedThreadId == Thread.CurrentThread.ManagedThreadId;
-            }
         }
 
         public static ViewModelToViewBinding<TViewModel, TViewModelValue, TView, TViewValue> BindTwoWay<TViewModel, TViewModelValue, TView, TViewValue>(
