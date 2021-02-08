@@ -9,7 +9,7 @@ namespace Karambolo.ReactiveMvvm
     public abstract class ReactiveWindow<TViewModel> : Window, IReactiveView<TViewModel>
         where TViewModel : class
     {
-        public static readonly AvaloniaProperty<TViewModel> ViewModelProperty = AvaloniaProperty.Register<ReactiveWindow<TViewModel>, TViewModel>(
+        public static readonly StyledProperty<TViewModel> ViewModelProperty = AvaloniaProperty.Register<ReactiveWindow<TViewModel>, TViewModel>(
             nameof(ViewModel),
             notifying: (sender, beforeChange) =>
             {

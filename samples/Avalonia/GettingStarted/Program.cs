@@ -12,15 +12,13 @@ namespace GettingStarted
 {
     class Program
     {
-        // This method is needed for IDE previewer infrastructure
-        public static AppBuilder BuildAvaloniaApp()
-          => AppBuilder.Configure<App>().UsePlatformDetect();
+        // Initialization code. Don't use any Avalonia, third-party APIs or any
+        // SynchronizationContext-reliant code before AppMain is called: things aren't initialized
+        // yet and stuff might break.
+        public static void Main(string[] args) => BuildAvaloniaApp().Start(AppMain, args);
 
-        // The entry point. Things aren't ready yet, so at this point
-        // you shouldn't use any Avalonia types or anything that expects
-        // a SynchronizationContext to be ready
-        public static void Main(string[] args)
-          => BuildAvaloniaApp().Start(AppMain, args);
+        // Avalonia configuration, don't remove; also used by visual designer.
+        public static AppBuilder BuildAvaloniaApp() => AppBuilder.Configure<App>().UsePlatformDetect();
 
         // Application entry point. Avalonia is completely initialized.
         static void AppMain(Application app, string[] args)

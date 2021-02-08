@@ -17,7 +17,7 @@ namespace GettingStarted.Infrastructure
             _minLevel = minLevel;
         }
 
-        public bool IsEnabled(LogEventLevel level) => level >= _minLevel;
+        public bool IsEnabled(LogEventLevel level, string area) => level >= _minLevel;
 
         LogLevel GetLogLevelFrom(LogEventLevel level)
         {
