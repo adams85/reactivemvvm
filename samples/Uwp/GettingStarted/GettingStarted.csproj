@@ -201,7 +201,7 @@
       <Name>Karambolo.ReactiveMvvm</Name>
     </ProjectReference>
   </ItemGroup>
-  <Import Project="..\..\Common\GettingStarted\GettingStarted.Common.projitems" Label="Shared" />
+  <Import Project="..\..\Shared\GettingStarted\GettingStarted.Shared.projitems" Label="Shared" />
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>
   </PropertyGroup>

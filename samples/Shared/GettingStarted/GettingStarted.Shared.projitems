@@ -6,7 +6,7 @@
     <SharedGUID>a7ceea83-0773-4e7b-a8d7-a54bedb7f44d</SharedGUID>
   </PropertyGroup>
   <PropertyGroup Label="Configuration">
-    <Import_RootNamespace>GettingStarted.Common</Import_RootNamespace>
+    <Import_RootNamespace>GettingStarted.Shared</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)Messages\LogMessage.cs" />
