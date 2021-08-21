@@ -22,7 +22,7 @@ namespace Karambolo.ReactiveMvvm.ChangeNotification.Internal
 
         public IObservable<ObservedChange> GetChanges(object container, DataMemberAccessLink link)
         {
-            return Never<ObservedChange>.Observable;
+            return CachedObservables.Never<ObservedChange>.Observable;
         }
     }
 }

@@ -16,7 +16,7 @@ namespace Karambolo.ReactiveMvvm
         private static IReactiveMvvmContext s_current;
         public static IReactiveMvvmContext Current => LazyInitializer.EnsureInitialized(ref s_current, s_getCurrentCached);
 
-        private static Func<IServiceProvider> s_serviceProviderFactory = () => BuildServiceProvider(Noop<IReactiveMvvmBuilder>.Action);
+        private static Func<IServiceProvider> s_serviceProviderFactory = () => BuildServiceProvider(CachedDelegates.Noop<IReactiveMvvmBuilder>.Action);
         private static IServiceProvider s_serviceProvider;
 
         public static IServiceProvider ServiceProvider

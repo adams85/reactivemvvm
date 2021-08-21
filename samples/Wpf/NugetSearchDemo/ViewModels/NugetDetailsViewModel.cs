@@ -18,7 +18,12 @@ namespace NugetSearchDemo.ViewModels
             _metadata = metadata;
             _defaultUrl = new Uri("https://git.io/fAlfh");
 
-            OpenPage = new Action(() => Process.Start(ProjectUrl.ToString()))
+            OpenPage = new Action(() => Process.Start(
+                new ProcessStartInfo(ProjectUrl.ToString())
+                {
+                    UseShellExecute = true,
+                    Verb = "open"
+                }))
                 .ToCommand(this);
         }
 

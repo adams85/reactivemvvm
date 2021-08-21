@@ -15,7 +15,7 @@ namespace Karambolo.ReactiveMvvm.Test.Helpers
 
         public IEnumerable<(NotificationKind, T, Exception)> AsTuple()
         {
-            return AsTuple(Identity<T>.Func);
+            return AsTuple(CachedDelegates.Identity<T>.Func);
         }
     }
 }

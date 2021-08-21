@@ -29,7 +29,7 @@ namespace Karambolo.ReactiveMvvm.Helpers
                 throw new ArgumentNullException(nameof(root));
 
             if (match == null)
-                match = True<T>.Func;
+                match = CachedDelegates.True<T>.Func;
 
             IVisual visual = includeRoot ? root : root.VisualParent;
 
@@ -68,7 +68,7 @@ namespace Karambolo.ReactiveMvvm.Helpers
                 throw new ArgumentNullException(nameof(root));
 
             if (match == null)
-                match = True<T>.Func;
+                match = CachedDelegates.True<T>.Func;
 
             if (includeRoot && root is T castRoot && match(castRoot))
                 return castRoot;

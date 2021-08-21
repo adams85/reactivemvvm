@@ -37,7 +37,7 @@ namespace Karambolo.ReactiveMvvm.Helpers
                 throw new ArgumentNullException(nameof(root));
 
             if (match == null)
-                match = True<T>.Func;
+                match = CachedDelegates.True<T>.Func;
 
             DependencyObject obj = includeRoot ? root : LogicalTreeHelper.GetParent(root);
 
@@ -72,7 +72,7 @@ namespace Karambolo.ReactiveMvvm.Helpers
                 throw new ArgumentNullException(nameof(root));
 
             if (match == null)
-                match = True<T>.Func;
+                match = CachedDelegates.True<T>.Func;
 
             if (includeRoot && root is T castRoot && match(castRoot))
                 return castRoot;
@@ -87,7 +87,7 @@ namespace Karambolo.ReactiveMvvm.Helpers
                 throw new ArgumentNullException(nameof(root));
 
             if (match == null)
-                match = True<T>.Func;
+                match = CachedDelegates.True<T>.Func;
 
             DependencyObject obj = includeRoot ? root : VisualTreeHelper.GetParent(root);
 
@@ -126,7 +126,7 @@ namespace Karambolo.ReactiveMvvm.Helpers
                 throw new ArgumentNullException(nameof(root));
 
             if (match == null)
-                match = True<T>.Func;
+                match = CachedDelegates.True<T>.Func;
 
             if (includeRoot && root is T castRoot && match(castRoot))
                 return castRoot;

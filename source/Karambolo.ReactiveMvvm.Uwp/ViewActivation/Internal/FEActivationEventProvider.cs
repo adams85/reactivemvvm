@@ -81,7 +81,7 @@ namespace Karambolo.ReactiveMvvm.ViewActivation.Internal
                 .Expand(state => ProduceActivationEvents(state, fe).FirstAsync())
                 .Select(state => state == ActivationState.Activated ?
                     fe.WhenChange(e => e.IsHitTestVisible).Select(value => value.GetValueOrDefault()) :
-                    False.Observable)
+                    CachedObservables.False.Observable)
                 .Switch()
                 .DistinctUntilChanged();
         }

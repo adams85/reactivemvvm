@@ -23,7 +23,7 @@ namespace Karambolo.ReactiveMvvm.ViewActivation.Internal
                 .FromEventPattern(
                     handler => form.Load += handler,
                     handler => form.Load -= handler)
-                .Select(True<object>.Func);
+                .Select(CachedDelegates.True<object>.Func);
         }
 
         private static IObservable<bool> ProduceDeactivationEvents(Form form)
@@ -32,7 +32,7 @@ namespace Karambolo.ReactiveMvvm.ViewActivation.Internal
                 .FromEventPattern<FormClosedEventHandler, object>(
                     handler => form.FormClosed += handler,
                     handler => form.FormClosed -= handler)
-                .Select(False<object>.Func);
+                .Select(CachedDelegates.False<object>.Func);
         }
 
         private static IObservable<bool> ProduceActivationEvents(Control control)
@@ -42,7 +42,7 @@ namespace Karambolo.ReactiveMvvm.ViewActivation.Internal
                     handler => control.ParentChanged += handler,
                     handler => control.ParentChanged -= handler)
                 .Where(e => ((Control)e.Sender).Parent != null)
-                .Select(True<object>.Func);
+                .Select(CachedDelegates.True<object>.Func);
         }
 
         private static IObservable<bool> ProduceDeactivationEvents(Control control)
@@ -64,7 +64,7 @@ namespace Karambolo.ReactiveMvvm.ViewActivation.Internal
                 events = events.Merge(rootClosedEvents);
             }
 
-            return events.Select(False<object>.Func);
+            return events.Select(CachedDelegates.False<object>.Func);
         }
 
         public IObservable<bool> GetActivationEvents(IActivableView view)
@@ -77,7 +77,7 @@ namespace Karambolo.ReactiveMvvm.ViewActivation.Internal
 
             Func<bool> isDesignMode = LazyInitializer.EnsureInitialized(ref _isDesignMode, () => GetIsDesignMode(control));
             if (isDesignMode())
-                return Empty<bool>.Observable;
+                return CachedObservables.Empty<bool>.Observable;
 
             Func<IObservable<bool>> produceActivationEvents, produceDeactivationEvents;
             if (control is Form form)
@@ -105,7 +105,7 @@ namespace Karambolo.ReactiveMvvm.ViewActivation.Internal
                         .Throttle(TimeSpan.FromMilliseconds(10))
                         .Select(e => ((Control)e.Sender).Visible)
                         .StartWith(control.Visible) :
-                    ReactiveMvvm.Internal.False.Observable)
+                    CachedObservables.False.Observable)
                 .Switch()
                 .DistinctUntilChanged();
         }
@@ -113,14 +113,14 @@ namespace Karambolo.ReactiveMvvm.ViewActivation.Internal
         private Func<bool> GetIsDesignMode(Control control)
         {
             if (LicenseManager.UsageMode == LicenseUsageMode.Designtime)
-                return Common.True.Func;
+                return CachedDelegates.True.Func;
 
             do
                 if (control.Site?.DesignMode == true)
-                    return Common.True.Func;
+                    return CachedDelegates.True.Func;
             while ((control = control.Parent) != null);
 
-            return Common.False.Func;
+            return CachedDelegates.False.Func;
         }
     }
 }

@@ -21,6 +21,9 @@
       <ItemGroup>
         <PackageReference Include="Uno.UI" Version="2.0.527" Condition="'$(TargetFramework)' == 'MonoAndroid8.0' OR '$(TargetFramework)' == 'MonoAndroid9.0'" />
         <PackageReference Include="Uno.UI" Version="2.3.2" Condition="'$(TargetFramework)' == 'MonoAndroid10.0'" />
+        
+        <!-- https://github.com/unoplatform/uno/issues/6137 -->
+        <PackageReference Include="Uno.SourceGenerationTasks" Version="3.0.2" />
       </ItemGroup>
     </When>
 

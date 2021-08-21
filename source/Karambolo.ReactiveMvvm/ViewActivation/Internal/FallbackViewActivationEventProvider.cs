@@ -16,7 +16,7 @@ namespace Karambolo.ReactiveMvvm.ViewActivation.Internal
 
         public IObservable<bool> GetActivationEvents(IActivableView view)
         {
-            return Never<bool>.Observable;
+            return CachedObservables.Never<bool>.Observable;
         }
     }
 }

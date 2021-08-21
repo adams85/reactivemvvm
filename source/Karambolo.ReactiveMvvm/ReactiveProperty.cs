@@ -14,7 +14,7 @@ namespace Karambolo.ReactiveMvvm
     {
         public static ReactiveProperty<TProperty> Default<TProperty>(TProperty initialValue = default, IScheduler scheduler = null)
         {
-            return new ReactiveProperty<TProperty>(Never<TProperty>.Observable, initialValue: initialValue, scheduler: scheduler);
+            return new ReactiveProperty<TProperty>(CachedObservables.Never<TProperty>.Observable, initialValue: initialValue, scheduler: scheduler);
         }
 
         private static ReactiveProperty<TProperty> ToPropertyCore<TContainer, TProperty>(IObservable<TProperty> source,

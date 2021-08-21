@@ -11,8 +11,8 @@ namespace Karambolo.ReactiveMvvm
 {
     public sealed class ReactiveProperty<T> : IObservedErrorSource, IDisposable
     {
-        private static readonly IDisposable s_notSubscribed = Disposable.Create(Noop.Action);
-        private static readonly IDisposable s_subscribing = Disposable.Create(Noop.Action);
+        private static readonly IDisposable s_notSubscribed = Disposable.Create(CachedDelegates.Noop.Action);
+        private static readonly IDisposable s_subscribing = Disposable.Create(CachedDelegates.Noop.Action);
         private readonly IObservable<T> _source;
         private readonly Action<T> _onChanging;
         private readonly Action<T> _onChanged;
@@ -33,8 +33,8 @@ namespace Karambolo.ReactiveMvvm
 
             _currentValue = initialValue;
 
-            _onChanging = onChanging ?? Noop<T>.Action;
-            _onChanged = onChanged ?? Noop<T>.Action;
+            _onChanging = onChanging ?? CachedDelegates.Noop<T>.Action;
+            _onChanged = onChanged ?? CachedDelegates.Noop<T>.Action;
 
             _comparer = comparer ?? EqualityComparer<T>.Default;
             _scheduler = scheduler;

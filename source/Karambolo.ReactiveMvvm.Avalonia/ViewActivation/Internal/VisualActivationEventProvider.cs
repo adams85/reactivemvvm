@@ -4,6 +4,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.VisualTree;
 using Karambolo.Common;
+using Karambolo.ReactiveMvvm.Internal;
 
 namespace Karambolo.ReactiveMvvm.ViewActivation.Internal
 {
@@ -20,7 +21,7 @@ namespace Karambolo.ReactiveMvvm.ViewActivation.Internal
                 .FromEventPattern(
                     handler => topLevel.Opened += handler,
                     handler => topLevel.Opened -= handler)
-                .Select(True<object>.Func);
+                .Select(CachedDelegates.True<object>.Func);
         }
 
         private static IObservable<bool> ProduceDeactivationEvents(TopLevel topLevel)
@@ -29,7 +30,7 @@ namespace Karambolo.ReactiveMvvm.ViewActivation.Internal
                 .FromEventPattern(
                     handler => topLevel.Closed += handler,
                     handler => topLevel.Closed -= handler)
-                .Select(False<object>.Func);
+                .Select(CachedDelegates.False<object>.Func);
         }
 
         private static IObservable<bool> ProduceActivationEvents(IVisual visual)
@@ -38,7 +39,7 @@ namespace Karambolo.ReactiveMvvm.ViewActivation.Internal
                 .FromEventPattern<VisualTreeAttachmentEventArgs>(
                     handler => visual.AttachedToVisualTree += handler,
                     handler => visual.AttachedToVisualTree -= handler)
-                .Select(True<object>.Func);
+                .Select(CachedDelegates.True<object>.Func);
         }
 
         private static IObservable<bool> ProduceDeactivationEvents(IVisual visual)
@@ -57,7 +58,7 @@ namespace Karambolo.ReactiveMvvm.ViewActivation.Internal
                 events = events.Merge(rootClosedEvents);
             }
 
-            return events.Select(False<object>.Func);
+            return events.Select(CachedDelegates.False<object>.Func);
         }
 
         public IObservable<bool> GetActivationEvents(IActivableView view)
@@ -81,7 +82,7 @@ namespace Karambolo.ReactiveMvvm.ViewActivation.Internal
                 .Expand(isActivated => (!isActivated ? produceActivationEvents() : produceDeactivationEvents()).FirstAsync())
                 .Select(isActivated => isActivated ?
                     visual.WhenChange(e => e.IsVisible).Select(value => value.GetValueOrDefault()) :
-                    ReactiveMvvm.Internal.False.Observable)
+                    CachedObservables.False.Observable)
                 .Switch()
                 .DistinctUntilChanged();
         }

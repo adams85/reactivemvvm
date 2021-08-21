@@ -2,6 +2,7 @@
 using System.Reactive.Linq;
 using System.Windows;
 using Karambolo.Common;
+using Karambolo.ReactiveMvvm.Internal;
 
 namespace Karambolo.ReactiveMvvm.ViewActivation.Internal
 {
@@ -18,7 +19,7 @@ namespace Karambolo.ReactiveMvvm.ViewActivation.Internal
                 .FromEventPattern<RoutedEventHandler, object>(
                     handler => fe.Loaded += handler,
                     handler => fe.Loaded -= handler)
-                .Select(True<object>.Func);
+                .Select(CachedDelegates.True<object>.Func);
         }
 
         private static IObservable<bool> ProduceDeactivationEvents(FrameworkElement fe)
@@ -39,7 +40,7 @@ namespace Karambolo.ReactiveMvvm.ViewActivation.Internal
                 events = events.Merge(rootClosedEvents);
             }
 
-            return events.Select(False<object>.Func);
+            return events.Select(CachedDelegates.False<object>.Func);
         }
 
         public IObservable<bool> GetActivationEvents(IActivableView view)
@@ -51,7 +52,7 @@ namespace Karambolo.ReactiveMvvm.ViewActivation.Internal
                 .Expand(isActivated => (!isActivated ? ProduceActivationEvents(fe) : ProduceDeactivationEvents(fe)).FirstAsync())
                 .Select(isActivated => isActivated ?
                     fe.WhenChange(e => e.IsHitTestVisible).Select(value => value.GetValueOrDefault()) :
-                    ReactiveMvvm.Internal.False.Observable)
+                    CachedObservables.False.Observable)
                 .Switch()
                 .DistinctUntilChanged();
         }

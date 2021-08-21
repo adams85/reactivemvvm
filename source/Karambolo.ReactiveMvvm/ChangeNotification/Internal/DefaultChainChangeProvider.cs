@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
 using Karambolo.ReactiveMvvm.Expressions;
+using Karambolo.ReactiveMvvm.Internal;
 using Karambolo.ReactiveMvvm.Properties;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -56,7 +57,7 @@ namespace Karambolo.ReactiveMvvm.ChangeNotification.Internal
                 GetLinkChangesCore(container.Value, link, options)
                     .Select(change => change.Link.ValueAccessor(change.Container))
                     .StartWith(link.ValueAccessor(container.Value)) :
-                ReactiveMvvm.Internal.Default<ObservedValue<object>>.Observable;
+                CachedObservables.Default<ObservedValue<object>>.Observable;
         }
 
         public IObservable<ObservedValue<object>> GetChanges(object root, DataMemberAccessChain chain, ChangeNotificationOptions options)

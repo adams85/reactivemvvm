@@ -73,7 +73,7 @@ namespace Karambolo.ReactiveMvvm
                     Observable.FromEventPattern(handler => command.Value.CanExecuteChanged += handler, handler => command.Value.CanExecuteChanged -= handler)
                         .Select(_ => command.Value)
                         .StartWith(command.Value) :
-                    Empty<ICommand>.Observable)
+                    CachedObservables.Empty<ICommand>.Observable)
                 .Switch();
 
             return InvokeCommandSyncCore(

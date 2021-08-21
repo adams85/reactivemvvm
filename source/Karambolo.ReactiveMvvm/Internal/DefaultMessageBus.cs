@@ -89,7 +89,7 @@ namespace Karambolo.ReactiveMvvm.Internal
             var registration = Registration<TMessage>.Acquire(this, discriminator);
             try
             {
-                IDisposable subscription = messages.Concat(Never<TMessage>.Observable).Subscribe(registration.Subject);
+                IDisposable subscription = messages.Concat(CachedObservables.Never<TMessage>.Observable).Subscribe(registration.Subject);
                 return new CompositeDisposable(subscription, registration);
             }
             catch

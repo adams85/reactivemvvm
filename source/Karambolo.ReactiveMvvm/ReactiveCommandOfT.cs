@@ -7,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Karambolo.Common;
 using Karambolo.ReactiveMvvm.ErrorHandling;
+using Karambolo.ReactiveMvvm.Internal;
 using Karambolo.ReactiveMvvm.Properties;
 
 namespace Karambolo.ReactiveMvvm
@@ -30,7 +31,7 @@ namespace Karambolo.ReactiveMvvm
 
             public virtual IObservable<bool> GetCanExecute(IObservable<bool> canExecute, Func<Exception, IObservable<bool>> errorFilter)
             {
-                return canExecute != null ? canExecute.Catch(errorFilter) : Internal.True.Observable;
+                return canExecute != null ? canExecute.Catch(errorFilter) : CachedObservables.True.Observable;
             }
         }
 
