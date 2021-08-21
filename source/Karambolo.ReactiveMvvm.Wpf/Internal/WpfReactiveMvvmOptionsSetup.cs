@@ -5,7 +5,7 @@ using Microsoft.Extensions.Options;
 
 namespace Karambolo.ReactiveMvvm.Internal
 {
-    internal class WpfReactiveMvvmOptionsSetup : IConfigureOptions<ReactiveMvvmOptions>
+    internal sealed class WpfReactiveMvvmOptionsSetup : IConfigureOptions<ReactiveMvvmOptions>
     {
         public void Configure(ReactiveMvvmOptions options)
         {

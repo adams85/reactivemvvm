@@ -3,7 +3,7 @@ using Karambolo.ReactiveMvvm.Expressions;
 
 namespace Karambolo.ReactiveMvvm.Binding.Internal
 {
-    internal class DataBindingEvent<TSource, TTarget> : IDataBindingEvent<TSource, TTarget>
+    internal sealed class DataBindingEvent<TSource, TTarget> : IDataBindingEvent<TSource, TTarget>
     {
         private readonly DataBindingEventFlags _flags;
 

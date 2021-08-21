@@ -18,7 +18,7 @@ namespace Karambolo.ReactiveMvvm
 {
     public static class ReactiveMvvmServiceCollectionExtensions
     {
-        private class Builder : IReactiveMvvmBuilder
+        private sealed class Builder : IReactiveMvvmBuilder
         {
             private readonly Dictionary<Assembly, Type[]> _assemblyTypes;
 

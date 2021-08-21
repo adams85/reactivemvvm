@@ -4,7 +4,7 @@ using Microsoft.Extensions.Options;
 
 namespace Karambolo.ReactiveMvvm.Internal
 {
-    internal class WinFormsReactiveMvvmOptionsSetup : IConfigureOptions<ReactiveMvvmOptions>
+    internal sealed class WinFormsReactiveMvvmOptionsSetup : IConfigureOptions<ReactiveMvvmOptions>
     {
         public void Configure(ReactiveMvvmOptions options)
         {

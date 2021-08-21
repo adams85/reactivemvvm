@@ -7,11 +7,11 @@ using Karambolo.ReactiveMvvm.Properties;
 
 namespace Karambolo.ReactiveMvvm.Expressions.Internal
 {
-    internal class DataMemberAccessExpressionNormalizer : ExpressionVisitor
+    internal sealed class DataMemberAccessExpressionNormalizer : ExpressionVisitor
     {
         public static readonly DataMemberAccessExpressionNormalizer Instance = new DataMemberAccessExpressionNormalizer();
 
-        protected DataMemberAccessExpressionNormalizer() { }
+        private DataMemberAccessExpressionNormalizer() { }
 
         public override Expression Visit(Expression node)
         {

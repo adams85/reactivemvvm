@@ -2,7 +2,7 @@
 
 namespace Karambolo.ReactiveMvvm.Binding.Internal
 {
-    internal class CommandBindingEvent<TCommand, TContainer> : ICommandBindingEvent<TCommand, TContainer>
+    internal sealed class CommandBindingEvent<TCommand, TContainer> : ICommandBindingEvent<TCommand, TContainer>
         where TCommand : ICommand
     {
         public CommandBindingEvent(ObservedValue<TCommand> command, ObservedValue<TContainer> container, string eventName, ICommandBinderProvider binderProvider)
