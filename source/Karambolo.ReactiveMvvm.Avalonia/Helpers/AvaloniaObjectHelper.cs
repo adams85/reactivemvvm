@@ -48,8 +48,7 @@ namespace Karambolo.ReactiveMvvm.Helpers
             where T : class, IVisual
         {
             T result;
-            int childCount = visual.VisualChildren.Count;
-            for (int i = 0; i < childCount; i++)
+            for (int i = 0, n = visual.VisualChildren.Count; i < n; i++)
             {
                 IVisual child = visual.VisualChildren[i];
                 if (child is T castChild && match(castChild))

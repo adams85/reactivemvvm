@@ -48,8 +48,7 @@ namespace Karambolo.ReactiveMvvm.Helpers
             where T : DependencyObject
         {
             T result;
-            int childCount = VisualTreeHelper.GetChildrenCount(obj);
-            for (int i = 0; i < childCount; i++)
+            for (int i = 0, n = VisualTreeHelper.GetChildrenCount(obj); i < n; i++)
             {
                 DependencyObject child = VisualTreeHelper.GetChild(obj, i);
                 if (child is T castChild && match(castChild))

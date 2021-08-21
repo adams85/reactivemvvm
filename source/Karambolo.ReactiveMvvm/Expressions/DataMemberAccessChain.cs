@@ -103,7 +103,7 @@ namespace Karambolo.ReactiveMvvm.Expressions
             ObservedValue<object> observedValue = root;
 
             var i = 0;
-            for (var n = Length - 1; i < n; i++)
+            for (int n = Length - 1; i < n; i++)
                 if (observedValue.Value == null || !(observedValue = _links[i].ValueAccessor(observedValue.Value)).IsAvailable)
                     return false;
 
