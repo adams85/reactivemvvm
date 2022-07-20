@@ -238,6 +238,8 @@ namespace Karambolo.ReactiveMvvm
 
         #region Two-Way (view model <-> view)
 
+        private static readonly AsyncLocal<bool> s_isUpdatingBinding = new AsyncLocal<bool>();
+
         public static ViewModelToViewBinding<TViewModel, TViewModelValue, TView, TViewValue> BindTwoWay<TViewModel, TViewModelValue, TView, TViewValue>(
             this TView view, TViewModel witnessViewModel,
             Expression<Func<TViewModel, TViewModelValue>> viewModelAccessExpression,
@@ -282,16 +284,14 @@ namespace Karambolo.ReactiveMvvm
             else
                 getViewValues = _ => viewValues.Select(value => ObservedValue.From(value));
 
-            var isUpdatingBinding = new AsyncLocal<bool>();
-
             IObservable<DataBindingEvent<TViewModelValue, TViewValue>> bindingEvents = view.WhenChange<object>(viewContainerAccessChain, ChangeNotificationOptions.SuppressWarnings)
                 .Where(container => container.IsAvailable && container.Value != null)
                 .Select(container => Observable.Merge(
                     view.WhenChange<TViewModelValue>(viewModelAccessChain)
-                        .Where(_ => !isUpdatingBinding.Value)
+                        .Where(_ => !s_isUpdatingBinding.Value)
                         .Select(value => new DataBindingEvent<TViewModelValue, TViewValue>(value, container, viewValueAccessChain.Head, converter, converterParameter, converterCulture)),
                     getViewValues(container)
-                        .Where(_ => !isUpdatingBinding.Value)
+                        .Where(_ => !s_isUpdatingBinding.Value)
                         .Select(value => new DataBindingEvent<TViewModelValue, TViewValue>(value, viewModelContainerAccessChain.GetValue<object>(view), viewModelValueAccessLink, reverseConverter, converterParameter, converterCulture))
                         .Where(bindingEvent => bindingEvent.Container.IsAvailable && bindingEvent.Container.Value != null)))
                 .Switch()
@@ -315,9 +315,9 @@ namespace Karambolo.ReactiveMvvm
                             // this should be avoided if possible, so a flag is stored into the current ExecutionContext (via AsyncLocal.Value)
                             // which can be used to detect recursive updates (unless the bound property's setter does something very weird
                             // like scheduling the change notification to another thread while not flowing ExecutionContext)
-                            isUpdatingBinding.Value = true;
+                            s_isUpdatingBinding.Value = true;
                             try { success = bindingEvent.Link.ValueAssigner(bindingEvent.Container.Value, value); }
-                            finally { isUpdatingBinding.Value = false; }
+                            finally { s_isUpdatingBinding.Value = false; }
                         }
                         else
                             success = false;
