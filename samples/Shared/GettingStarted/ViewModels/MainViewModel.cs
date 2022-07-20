@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Reactive;
-using System.Reactive.Concurrency;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Threading;
@@ -18,8 +17,7 @@ namespace GettingStarted.ViewModels
         private readonly IReactiveMvvmContext _context;
         private readonly ILogger _logger;
 
-        // it's recommended to register and resolve the view models from the IoC container (see ReactiveMvvmBuilderExtensions.RegisterViewModels),
-        // so you can inject your dependencies through constructor parameters
+        // you can inject your dependencies through constructor parameters
         public MainViewModel(IReactiveMvvmContext context) : base(context.DefaultErrorHandler)
         {
             _context = context;
@@ -51,12 +49,12 @@ namespace GettingStarted.ViewModels
             SelectFileInteraction = new Interaction<Unit, string>();
         }
 
-        // use rmcd snippet to quickly insert notifying properties 
+        // use rmcd snippet to quickly insert commands 
         public ReactiveCommand<Unit, Unit> ToggleChildCommand { get; }
 
         public ReactiveCommand<Unit, Unit> StartInteractionCommand { get; }
 
-        // use rint snippet to quickly insert notifying properties 
+        // use rint snippet to quickly insert interactions 
         public Interaction<Unit, string> SelectFileInteraction { get; }
 
         // use rprop snippet to quickly insert properties which notifies of changes

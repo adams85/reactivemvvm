@@ -35,11 +35,6 @@ namespace GettingStarted.Views
             // (you may dispose the returned disposable if you want to cancel activition, however, it's safe to omit to dispose it otherwise)
             this.EnableViewActivation();
 
-            // a) view activation is opt-in: to enable it, you need to call EnableViewActivation in the constructor,
-            // then override OnViewActivated to respond to activation/deactivation events
-            // (you may dispose the returned disposable if you want to cancel activition, however, it's safe to omit to dispose it otherwise)
-            this.EnableViewActivation();
-
             // b) message bus enables you to broadcast messages to other (unknown) application components
             // (but keep in mind that usually there are better ways to share information so use message bus as a last resort!)
 

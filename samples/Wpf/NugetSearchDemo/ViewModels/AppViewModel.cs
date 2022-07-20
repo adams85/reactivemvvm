@@ -47,8 +47,7 @@ namespace NugetSearchDemo.ViewModels
 
         private readonly SourceRepository _sourceRepository;
 
-        // it's recommended to register and resolve the view models from the IoC container (see ReactiveMvvmBuilderExtensions.RegisterViewModels),
-        // so you can inject your dependencies through constructor parameters
+        // you can inject your dependencies through constructor parameters
         public AppViewModel(IReactiveMvvmContext context, SourceRepository sourceRepository)
         {
             _sourceRepository = sourceRepository;
