@@ -5,6 +5,7 @@
              xmlns:views="clr-namespace:GettingStarted.Views"
              xmlns:viewModels="clr-namespace:GettingStarted.ViewModels"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:CompileBindings="True"
              x:Class="GettingStarted.Views.ChildView">
   <TextBlock Name="CurrentTimeTextBlock" FontFamily="Calibri" FontSize="28" HorizontalAlignment="Center" VerticalAlignment="Center"></TextBlock>
 </UserControl>

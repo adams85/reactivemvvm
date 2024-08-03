@@ -18,7 +18,7 @@ namespace GettingStarted.Views
 {
     // inherit top-level views from ReactiveWindow to get type-safe data/command binding and view activation capabilities
     // (you may implement ILifetime if you want to manually control the lifetime of the view)
-    public class MainView : ReactiveWindow<MainViewModel>, ILifetime
+    public partial class MainView : ReactiveWindow<MainViewModel>, ILifetime
     {
         private readonly CompositeDisposable _attachedDisposables = new CompositeDisposable();
         private readonly SerialDisposable _selectFileInteractionDisposable;

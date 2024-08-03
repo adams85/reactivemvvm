@@ -2,38 +2,11 @@
   <PropertyGroup>
     <AssemblyName>Karambolo.ReactiveMvvm.Uwp</AssemblyName>
     <RootNamespace>Karambolo.ReactiveMvvm</RootNamespace>
-    <TargetFrameworks>uap10.0.16299;MonoAndroid8.0;MonoAndroid9.0;MonoAndroid10.0</TargetFrameworks>
+    <TargetFrameworks>uap10.0.16299</TargetFrameworks>
     <LangVersion>7.3</LangVersion>
-    <UseUno Condition="'$(TargetFramework)' != 'uap10.0.16299'">true</UseUno>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>..\Karambolo.ReactiveMvvm\Karambolo.Public.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
-
-  <!-- https://www.jocheojeda.com/2019/07/31/how-to-fix-error-msb4044-the-filterassemblies-task-was-not-given-a-value-for-the-required-parameter-designtimebuild/ -->
-  <PropertyGroup Label="Android DesignTimeBuild error workaround">
-    <DesignTimeBuild>false</DesignTimeBuild>
-  </PropertyGroup>
-
-  <Choose>
-    <When Condition="'$(UseUno)' == 'true'">
-      <PropertyGroup>
-        <DefineConstants>$(DefineConstants);UNO</DefineConstants>
-      </PropertyGroup>
-
-      <ItemGroup>
-        <PackageReference Include="Uno.UI" Version="2.0.527" Condition="'$(TargetFramework)' == 'MonoAndroid8.0' OR '$(TargetFramework)' == 'MonoAndroid9.0'" />
-        <PackageReference Include="Uno.UI" Version="2.3.2" Condition="'$(TargetFramework)' == 'MonoAndroid10.0'" />
-        
-        <!-- https://github.com/unoplatform/uno/issues/6137 -->
-        <PackageReference Include="Uno.SourceGenerationTasks" Version="3.0.2" />
-      </ItemGroup>
-    </When>
-
-    <Otherwise>
-      <PropertyGroup>
-        <SignAssembly>true</SignAssembly>
-        <AssemblyOriginatorKeyFile>..\Karambolo.ReactiveMvvm\Karambolo.Public.snk</AssemblyOriginatorKeyFile>
-      </PropertyGroup>
-    </Otherwise>
-  </Choose>
 
   <ItemGroup>
     <ProjectReference Include="..\Karambolo.ReactiveMvvm\Karambolo.ReactiveMvvm.csproj" />

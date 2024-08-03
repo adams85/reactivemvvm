@@ -5,6 +5,7 @@ using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Karambolo.ReactiveMvvm;
+using NuGet.Common;
 using NuGet.Protocol.Core.Types;
 
 namespace NugetSearchDemo.ViewModels
@@ -116,7 +117,7 @@ namespace NugetSearchDemo.ViewModels
 
             var filter = new SearchFilter(false);
             var searchResource = await _sourceRepository.GetResourceAsync<PackageSearchResource>();
-            var searchMetadata = await searchResource.SearchAsync(term, filter, 0, 10, null, token);
+            var searchMetadata = await searchResource.SearchAsync(term, filter, 0, 10, NullLogger.Instance, token);
 
             return searchMetadata.Select(x => new NugetDetailsViewModel(x));
         }

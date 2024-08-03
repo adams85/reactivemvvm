@@ -16,7 +16,7 @@ namespace NugetSearchDemo.ViewModels
         public NugetDetailsViewModel(IPackageSearchMetadata metadata)
         {
             _metadata = metadata;
-            _defaultUrl = new Uri("https://git.io/fAlfh");
+            _defaultUrl = new Uri("https://raw.githubusercontent.com/NuGet/Media/main/Images/MainLogo/128x128/nuget_128.png");
 
             OpenPage = new Action(() => Process.Start(
                 new ProcessStartInfo(ProjectUrl.ToString())

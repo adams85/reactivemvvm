@@ -22,8 +22,8 @@ namespace Karambolo.ReactiveMvvm.Helpers
             return s_avaloniaPropertyCache.GetOrAdd((type, propertyName), ((Type type, string propertyName) key) => GetAvaloniaProperty(key.type, key.propertyName));
         }
 
-        public static T FindVisualAncestor<T>(this IVisual root, Func<T, bool> match = null, bool includeRoot = true)
-            where T : class, IVisual
+        public static T FindVisualAncestor<T>(this Visual root, Func<T, bool> match = null, bool includeRoot = true)
+            where T : Visual
         {
             if (root == null)
                 throw new ArgumentNullException(nameof(root));
@@ -31,26 +31,25 @@ namespace Karambolo.ReactiveMvvm.Helpers
             if (match == null)
                 match = CachedDelegates.True<T>.Func;
 
-            IVisual visual = includeRoot ? root : root.VisualParent;
+            Visual visual = includeRoot ? root : root.GetVisualParent();
 
             while (visual != null)
             {
                 if (visual is T castObj && match(castObj))
                     return castObj;
 
-                visual = visual.VisualParent;
+                visual = visual.GetVisualParent();
             }
 
             return null;
         }
 
-        private static T FindVisualDescendantCore<T>(this IVisual visual, Func<T, bool> match)
-            where T : class, IVisual
+        private static T FindVisualDescendantCore<T>(this Visual visual, Func<T, bool> match)
+            where T : Visual
         {
             T result;
-            for (int i = 0, n = visual.VisualChildren.Count; i < n; i++)
+            foreach (Visual child in visual.GetVisualChildren())
             {
-                IVisual child = visual.VisualChildren[i];
                 if (child is T castChild && match(castChild))
                     return castChild;
                 else if ((result = child.FindVisualDescendantCore(match)) != null)
@@ -60,8 +59,8 @@ namespace Karambolo.ReactiveMvvm.Helpers
             return null;
         }
 
-        public static T FindVisualDescendant<T>(this IVisual root, Func<T, bool> match = null, bool includeRoot = true)
-            where T : class, IVisual
+        public static T FindVisualDescendant<T>(this Visual root, Func<T, bool> match = null, bool includeRoot = true)
+            where T : Visual
         {
             if (root == null)
                 throw new ArgumentNullException(nameof(root));

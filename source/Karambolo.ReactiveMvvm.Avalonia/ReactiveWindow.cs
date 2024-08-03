@@ -9,19 +9,9 @@ namespace Karambolo.ReactiveMvvm
     public abstract class ReactiveWindow<TViewModel> : Window, IReactiveView<TViewModel>
         where TViewModel : class
     {
-        public static readonly StyledProperty<TViewModel> ViewModelProperty = AvaloniaProperty.Register<ReactiveWindow<TViewModel>, TViewModel>(
-            nameof(ViewModel),
-            notifying: (sender, beforeChange) =>
-            {
-                if (!beforeChange)
-                    ((ReactiveWindow<TViewModel>)sender).AdjustDataContext(@this => @this.DataContext = @this.ViewModel);
-            });
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("AvaloniaProperty", "AVP1002", Justification = "Generic " + nameof(AvaloniaProperty) + " is expected here.")]
+        public static readonly StyledProperty<TViewModel> ViewModelProperty = AvaloniaProperty.Register<ReactiveWindow<TViewModel>, TViewModel>(nameof(ViewModel));
         private bool _adjustingDataContext;
-
-        public ReactiveWindow()
-        {
-            DataContextChanged += (sender, args) => ((ReactiveWindow<TViewModel>)sender).AdjustDataContext(@this => @this.ViewModel = @this.DataContext as TViewModel);
-        }
 
         private void AdjustDataContext(Action<ReactiveWindow<TViewModel>> update)
         {
@@ -48,6 +38,20 @@ namespace Karambolo.ReactiveMvvm
         {
             get => ViewModel;
             set => ViewModel = (TViewModel)value;
+        }
+
+        protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
+        {
+            base.OnPropertyChanged(change);
+
+            if (change.Property == DataContextProperty)
+            {
+                AdjustDataContext(@this => @this.ViewModel = @this.DataContext as TViewModel);
+            }
+            else if (change.Property == ViewModelProperty)
+            {
+                AdjustDataContext(@this => @this.DataContext = @this.ViewModel);
+            }
         }
 
         protected virtual void OnViewActivated(ViewActivationLifetime activationLifetime) { }

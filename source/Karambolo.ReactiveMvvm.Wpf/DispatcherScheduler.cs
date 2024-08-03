@@ -1,72 +1,70 @@
-﻿#if UNO
+﻿// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT License.
+// See the LICENSE file in the project root for more information. 
+
+// Source: https://github.com/dotnet/reactive/blob/rxnet-v6.0.1/Rx.NET/Source/src/System.Reactive/Platforms/Desktop/Concurrency/DispatcherScheduler.cs
+
+#if BACKPORT_SCHEDULER
+
 using System.Reactive.Disposables;
-using System.Runtime.ExceptionServices;
 using System.Threading;
-using Windows.UI.Core;
-using Windows.UI.Xaml;
 
 namespace System.Reactive.Concurrency
 {
-    // COPIED FROM https://github.com/dotnet/reactive/blob/rxnet-v4.1.5/Rx.NET/Source/src/System.Reactive/Platforms/UWP/Concurrency/CoreDispatcherScheduler.cs
-
     /// <summary>
-    /// Represents an object that schedules units of work on a <see cref="CoreDispatcher"/>.
+    /// Represents an object that schedules units of work on a <see cref="System.Windows.Threading.Dispatcher"/>.
     /// </summary>
     /// <remarks>
-    /// This scheduler type is typically used indirectly through the <see cref="Linq.DispatcherObservable.ObserveOnDispatcher{TSource}(IObservable{TSource})"/> and <see cref="Linq.DispatcherObservable.SubscribeOnDispatcher{TSource}(IObservable{TSource})"/> methods that use the current Dispatcher.
+    /// This scheduler type is typically used indirectly through the <see cref="Linq.DispatcherObservable.ObserveOnDispatcher{TSource}(IObservable{TSource})"/> and <see cref="Linq.DispatcherObservable.SubscribeOnDispatcher{TSource}(IObservable{TSource})"/> methods that use the Dispatcher on the calling thread.
     /// </remarks>
-    //[CLSCompliant(false)]
-    public sealed class CoreDispatcherScheduler : LocalScheduler, ISchedulerPeriodic
+    public class DispatcherScheduler : LocalScheduler, ISchedulerPeriodic
     {
         /// <summary>
-        /// Constructs a <see cref="CoreDispatcherScheduler"/> that schedules units of work on the given <see cref="CoreDispatcher"/>.
+        /// Gets the scheduler that schedules work on the <see cref="System.Windows.Threading.Dispatcher"/> for the current thread.
         /// </summary>
-        /// <param name="dispatcher">Dispatcher to schedule work on.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="dispatcher"/> is <c>null</c>.</exception>
-        public CoreDispatcherScheduler(CoreDispatcher dispatcher)
+        public static DispatcherScheduler Current
         {
-            Dispatcher = dispatcher ?? throw new ArgumentNullException(nameof(dispatcher));
-            Priority = CoreDispatcherPriority.Normal;
+            get
+            {
+                var dispatcher = System.Windows.Threading.Dispatcher.FromThread(Thread.CurrentThread)
+                    ?? throw new InvalidOperationException(Karambolo.ReactiveMvvm.Properties.WpfResources.NoDispatcherCurrentThread);
+                return new DispatcherScheduler(dispatcher);
+            }
         }
 
         /// <summary>
-        /// Constructs a <see cref="CoreDispatcherScheduler"/> that schedules units of work on the given <see cref="CoreDispatcher"/> with the given priority.
+        /// Constructs a <see cref="DispatcherScheduler"/> that schedules units of work on the given <see cref="System.Windows.Threading.Dispatcher"/>.
         /// </summary>
-        /// <param name="dispatcher">Dispatcher to schedule work on.</param>
-        /// <param name="priority">Priority for scheduled units of work.</param>
+        /// <param name="dispatcher"><see cref="DispatcherScheduler"/> to schedule work on.</param>
         /// <exception cref="ArgumentNullException"><paramref name="dispatcher"/> is <c>null</c>.</exception>
-        public CoreDispatcherScheduler(CoreDispatcher dispatcher, CoreDispatcherPriority priority)
+        public DispatcherScheduler(System.Windows.Threading.Dispatcher dispatcher)
+        {
+            Dispatcher = dispatcher ?? throw new ArgumentNullException(nameof(dispatcher));
+            Priority = System.Windows.Threading.DispatcherPriority.Normal;
+
+        }
+
+        /// <summary>
+        /// Constructs a <see cref="DispatcherScheduler"/> that schedules units of work on the given <see cref="System.Windows.Threading.Dispatcher"/> at the given priority.
+        /// </summary>
+        /// <param name="dispatcher"><see cref="DispatcherScheduler"/> to schedule work on.</param>
+        /// <param name="priority">Priority at which units of work are scheduled.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="dispatcher"/> is <c>null</c>.</exception>
+        public DispatcherScheduler(System.Windows.Threading.Dispatcher dispatcher, System.Windows.Threading.DispatcherPriority priority)
         {
             Dispatcher = dispatcher ?? throw new ArgumentNullException(nameof(dispatcher));
             Priority = priority;
         }
 
         /// <summary>
-        /// Gets the scheduler that schedules work on the <see cref="CoreDispatcher"/> associated with the current Window.
+        /// Gets the <see cref="System.Windows.Threading.Dispatcher"/> associated with the <see cref="DispatcherScheduler"/>.
         /// </summary>
-        public static CoreDispatcherScheduler Current
-        {
-            get
-            {
-                var window = Window.Current;
-                if (window == null)
-                {
-                    throw new InvalidOperationException($"No current {nameof(Window)} object found to obtain a {nameof(CoreDispatcher)} from.");
-                }
-
-                return new CoreDispatcherScheduler(window.Dispatcher);
-            }
-        }
+        public System.Windows.Threading.Dispatcher Dispatcher { get; }
 
         /// <summary>
-        /// Gets the <see cref="CoreDispatcher"/> associated with the <see cref="CoreDispatcherScheduler"/>.
+        /// Gets the priority at which work items will be dispatched.
         /// </summary>
-        public CoreDispatcher Dispatcher { get; }
-
-        /// <summary>
-        /// Gets the priority at which work is scheduled.
-        /// </summary>
-        public CoreDispatcherPriority Priority { get; }
+        public System.Windows.Threading.DispatcherPriority Priority { get; }
 
         /// <summary>
         /// Schedules an action to be executed on the dispatcher.
@@ -85,50 +83,22 @@ namespace System.Reactive.Concurrency
 
             var d = new SingleAssignmentDisposable();
 
-            var res = Dispatcher.RunAsync(Priority, () =>
-            {
-                if (!d.IsDisposed)
+            Dispatcher.BeginInvoke(
+                new Action(() =>
                 {
-                    try
+                    if (!d.IsDisposed)
                     {
                         d.Disposable = action(this, state);
                     }
-                    catch (Exception ex)
-                    {
-                            //
-                            // Work-around for the behavior of throwing from RunAsync not propagating
-                            // the exception to the Application.UnhandledException event (as of W8RP)
-                            // as our users have come to expect from previous XAML stacks using Rx.
-                            //
-                            // If we wouldn't do this, there'd be an observable behavioral difference
-                            // between scheduling with TimeSpan.Zero or using this overload.
-                            //
-                            // For scheduler implementation guidance rules, see TaskPoolScheduler.cs
-                            // in System.Reactive.PlatformServices\Reactive\Concurrency.
-                            //
-                            var timer = new DispatcherTimer
-                        {
-                            Interval = TimeSpan.Zero
-                        };
-                        timer.Tick += (o, e) =>
-                        {
-                            timer.Stop();
-                            ExceptionDispatchInfo.Capture(ex).Throw();
-                        };
-
-                        timer.Start();
-                    }
-                }
-            });
-
-            return StableCompositeDisposable.Create(
-                d,
-                Disposable.Create(res, _ => _.Cancel())
+                }),
+                Priority
             );
+
+            return d;
         }
 
         /// <summary>
-        /// Schedules an action to be executed after <paramref name="dueTime"/> on the dispatcher, using a <see cref="DispatcherTimer"/> object.
+        /// Schedules an action to be executed after <paramref name="dueTime"/> on the dispatcher, using a <see cref="System.Windows.Threading.DispatcherTimer"/> object.
         /// </summary>
         /// <typeparam name="TState">The type of the state passed to the scheduled action.</typeparam>
         /// <param name="state">State passed to the action to be executed.</param>
@@ -156,9 +126,9 @@ namespace System.Reactive.Concurrency
         {
             var d = new MultipleAssignmentDisposable();
 
-            var timer = new DispatcherTimer();
+            var timer = new System.Windows.Threading.DispatcherTimer(Priority, Dispatcher);
 
-            timer.Tick += (o, e) =>
+            timer.Tick += (s, e) =>
             {
                 var t = Interlocked.Exchange(ref timer, null);
                 if (t != null)
@@ -170,7 +140,7 @@ namespace System.Reactive.Concurrency
                     finally
                     {
                         t.Stop();
-                        action = null;
+                        action = delegate { return Disposable.Empty; };
                     }
                 }
             };
@@ -184,7 +154,7 @@ namespace System.Reactive.Concurrency
                 if (t != null)
                 {
                     t.Stop();
-                    action = (_, __) => Disposable.Empty;
+                    action = delegate { return Disposable.Empty; };
                 }
             });
 
@@ -192,7 +162,7 @@ namespace System.Reactive.Concurrency
         }
 
         /// <summary>
-        /// Schedules a periodic piece of work on the dispatcher, using a <see cref="DispatcherTimer"/> object.
+        /// Schedules a periodic piece of work on the dispatcher, using a <see cref="System.Windows.Threading.DispatcherTimer"/> object.
         /// </summary>
         /// <typeparam name="TState">The type of the state passed to the scheduled action.</typeparam>
         /// <param name="state">Initial state passed to the action upon the first iteration.</param>
@@ -203,10 +173,6 @@ namespace System.Reactive.Concurrency
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="period"/> is less than <see cref="TimeSpan.Zero"/>.</exception>
         public IDisposable SchedulePeriodic<TState>(TState state, TimeSpan period, Func<TState, TState> action)
         {
-            //
-            // According to MSDN documentation, the default is TimeSpan.Zero, so that's definitely valid.
-            // Empirical observation - negative values seem to be normalized to TimeSpan.Zero, but let's not go there.
-            //
             if (period < TimeSpan.Zero)
             {
                 throw new ArgumentOutOfRangeException(nameof(period));
@@ -217,11 +183,11 @@ namespace System.Reactive.Concurrency
                 throw new ArgumentNullException(nameof(action));
             }
 
-            var timer = new DispatcherTimer();
+            var timer = new System.Windows.Threading.DispatcherTimer(Priority, Dispatcher);
 
             var state1 = state;
 
-            timer.Tick += (o, e) =>
+            timer.Tick += (s, e) =>
             {
                 state1 = action(state1);
             };
@@ -241,4 +207,5 @@ namespace System.Reactive.Concurrency
         }
     }
 }
+
 #endif

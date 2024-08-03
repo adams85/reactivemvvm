@@ -8,7 +8,7 @@ using Karambolo.ReactiveMvvm;
 namespace GettingStarted.Views
 {
     // inherit child views from ReactiveUserControl to get type-safe data/command binding and view activation capabilities
-    public class ChildView : ReactiveUserControl<ChildViewModel>
+    public partial class ChildView : ReactiveUserControl<ChildViewModel>
     {
         public ChildView()
         {

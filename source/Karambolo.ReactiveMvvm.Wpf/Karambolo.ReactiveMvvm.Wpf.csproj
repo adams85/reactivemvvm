@@ -2,7 +2,7 @@
   <PropertyGroup>
     <AssemblyName>Karambolo.ReactiveMvvm.Wpf</AssemblyName>
     <RootNamespace>Karambolo.ReactiveMvvm</RootNamespace>
-    <TargetFrameworks>net461;netcoreapp3.0</TargetFrameworks>
+    <TargetFrameworks>net461;net472;netcoreapp3.0;net6.0-windows10.0.19041</TargetFrameworks>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\Karambolo.ReactiveMvvm\Karambolo.Public.snk</AssemblyOriginatorKeyFile>
     <DebugType>full</DebugType>
@@ -16,4 +16,39 @@
   <ItemGroup>
     <ProjectReference Include="..\Karambolo.ReactiveMvvm\Karambolo.ReactiveMvvm.csproj" />
   </ItemGroup>
+
+  <Choose>
+    <When Condition="'$(TargetFramework)' == 'net461' OR '$(TargetFramework)' == 'netcoreapp3.0'">
+      <PropertyGroup>
+        <DefineConstants>BACKPORT_SCHEDULER;$(DefineConstants)</DefineConstants>
+      </PropertyGroup>
+        
+      <ItemGroup>
+        <Compile Update="Properties\WpfResources.Designer.cs">
+          <DependentUpon>WpfResources.resx</DependentUpon>
+          <DesignTime>True</DesignTime>
+          <AutoGen>True</AutoGen>
+        </Compile>
+      </ItemGroup>
+
+      <ItemGroup>
+        <EmbeddedResource Update="Properties\WpfResources.resx">
+          <LastGenOutput>WpfResources.Designer.cs</LastGenOutput>
+          <Generator>ResXFileCodeGenerator</Generator>
+        </EmbeddedResource>
+      </ItemGroup>
+    </When>
+
+    <Otherwise>
+      <ItemGroup>
+        <Compile Remove="Properties\WpfResources.Designer.cs"/>
+        <None Include="Properties\WpfResources.Designer.cs">
+          <DependentUpon>WpfResources.resx</DependentUpon>
+        </None>
+
+        <EmbeddedResource Remove="Properties\WpfResources.resx"/>
+        <None Include="Properties\WpfResources.resx" />
+      </ItemGroup>
+    </Otherwise>
+  </Choose>
 </Project>
