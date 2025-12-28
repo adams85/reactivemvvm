@@ -1,0 +1,16 @@
+<Project>
+  <PropertyGroup>
+    <PackageId>Karambolo.ReactiveMvvm.WinUI</PackageId>
+    <Version>1.0.0</Version>
+    <Authors>Adam Simon</Authors>
+    <Company>Karambolo</Company>
+    <Product>Karambolo.ReactiveMvvm</Product>
+    <Description>WinUI-specific platform services for the Karambolo.ReactiveMvvm library.</Description>
+    <Copyright>© 2021 Adam Simon</Copyright>
+    <AssemblyVersion>1.0</AssemblyVersion>
+    <FileVersion>1.0.0.0</FileVersion>
+    <PackageLicenseUrl>https://github.com/adams85/reactivemvvm/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/adams85/reactivemvvm</PackageProjectUrl>
+    <PackageTags>mvvm reactive winui</PackageTags>
+  </PropertyGroup>
+</Project>

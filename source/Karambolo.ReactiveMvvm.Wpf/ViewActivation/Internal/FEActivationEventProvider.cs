@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reactive;
 using System.Reactive.Linq;
 using System.Windows;
 using Karambolo.Common;
@@ -24,7 +25,7 @@ namespace Karambolo.ReactiveMvvm.ViewActivation.Internal
 
         private static IObservable<bool> ProduceDeactivationEvents(FrameworkElement fe)
         {
-            IObservable<System.Reactive.EventPattern<object>> events = Observable
+            IObservable<EventPattern<object>> events = Observable
                 .FromEventPattern<RoutedEventHandler, object>(
                     handler => fe.Unloaded += handler,
                     handler => fe.Unloaded -= handler);
@@ -32,7 +33,7 @@ namespace Karambolo.ReactiveMvvm.ViewActivation.Internal
             var window = Window.GetWindow(fe);
             if (window != null)
             {
-                IObservable<System.Reactive.EventPattern<object>> rootClosedEvents = Observable
+                IObservable<EventPattern<object>> rootClosedEvents = Observable
                     .FromEventPattern(
                         handler => window.Closed += handler,
                         handler => window.Closed -= handler);

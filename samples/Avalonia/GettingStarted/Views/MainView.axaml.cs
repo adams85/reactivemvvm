@@ -32,7 +32,7 @@ namespace GettingStarted.Views
 
             // a) view activation is opt-in: to enable it, you need to call EnableViewActivation in the constructor,
             // then override OnViewActivated to respond to activation/deactivation events
-            // (you may dispose the returned disposable if you want to cancel activition, however, it's safe to omit to dispose it otherwise)
+            // (you may dispose the returned disposable if you want to cancel activation, however, it's safe to omit to dispose it otherwise)
             this.EnableViewActivation();
 
             // b) message bus enables you to broadcast messages to other (unknown) application components
@@ -49,7 +49,7 @@ namespace GettingStarted.Views
             // c) you can use interactions to obtain information from the user involving the UI
 
             // when the view model becomes available we register our handler for the interaction it exposes
-            // (it would be ok to omit the disposal of the WhenChange subscription since it involves the events of this view instance only,
+            // (it would be ok to omit to dispose the WhenChange subscription since it involves the events of this view instance only,
             // thus, the subscription doesn't prevent GC'ing the view instance)
             _selectFileInteractionDisposable = new SerialDisposable();
             _selectFileInteractionDisposable.AttachTo(this);
@@ -95,13 +95,13 @@ namespace GettingStarted.Views
 
         protected override void OnViewActivated(ViewActivationLifetime activationLifetime)
         {
-            // usually you set up bindings here as you want them to be active only until the view gets deactivated in most cases
+            // usually you set up bindings here as you want them to be active only until the view gets deactivated
 
             // a) binding a view model command to a view control
             // (use rbc snippet to quickly insert a command binding)
 
             // by default the command is bound to the control's Command property or if there is no such property, it's triggered by Click/MouseUp events
-            // but you can explicitly specify a signal event in the eventName parameter
+            // but you can explicitly specify a signal event using the eventName parameter
             this.BindCommand(ViewModel, vm => vm.ToggleChildCommand, v => v.ToggleChildViewButton)
                 .AttachTo(activationLifetime);
 
@@ -138,7 +138,7 @@ namespace GettingStarted.Views
 
         private void ForceGCButton_Click(object sender, RoutedEventArgs e)
         {
-            // we force GC to see if child views and view models don't leak
+            // we force GC to check that child views and view models don't leak
             GC.Collect();
         }
     }

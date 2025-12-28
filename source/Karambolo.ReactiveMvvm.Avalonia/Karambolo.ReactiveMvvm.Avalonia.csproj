@@ -2,9 +2,9 @@
   <PropertyGroup>
     <AssemblyName>Karambolo.ReactiveMvvm.Avalonia</AssemblyName>
     <RootNamespace>Karambolo.ReactiveMvvm</RootNamespace>
-    <TargetFrameworks>netstandard2.0</TargetFrameworks>
-    <!--<SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>..\Karambolo.ReactiveMvvm\Karambolo.Public.snk</AssemblyOriginatorKeyFile>-->
+    <TargetFrameworks>net462;netstandard2.0</TargetFrameworks>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>..\Karambolo.ReactiveMvvm\Karambolo.Public.snk</AssemblyOriginatorKeyFile>
     <DebugType>full</DebugType>
     <DebugSymbols>true</DebugSymbols>
     <LangVersion>7.3</LangVersion>
@@ -13,9 +13,9 @@
   <Import Project="Properties\AssemblyInfo.props" />
 
   <ItemGroup>
-    <PackageReference Include="Avalonia" Version="11.1.1" />
+    <PackageReference Include="Avalonia" Version="11.0.0" />
   </ItemGroup>
-  
+
   <ItemGroup>
     <ProjectReference Include="..\Karambolo.ReactiveMvvm\Karambolo.ReactiveMvvm.csproj" />
   </ItemGroup>

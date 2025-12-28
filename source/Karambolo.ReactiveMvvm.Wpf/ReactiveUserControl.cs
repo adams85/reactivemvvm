@@ -14,6 +14,7 @@ namespace Karambolo.ReactiveMvvm
             typeof(TViewModel),
             typeof(ReactiveUserControl<TViewModel>),
             new PropertyMetadata((sender, arg) => ((ReactiveUserControl<TViewModel>)sender).AdjustDataContext(@this => @this.DataContext = @this.ViewModel)));
+
         private bool _adjustingDataContext;
 
         public ReactiveUserControl()
@@ -31,11 +32,8 @@ namespace Karambolo.ReactiveMvvm
             }
         }
 
-        [Category("ReactiveMvvm")]
-        [Description("The view model.")]
-        [DefaultValue(null)]
-        [Bindable(true)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [Localizability(LocalizationCategory.NeverLocalize)]
         public TViewModel ViewModel
         {
             get => (TViewModel)GetValue(ViewModelProperty);

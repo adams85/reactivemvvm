@@ -10,8 +10,8 @@
   <ItemGroup>
     <VersionPropsPath Include="$(SolutionPath)\Karambolo.ReactiveMvvm\Properties\AssemblyInfo.props " />
     <VersionPropsPath Include="$(SolutionPath)\Karambolo.ReactiveMvvm.Avalonia\Properties\AssemblyInfo.props " />
-    <VersionPropsPath Include="$(SolutionPath)\Karambolo.ReactiveMvvm.Uwp\Properties\AssemblyInfo.props " />
     <VersionPropsPath Include="$(SolutionPath)\Karambolo.ReactiveMvvm.WinForms\Properties\AssemblyInfo.props " />
+    <VersionPropsPath Include="$(SolutionPath)\Karambolo.ReactiveMvvm.WinUI\Properties\AssemblyInfo.props " />
     <VersionPropsPath Include="$(SolutionPath)\Karambolo.ReactiveMvvm.Wpf\Properties\AssemblyInfo.props " />
   </ItemGroup>
   

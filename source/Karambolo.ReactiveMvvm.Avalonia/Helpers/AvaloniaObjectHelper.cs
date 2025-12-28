@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Reflection;
 using Avalonia;
 using Avalonia.VisualTree;
@@ -48,12 +49,28 @@ namespace Karambolo.ReactiveMvvm.Helpers
             where T : Visual
         {
             T result;
-            foreach (Visual child in visual.GetVisualChildren())
+
+            IEnumerable<Visual> children = visual.GetVisualChildren();
+            if (children is IReadOnlyList<Visual> childList)
             {
-                if (child is T castChild && match(castChild))
-                    return castChild;
-                else if ((result = child.FindVisualDescendantCore(match)) != null)
-                    return result;
+                for (int i = 0, n = childList.Count; i < n; i++)
+                {
+                    Visual child = childList[i];
+                    if (child is T castChild && match(castChild))
+                        return castChild;
+                    else if ((result = child.FindVisualDescendantCore(match)) != null)
+                        return result;
+                }
+            }
+            else
+            {
+                foreach (Visual child in visual.GetVisualChildren())
+                {
+                    if (child is T castChild && match(castChild))
+                        return castChild;
+                    else if ((result = child.FindVisualDescendantCore(match)) != null)
+                        return result;
+                }
             }
 
             return null;

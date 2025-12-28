@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Reactive;
 using System.Reactive.Linq;
 using System.Threading;
 using System.Windows.Forms;
@@ -47,7 +48,7 @@ namespace Karambolo.ReactiveMvvm.ViewActivation.Internal
 
         private static IObservable<bool> ProduceDeactivationEvents(Control control)
         {
-            IObservable<System.Reactive.EventPattern<object>> events = Observable
+            IObservable<EventPattern<object>> events = Observable
                 .FromEventPattern(
                     handler => control.ParentChanged += handler,
                     handler => control.ParentChanged -= handler)
@@ -56,7 +57,7 @@ namespace Karambolo.ReactiveMvvm.ViewActivation.Internal
             Form form = control.FindForm();
             if (form != null)
             {
-                IObservable<System.Reactive.EventPattern<object>> rootClosedEvents = Observable
+                IObservable<EventPattern<object>> rootClosedEvents = Observable
                     .FromEventPattern<FormClosedEventHandler, object>(
                        handler => form.FormClosed += handler,
                        handler => form.FormClosed -= handler);
@@ -100,7 +101,7 @@ namespace Karambolo.ReactiveMvvm.ViewActivation.Internal
                             handler => control.VisibleChanged += handler,
                             handler => control.VisibleChanged -= handler)
                         // HACK: visibility changes inconsequently when dynamically removing a user control from the control tree
-                        // resulting in a deactivation-activation-deactivation sequence; 
+                        // resulting in a deactivation-activation-deactivation sequence;
                         // we try to suppress this unwanted sequence by throttling
                         .Throttle(TimeSpan.FromMilliseconds(10))
                         .Select(e => ((Control)e.Sender).Visible)

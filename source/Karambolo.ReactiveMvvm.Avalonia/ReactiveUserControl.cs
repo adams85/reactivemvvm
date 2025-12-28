@@ -1,5 +1,4 @@
 ﻿using System;
-using System.ComponentModel;
 using Avalonia;
 using Avalonia.Controls;
 using Karambolo.ReactiveMvvm.ViewActivation;
@@ -11,6 +10,7 @@ namespace Karambolo.ReactiveMvvm
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("AvaloniaProperty", "AVP1002", Justification = "Generic " + nameof(AvaloniaProperty) + " is expected here.")]
         public static readonly StyledProperty<TViewModel> ViewModelProperty = AvaloniaProperty.Register<ReactiveWindow<TViewModel>, TViewModel>(nameof(ViewModel));
+
         private bool _adjustingDataContext;
 
         private void AdjustDataContext(Action<ReactiveUserControl<TViewModel>> update)
@@ -23,11 +23,6 @@ namespace Karambolo.ReactiveMvvm
             }
         }
 
-        [Category("ReactiveMvvm")]
-        [Description("The view model.")]
-        [DefaultValue(null)]
-        [Bindable(true)]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public TViewModel ViewModel
         {
             get => GetValue(ViewModelProperty);

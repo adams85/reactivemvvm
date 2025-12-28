@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reactive;
 using System.Reactive.Linq;
 using Avalonia;
 using Avalonia.Controls;
@@ -51,7 +52,7 @@ namespace Karambolo.ReactiveMvvm.ViewActivation.Internal
 
             if (visual.GetVisualRoot() is TopLevel root)
             {
-                IObservable<System.Reactive.EventPattern<object>> rootClosedEvents = Observable.FromEventPattern(
+                IObservable<EventPattern<object>> rootClosedEvents = Observable.FromEventPattern(
                     handler => root.Closed += handler,
                     handler => root.Closed -= handler);
 
