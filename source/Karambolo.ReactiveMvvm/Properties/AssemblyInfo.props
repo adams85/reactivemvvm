@@ -5,7 +5,7 @@
     <Authors>Adam Simon</Authors>
     <Company>Karambolo</Company>
     <Product>Karambolo.ReactiveMvvm</Product>
-    <Description>An MVVM framework built on Reactive Extensions for .NET application platforms. Currently supports Avalonia, WinForms, WinUI and WPF.</Description>
+    <Description>An MVVM framework built on Reactive Extensions for .NET application platforms. Currently supports Avalonia, MAUI, WinForms, WinUI and WPF.</Description>
     <Copyright>© 2021 Adam Simon</Copyright>
     <AssemblyVersion>1.0</AssemblyVersion>
     <FileVersion>1.0.0.0</FileVersion>

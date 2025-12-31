@@ -1,9 +1,15 @@
-﻿using System;
+﻿#if TARGETS_WINUI
+
+using System;
 using Karambolo.ReactiveMvvm.ViewActivation;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 
+#if IS_MAUI
+namespace Karambolo.ReactiveMvvm.Windows
+#else
 namespace Karambolo.ReactiveMvvm
+#endif
 {
     public abstract partial class ReactiveUserControl<TViewModel> : UserControl, IReactiveView<TViewModel>
         where TViewModel : class
@@ -51,3 +57,5 @@ namespace Karambolo.ReactiveMvvm
         }
     }
 }
+
+#endif

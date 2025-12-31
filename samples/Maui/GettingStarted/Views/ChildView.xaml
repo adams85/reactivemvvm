@@ -1,0 +1,9 @@
+﻿<mvvm:ReactiveContentView
+    x:TypeArguments="viewModels:ChildViewModel" x:Class="GettingStarted.Views.ChildView"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:mvvm="clr-namespace:Karambolo.ReactiveMvvm;assembly=Karambolo.ReactiveMvvm.Maui"
+    xmlns:viewModels="clr-namespace:GettingStarted.ViewModels"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit">
+    <Label x:Name="CurrentTimeLabel" FontFamily="OpenSansRegular" FontSize="28" HorizontalTextAlignment="Center" VerticalTextAlignment="Center"></Label>
+</mvvm:ReactiveContentView>

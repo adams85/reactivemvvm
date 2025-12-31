@@ -1,0 +1,60 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <AssemblyName>Karambolo.ReactiveMvvm.Maui</AssemblyName>
+    <RootNamespace>Karambolo.ReactiveMvvm</RootNamespace>
+    <TargetFrameworks>net8.0;net8.0-windows10.0.19041.0</TargetFrameworks>
+    <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">21.0</SupportedOSPlatformVersion>
+    <CheckEolWorkloads>false</CheckEolWorkloads>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>..\Karambolo.ReactiveMvvm\Karambolo.Public.snk</AssemblyOriginatorKeyFile>
+    <DebugType>full</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+    <LangVersion>9</LangVersion>
+    <UseMaui>true</UseMaui>
+    <SingleProject>true</SingleProject>
+    <EnableWindowsTargeting>true</EnableWindowsTargeting>
+    <GenerateLibraryLayout>true</GenerateLibraryLayout>
+    <DefineConstants>IS_MAUI;$(DefineConstants)</DefineConstants>
+    <NoWarn>CS8002</NoWarn>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="$([System.String]::Copy('$(TargetFramework)').EndsWith('-windows10.0.19041.0'))">
+    <UseRidGraph>true</UseRidGraph>
+    <TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
+    <DefineConstants>TARGETS_WINUI;$(DefineConstants)</DefineConstants>
+  </PropertyGroup>
+
+  <Import Project="Properties\AssemblyInfo.props" />
+
+  <ItemGroup>
+    <Compile Include="..\Karambolo.ReactiveMvvm.WinUI\ChangeNotification\Internal\DOMemberLinkChangedProvider.cs" LinkBase="ChangeNotification\Internal" />
+    <Compile Include="..\Karambolo.ReactiveMvvm.WinUI\Helpers\DependencyObjectHelper.cs" LinkBase="Helpers" />
+    <Compile Include="..\Karambolo.ReactiveMvvm.WinUI\ViewActivation\Internal\FEActivationEventProvider.cs" LinkBase="ViewActivation\Internal" />
+    <Compile Include="..\Karambolo.ReactiveMvvm.WinUI\DispatcherQueueScheduler.cs" LinkBase="Windows" />
+    <Compile Include="..\Karambolo.ReactiveMvvm.WinUI\ReactivePage.cs" LinkBase="Windows" />
+    <Compile Include="..\Karambolo.ReactiveMvvm.WinUI\ReactiveUserControl.cs" LinkBase="Windows" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Maui.Controls" Version="8.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Karambolo.ReactiveMvvm\Karambolo.ReactiveMvvm.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Properties\MauiResources.Designer.cs">
+      <DependentUpon>MauiResources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Properties\MauiResources.resx">
+      <LastGenOutput>MauiResources.Designer.cs</LastGenOutput>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+  </ItemGroup>
+</Project>

@@ -1,4 +1,6 @@
-﻿using System;
+﻿#if TARGETS_WINUI
+
+using System;
 using System.Collections.Generic;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
@@ -36,3 +38,5 @@ namespace Karambolo.ReactiveMvvm.ChangeNotification.Internal
         }
     }
 }
+
+#endif

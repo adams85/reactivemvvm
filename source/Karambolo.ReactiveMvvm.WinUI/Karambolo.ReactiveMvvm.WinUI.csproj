@@ -12,6 +12,7 @@
     <UseWinUI>true</UseWinUI>
     <EnableWindowsTargeting>true</EnableWindowsTargeting>
     <GenerateLibraryLayout>true</GenerateLibraryLayout>
+    <DefineConstants>TARGETS_WINUI;$(DefineConstants)</DefineConstants>
   </PropertyGroup>
 
   <Import Project="Properties\AssemblyInfo.props" />

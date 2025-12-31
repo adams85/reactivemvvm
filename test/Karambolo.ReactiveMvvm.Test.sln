@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 18
-VisualStudioVersion = 18.1.11312.151 d18.0
+VisualStudioVersion = 18.1.11312.151
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Karambolo.ReactiveMvvm.Test", "Karambolo.ReactiveMvvm.Test\Karambolo.ReactiveMvvm.Test.csproj", "{149738B2-008D-4C1B-81E2-110881FC1387}"
 EndProject
@@ -16,6 +16,8 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "References", "References", "{8307C7FC-7717-463D-8E51-A6A6A7122EF5}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Karambolo.ReactiveMvvm.WinUI", "..\source\Karambolo.ReactiveMvvm.WinUI\Karambolo.ReactiveMvvm.WinUI.csproj", "{778BC86B-E693-52F3-0C0A-2577625F9254}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Karambolo.ReactiveMvvm.Maui", "..\source\Karambolo.ReactiveMvvm.Maui\Karambolo.ReactiveMvvm.Maui.csproj", "{D137050E-D48F-DA6A-B938-282C63E6B9E4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -47,6 +49,10 @@ Global
 		{778BC86B-E693-52F3-0C0A-2577625F9254}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{778BC86B-E693-52F3-0C0A-2577625F9254}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{778BC86B-E693-52F3-0C0A-2577625F9254}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D137050E-D48F-DA6A-B938-282C63E6B9E4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D137050E-D48F-DA6A-B938-282C63E6B9E4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D137050E-D48F-DA6A-B938-282C63E6B9E4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D137050E-D48F-DA6A-B938-282C63E6B9E4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -57,6 +63,7 @@ Global
 		{69FEFE88-0516-49FE-953D-9E52E7E42C42} = {8307C7FC-7717-463D-8E51-A6A6A7122EF5}
 		{5E5B5659-AC9D-486D-90A2-D1ECA1DDC792} = {8307C7FC-7717-463D-8E51-A6A6A7122EF5}
 		{778BC86B-E693-52F3-0C0A-2577625F9254} = {8307C7FC-7717-463D-8E51-A6A6A7122EF5}
+		{D137050E-D48F-DA6A-B938-282C63E6B9E4} = {8307C7FC-7717-463D-8E51-A6A6A7122EF5}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {39C02881-B53F-4CB3-9225-CD106A1861A3}

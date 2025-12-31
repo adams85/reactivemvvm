@@ -1,4 +1,6 @@
-﻿using System;
+﻿#if TARGETS_WINUI
+
+using System;
 using System.Collections.Concurrent;
 using System.Reflection;
 using Karambolo.Common;
@@ -9,7 +11,7 @@ using Microsoft.UI.Xaml.Media;
 
 namespace Karambolo.ReactiveMvvm.Helpers
 {
-    public static class DependencyObjectHelper
+    public static partial class DependencyObjectHelper
     {
         private static readonly ConcurrentDictionary<(Type, string), DependencyProperty> s_dependencyPropertyCache = new ConcurrentDictionary<(Type, string), DependencyProperty>();
 
@@ -245,3 +247,5 @@ namespace Karambolo.ReactiveMvvm.Helpers
         }
     }
 }
+
+#endif

@@ -13,6 +13,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Karambolo.ReactiveMvvm.Aval
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Karambolo.ReactiveMvvm.WinUI", "Karambolo.ReactiveMvvm.WinUI\Karambolo.ReactiveMvvm.WinUI.csproj", "{46374457-0A5C-4187-A338-61FA6729D0C9}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Karambolo.ReactiveMvvm.Maui", "Karambolo.ReactiveMvvm.Maui\Karambolo.ReactiveMvvm.Maui.csproj", "{007E0BCC-74EA-A220-9EBA-A902EDE234A3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{46374457-0A5C-4187-A338-61FA6729D0C9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{46374457-0A5C-4187-A338-61FA6729D0C9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{46374457-0A5C-4187-A338-61FA6729D0C9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{007E0BCC-74EA-A220-9EBA-A902EDE234A3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{007E0BCC-74EA-A220-9EBA-A902EDE234A3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{007E0BCC-74EA-A220-9EBA-A902EDE234A3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{007E0BCC-74EA-A220-9EBA-A902EDE234A3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

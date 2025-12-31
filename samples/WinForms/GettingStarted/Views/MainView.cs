@@ -146,7 +146,7 @@ namespace GettingStarted.Views
                 viewValues: canToggleChildViewCheckBox_CheckedChangedValues)
                 .AttachTo(activationLifetime);
 
-            // c) binding a view model property to a view property so that changes in the view model flow to then view but changes but not in the opposite direction
+            // c) binding a view model property to a view property so that changes in the view model flow to the view but not in the opposite direction
             // (use rbow snippet to quickly insert a command binding)
 
             this.BindOneWay(ViewModel, vm => vm.Child, v => v.ChildView, CreateChildViewForModel)

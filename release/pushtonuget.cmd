@@ -10,6 +10,9 @@ IF %ERRORLEVEL% NEQ 0 goto:eof
 dotnet nuget push Karambolo.ReactiveMvvm.Avalonia.%PKGVER%.nupkg -k %APIKEY% -s %SOURCE%
 IF %ERRORLEVEL% NEQ 0 goto:eof
 
+dotnet nuget push Karambolo.ReactiveMvvm.Maui.%PKGVER%.nupkg -k %APIKEY% -s %SOURCE%
+IF %ERRORLEVEL% NEQ 0 goto:eof
+
 dotnet nuget push Karambolo.ReactiveMvvm.WinForms.%PKGVER%.nupkg -k %APIKEY% -s %SOURCE%
 IF %ERRORLEVEL% NEQ 0 goto:eof
 
@@ -18,4 +21,3 @@ IF %ERRORLEVEL% NEQ 0 goto:eof
 
 dotnet nuget push Karambolo.ReactiveMvvm.Wpf.%PKGVER%.nupkg -k %APIKEY% -s %SOURCE%
 IF %ERRORLEVEL% NEQ 0 goto:eof
-

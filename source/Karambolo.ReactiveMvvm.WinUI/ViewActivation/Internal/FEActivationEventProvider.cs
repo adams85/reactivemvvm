@@ -1,4 +1,6 @@
-﻿using System;
+﻿#if TARGETS_WINUI
+
+using System;
 using System.Reactive.Linq;
 using Karambolo.Common;
 using Karambolo.ReactiveMvvm.Internal;
@@ -46,3 +48,5 @@ namespace Karambolo.ReactiveMvvm.ViewActivation.Internal
         }
     }
 }
+
+#endif
