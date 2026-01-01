@@ -11,6 +11,7 @@
     <VersionPropsPath Include="$(SolutionPath)\Karambolo.ReactiveMvvm\Properties\AssemblyInfo.props " />
     <VersionPropsPath Include="$(SolutionPath)\Karambolo.ReactiveMvvm.Avalonia\Properties\AssemblyInfo.props " />
     <VersionPropsPath Include="$(SolutionPath)\Karambolo.ReactiveMvvm.Maui\Properties\AssemblyInfo.props " />
+    <VersionPropsPath Include="$(SolutionPath)\Karambolo.ReactiveMvvm.Uno\Properties\AssemblyInfo.props " />
     <VersionPropsPath Include="$(SolutionPath)\Karambolo.ReactiveMvvm.WinForms\Properties\AssemblyInfo.props " />
     <VersionPropsPath Include="$(SolutionPath)\Karambolo.ReactiveMvvm.WinUI\Properties\AssemblyInfo.props " />
     <VersionPropsPath Include="$(SolutionPath)\Karambolo.ReactiveMvvm.Wpf\Properties\AssemblyInfo.props " />

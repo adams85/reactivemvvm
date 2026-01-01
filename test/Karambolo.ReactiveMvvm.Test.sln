@@ -19,6 +19,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Karambolo.ReactiveMvvm.WinU
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Karambolo.ReactiveMvvm.Maui", "..\source\Karambolo.ReactiveMvvm.Maui\Karambolo.ReactiveMvvm.Maui.csproj", "{D137050E-D48F-DA6A-B938-282C63E6B9E4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Karambolo.ReactiveMvvm.Uno", "..\source\Karambolo.ReactiveMvvm.Uno\Karambolo.ReactiveMvvm.Uno.csproj", "{151E2B58-2BC9-881A-D9AF-917CBA621481}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -53,6 +55,10 @@ Global
 		{D137050E-D48F-DA6A-B938-282C63E6B9E4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D137050E-D48F-DA6A-B938-282C63E6B9E4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D137050E-D48F-DA6A-B938-282C63E6B9E4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{151E2B58-2BC9-881A-D9AF-917CBA621481}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{151E2B58-2BC9-881A-D9AF-917CBA621481}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{151E2B58-2BC9-881A-D9AF-917CBA621481}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{151E2B58-2BC9-881A-D9AF-917CBA621481}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -64,6 +70,7 @@ Global
 		{5E5B5659-AC9D-486D-90A2-D1ECA1DDC792} = {8307C7FC-7717-463D-8E51-A6A6A7122EF5}
 		{778BC86B-E693-52F3-0C0A-2577625F9254} = {8307C7FC-7717-463D-8E51-A6A6A7122EF5}
 		{D137050E-D48F-DA6A-B938-282C63E6B9E4} = {8307C7FC-7717-463D-8E51-A6A6A7122EF5}
+		{151E2B58-2BC9-881A-D9AF-917CBA621481} = {8307C7FC-7717-463D-8E51-A6A6A7122EF5}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {39C02881-B53F-4CB3-9225-CD106A1861A3}

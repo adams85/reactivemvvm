@@ -1,4 +1,4 @@
-﻿#if TARGETS_WINUI
+﻿#if TARGETS_WINUI || IS_UNO
 
 using System;
 using System.Reactive.Linq;

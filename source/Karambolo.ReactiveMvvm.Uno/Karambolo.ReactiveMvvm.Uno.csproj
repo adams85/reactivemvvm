@@ -1,0 +1,54 @@
+﻿<Project Sdk="Uno.Sdk">
+  <PropertyGroup>
+    <AssemblyName>Karambolo.ReactiveMvvm.Uno</AssemblyName>
+    <RootNamespace>Karambolo.ReactiveMvvm</RootNamespace>
+    <TargetFrameworks>net9.0;net9.0-windows10.0.19041.0</TargetFrameworks>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>..\Karambolo.ReactiveMvvm\Karambolo.Public.snk</AssemblyOriginatorKeyFile>
+    <DebugType>full</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+    <LangVersion>10.0</LangVersion>
+    <UnoSingleProject>true</UnoSingleProject>
+    <!-- See also: https://aka.platform.uno/singleproject-features -->
+    <UnoFeatures>SkiaRenderer</UnoFeatures>
+    <EnableWindowsTargeting>true</EnableWindowsTargeting>
+    <GenerateLibraryLayout>true</GenerateLibraryLayout>
+    <DefineConstants>IS_UNO;$(DefineConstants)</DefineConstants>
+    <NoWarn>CS8002</NoWarn>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="$([System.String]::Copy('$(TargetFramework)').EndsWith('-windows10.0.19041.0'))">
+    <TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
+    <DefineConstants>TARGETS_WINUI;$(DefineConstants)</DefineConstants>
+  </PropertyGroup>
+
+  <Import Project="Properties\AssemblyInfo.props" />
+
+  <ItemGroup>
+    <Compile Include="..\Karambolo.ReactiveMvvm.WinUI\ChangeNotification\Internal\DOMemberLinkChangedProvider.cs" LinkBase="ChangeNotification\Internal" />
+    <Compile Include="..\Karambolo.ReactiveMvvm.WinUI\Helpers\DependencyObjectHelper.cs" LinkBase="Helpers" />
+    <Compile Include="..\Karambolo.ReactiveMvvm.WinUI\ViewActivation\Internal\FEActivationEventProvider.cs" LinkBase="ViewActivation\Internal" />
+    <Compile Include="..\Karambolo.ReactiveMvvm.WinUI\DispatcherQueueScheduler.cs" LinkBase="Windows" />
+    <Compile Include="..\Karambolo.ReactiveMvvm.WinUI\ReactivePage.cs" LinkBase="" />
+    <Compile Include="..\Karambolo.ReactiveMvvm.WinUI\ReactiveUserControl.cs" LinkBase="" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Karambolo.ReactiveMvvm\Karambolo.ReactiveMvvm.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Properties\UnoResources.Designer.cs">
+      <DependentUpon>UnoResources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Properties\UnoResources.resx">
+      <LastGenOutput>UnoResources.Designer.cs</LastGenOutput>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+  </ItemGroup>
+</Project>

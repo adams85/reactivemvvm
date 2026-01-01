@@ -1,4 +1,4 @@
-﻿#if TARGETS_WINUI
+﻿#if TARGETS_WINUI || IS_UNO
 
 using System;
 using System.Collections.Concurrent;
@@ -45,7 +45,11 @@ namespace Karambolo.ReactiveMvvm.Helpers
 
         // Based on: https://github.com/CommunityToolkit/Windows/blob/v8.2.251219/components/Extensions/src/Tree/FrameworkElementExtensions.LogicalTree.cs#L525
         public static T FindLogicalAncestor<T>(this DependencyObject root, Func<T, bool> match = null, bool includeRoot = true)
-            where T : DependencyObject
+#if IS_MAUI && !TARGETS_WINUI
+            where T : class, DependencyObject
+#else
+            where T : class
+#endif
         {
             if (root == null)
                 throw new ArgumentNullException(nameof(root));
@@ -95,7 +99,11 @@ namespace Karambolo.ReactiveMvvm.Helpers
         }
 
         private static T FindLogicalDescendantCore<T>(this DependencyObject obj, Func<T, bool> match)
-            where T : DependencyObject
+#if IS_MAUI && !TARGETS_WINUI
+            where T : class, DependencyObject
+#else
+            where T : class
+#endif
         {
             T result;
             FrameworkElement fe;
@@ -176,7 +184,11 @@ namespace Karambolo.ReactiveMvvm.Helpers
 
         // Based on: https://github.com/CommunityToolkit/Windows/blob/v8.2.251219/components/Extensions/src/Tree/FrameworkElementExtensions.LogicalTree.cs#L98
         public static T FindLogicalDescendant<T>(this DependencyObject root, Func<T, bool> match = null, bool includeRoot = true)
-            where T : DependencyObject
+#if IS_MAUI && !TARGETS_WINUI
+            where T : class, DependencyObject
+#else
+            where T : class
+#endif
         {
             if (root == null)
                 throw new ArgumentNullException(nameof(root));
@@ -194,7 +206,11 @@ namespace Karambolo.ReactiveMvvm.Helpers
         }
 
         public static T FindVisualAncestor<T>(this DependencyObject root, Func<T, bool> match = null, bool includeRoot = true)
-            where T : DependencyObject
+#if IS_MAUI && !TARGETS_WINUI
+            where T : class, DependencyObject
+#else
+            where T : class
+#endif
         {
             if (root == null)
                 throw new ArgumentNullException(nameof(root));
@@ -216,7 +232,12 @@ namespace Karambolo.ReactiveMvvm.Helpers
         }
 
         private static T FindVisualDescendantCore<T>(this DependencyObject obj, Func<T, bool> match)
-            where T : DependencyObject
+#if IS_MAUI && !TARGETS_WINUI
+            where T : class, DependencyObject
+#else
+            where T : class
+#endif
+
         {
             T result;
             for (int i = 0, n = VisualTreeHelper.GetChildrenCount(obj); i < n; i++)
@@ -232,7 +253,11 @@ namespace Karambolo.ReactiveMvvm.Helpers
         }
 
         public static T FindVisualDescendant<T>(this DependencyObject root, Func<T, bool> match = null, bool includeRoot = true)
-            where T : DependencyObject
+#if IS_MAUI && !TARGETS_WINUI
+            where T : class, DependencyObject
+#else
+            where T : class
+#endif
         {
             if (root == null)
                 throw new ArgumentNullException(nameof(root));

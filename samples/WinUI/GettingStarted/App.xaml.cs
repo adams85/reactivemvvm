@@ -23,36 +23,6 @@ namespace GettingStarted
     {
         public static new App Current => (App)Application.Current;
 
-        static IReactiveMvvmContext Configure()
-        {
-            // ReactiveMvvm services needs to be configured at application startup
-            return ReactiveMvvmContext
-                .Initialize(builder => builder
-                    // registers platform services
-                    .UseWinUI()
-                    // configures logging
-                    .ConfigureLogging(ConfigureLogging)
-                    // configures other services for the application
-                    .ConfigureServices(ConfigureServices))
-                .GetRequiredService<IReactiveMvvmContext>();
-        }
-
-        static void ConfigureLogging(ILoggingBuilder builder)
-        {
-#if DEBUG
-            builder.SetMinimumLevel(LogLevel.Trace);
-            builder.AddDebug();
-#endif
-            // add the loggers of your choice
-        }
-
-        static void ConfigureServices(IServiceCollection services)
-        {
-            // register your own services
-        }
-
-        private readonly IReactiveMvvmContext _context;
-
         /// <summary>
         /// Initializes the singleton application object.  This is the first line of authored code
         /// executed, and as such is the logical equivalent of main() or WinMain().
@@ -60,8 +30,6 @@ namespace GettingStarted
         public App()
         {
             InitializeComponent();
-
-            _context = Configure();
         }
 
         private Window? _mainWindow;
@@ -77,10 +45,16 @@ namespace GettingStarted
         /// <param name="args">Details about the launch request and process.</param>
         protected override void OnLaunched(Microsoft.UI.Xaml.LaunchActivatedEventArgs args)
         {
-            // with the help of ViewModelFactory you can create view models with services resolved from the IoC container,
-            // (CreateViewModelScoped, as opposed to CreateViewModel, creates the view model in a dedicated service scope,
-            // so disposing view models created like this will dispose their scoped/transient dependencies, as well)
-            var mainViewModel = _context.ViewModelFactory.CreateViewModelScoped<MainViewModel>();
+            // ReactiveMvvm services needs to be configured at application startup
+            var context = ReactiveMvvmContext
+                .Initialize(builder => builder
+                    // registers platform services
+                    .UseWinUI()
+                    // configures logging
+                    .ConfigureLogging(ConfigureLogging)
+                    // configures other services for the application
+                    .ConfigureServices(ConfigureServices))
+                .GetRequiredService<IReactiveMvvmContext>();
 
             _mainWindow = new Window
             {
@@ -90,18 +64,53 @@ namespace GettingStarted
 
             _mainWindow.AppWindow.Resize(new SizeInt32(800, 450));
 
-            var rootFrame = new Frame();
-
-            rootFrame.Unloaded += (s, _) =>
+            // Do not repeat app initialization when the Window already has content,
+            // just ensure that the window is active
+            if (MainWindow.Content is not Frame rootFrame)
             {
-                ((MainView)((Frame)s).Content).Dispose();
-                mainViewModel.Dispose();
-            };
+                // Create a Frame to act as the navigation context and navigate to the first page
+                rootFrame = new Frame();
 
-            rootFrame.Navigate(typeof(MainView), mainViewModel);
+                rootFrame.Unloaded += (s, _) =>
+                {
+                    var mainView = (MainView)((Frame)s).Content;
+                    mainView.Dispose();
+                    mainView.ViewModel?.Dispose();
+                };
 
-            _mainWindow.Content = rootFrame;
-            _mainWindow.Activate();
+                // Place the frame in the current Window
+                MainWindow.Content = rootFrame;
+            }
+
+            if (rootFrame.Content == null)
+            {
+                // with the help of ViewModelFactory you can create view models with services resolved from the IoC container,
+                // (CreateViewModelScoped, as opposed to CreateViewModel, creates the view model in a dedicated service scope,
+                // so disposing view models created like this will dispose their scoped/transient dependencies, as well)
+                var mainViewModel = ReactiveMvvmContext.Current.ViewModelFactory.CreateViewModelScoped<MainViewModel>();
+
+                // When the navigation stack isn't restored navigate to the first page,
+                // configuring the new page by passing required information as a navigation
+                // parameter
+                rootFrame.Navigate(typeof(MainView), mainViewModel);
+            }
+
+            // Ensure the current window is active
+            MainWindow.Activate();
+        }
+
+        static void ConfigureLogging(ILoggingBuilder builder)
+        {
+#if DEBUG
+            builder.SetMinimumLevel(LogLevel.Trace);
+            builder.AddDebug();
+#endif
+            // add the loggers of your choice
+        }
+
+        static void ConfigureServices(IServiceCollection services)
+        {
+            // register your own services
         }
     }
 }

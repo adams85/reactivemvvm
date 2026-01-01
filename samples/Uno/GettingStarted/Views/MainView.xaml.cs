@@ -9,7 +9,7 @@ using GettingStarted.ViewModels;
 using Karambolo.ReactiveMvvm;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Navigation;
-using Microsoft.Windows.Storage.Pickers;
+using Windows.Storage.Pickers;
 
 namespace GettingStarted.Views
 {
@@ -57,8 +57,14 @@ namespace GettingStarted.Views
 
             async Task HandleSelectFileAsync(InteractionContext<Unit, string> context, CancellationToken cancellationToken)
             {
-                // See also: https://github.com/microsoft/WindowsAppSDK/issues/2504#issuecomment-3280129068
-                var picker = new FileOpenPicker(App.Current.MainWindow.AppWindow.Id);
+                var picker = new FileOpenPicker();
+
+#if WINDOWS
+                // See also: https://platform.uno/docs/articles/features/windows-storage-pickers.html#unowinui-specific-initialization
+                var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(App.Current.MainWindow);
+                WinRT.Interop.InitializeWithWindow.Initialize(picker, hwnd);
+#endif
+
                 picker.FileTypeFilter.Add("*");
 
                 var file = await picker.PickSingleFileAsync();
@@ -68,8 +74,11 @@ namespace GettingStarted.Views
             }
         }
 
-        public void Dispose()
+        void IDisposable.Dispose()
         {
+#if !WINDOWS
+            base.Dispose();
+#endif
             _attachedDisposables.Dispose();
         }
 
@@ -167,7 +176,7 @@ namespace GettingStarted.Views
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
         {
-            Dispose();
+            ((IDisposable)this).Dispose();
             base.OnNavigatedFrom(e);
         }
 

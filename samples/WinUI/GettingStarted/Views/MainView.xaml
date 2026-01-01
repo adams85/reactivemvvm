@@ -19,7 +19,7 @@
             <CheckBox x:Name="CanToggleChildViewCheckBox" Margin="0, 0, 0, 8"  toolkit:DockPanel.Dock="Top" HorizontalAlignment="Stretch">Can Toggle?</CheckBox>
             <Button x:Name="ForceGCButton" toolkit:DockPanel.Dock="Bottom" HorizontalAlignment="Stretch" Click="ForceGCButton_Click">Force GC</Button>
             <Button x:Name="StartInteractionButton" Margin="0, 0, 0, 8" toolkit:DockPanel.Dock="Bottom" HorizontalAlignment="Stretch">Start User Interaction</Button>
-            <TextBox x:Name="LogTextBox" Margin="0, 0, 0, 8" TextWrapping="Wrap" HorizontalAlignment="Stretch"></TextBox>
+            <TextBox x:Name="LogTextBox" AcceptsReturn="True" Margin="0, 0, 0, 8" TextWrapping="Wrap" HorizontalAlignment="Stretch"></TextBox>
         </toolkit:DockPanel>
 
         <ContentControl x:Name="ChildViewContentControl" Grid.Column="1" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">

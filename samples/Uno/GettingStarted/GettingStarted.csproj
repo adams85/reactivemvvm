@@ -1,60 +1,48 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
-
+﻿<Project Sdk="Uno.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>net10.0-android</TargetFrameworks>
+    <TargetFrameworks>net10.0-desktop;net10.0-android</TargetFrameworks>
     <TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net10.0-windows10.0.19041.0</TargetFrameworks>
 
     <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">21.0</SupportedOSPlatformVersion>
     <TargetPlatformMinVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</TargetPlatformMinVersion>
 
     <OutputType>Exe</OutputType>
-    <UseMaui>true</UseMaui>
-    <SingleProject>true</SingleProject>
+    <UnoSingleProject>true</UnoSingleProject>
+    <!--
+      UnoFeatures are used to quickly add and manage features enabled for your app.
+      https://aka.platform.uno/singleproject-features
+    -->
+    <UnoFeatures>
+      Hosting;
+      SkiaRenderer;
+    </UnoFeatures>
+
+    <NoWarn>NETSDK1198</NoWarn>
 
     <!-- Display name -->
     <ApplicationTitle>GettingStarted</ApplicationTitle>
-
     <!-- App Identifier -->
     <ApplicationId>com.karambolo.gettingstarted</ApplicationId>
-
     <!-- Versions -->
     <ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
     <ApplicationVersion>1</ApplicationVersion>
-
-    <!-- To develop, package, and publish an app to the Microsoft Store, see: https://aka.ms/MauiTemplateUnpackaged -->
-    <WindowsPackageType>None</WindowsPackageType>
+    <!-- Package Publisher -->
+    <ApplicationPublisher>GettingStarted</ApplicationPublisher>
+    <!-- Package Description -->
+    <Description>GettingStarted powered by Uno Platform.</Description>
 
     <!-- ReactiveMvvm doesn't support trimming yet. -->
     <PublishTrimmed Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">false</PublishTrimmed>
   </PropertyGroup>
 
   <ItemGroup>
-    <!-- App Icon -->
-    <MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" Color="#512BD4" />
-
-    <!-- Splash Screen -->
-    <MauiSplashScreen Include="Resources\Splash\splash.svg" Color="#512BD4" BaseSize="128,128" />
-
-    <!-- Images -->
-    <MauiImage Include="Resources\Images\*" />
-
-    <!-- Custom Fonts -->
-    <MauiFont Include="Resources\Fonts\*" />
-
-    <!-- Raw Assets (also remove the "Resources\Raw" prefix) -->
-    <MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="CommunityToolkit.Maui" Version="13.0.0" />
-    <PackageReference Include="Microsoft.Maui.Controls" Version="10.0.20" />
+    <PackageReference Include="CommunityToolkit.WinUI.Controls.Primitives" Version="8.2.251219" />
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="10.0.1" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\source\Karambolo.ReactiveMvvm.Maui\Karambolo.ReactiveMvvm.Maui.csproj" />
+    <ProjectReference Include="..\..\..\source\Karambolo.ReactiveMvvm.Uno\Karambolo.ReactiveMvvm.Uno.csproj" />
   </ItemGroup>
 
   <Import Project="..\..\Shared\GettingStarted\GettingStarted.Shared.projitems" Label="Shared" />
-
 </Project>
