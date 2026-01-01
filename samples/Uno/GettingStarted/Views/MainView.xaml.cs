@@ -92,21 +92,20 @@ namespace GettingStarted.Views
             _attachedDisposables.Remove(disposable);
         }
 
-        ChildView _childView;
         public ChildView ChildView
         {
-            get => _childView;
+            get;
             set
             {
-                if (_childView == value)
+                if (field == value)
                     return;
 
-                if (_childView != null)
+                if (field != null)
                     ChildViewContentControl.Content = null;
 
-                _childView = value;
+                field = value;
 
-                if (_childView != null)
+                if (field != null)
                     ChildViewContentControl.Content = value;
             }
         }

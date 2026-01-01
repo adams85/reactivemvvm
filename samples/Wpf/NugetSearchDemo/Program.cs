@@ -3,7 +3,6 @@ using Karambolo.ReactiveMvvm;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NuGet.Configuration;
-using NuGet.Protocol;
 using NuGet.Protocol.Core.Types;
 using NugetSearchDemo.Converters;
 using NugetSearchDemo.ViewModels;

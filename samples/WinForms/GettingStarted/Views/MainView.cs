@@ -81,21 +81,19 @@ namespace GettingStarted.Views
             _attachedDisposables.Remove(disposable);
         }
 
-        ChildView _childView;
-
         [DefaultValue(null)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public ChildView ChildView
         {
-            get => _childView;
+            get;
             set
             {
-                if (_childView == value)
+                if (field == value)
                     return;
 
-                if (_childView != null)
+                if (field != null)
                 {
-                    ChildViewPlaceholderPanel.Controls.Remove(_childView);
+                    ChildViewPlaceholderPanel.Controls.Remove(field);
 
                     // normally we'd dispose the child view but we don't want it to suppress GC finalization to see if it gets collected by the GC
                     // _childView.Dispose();
@@ -105,10 +103,10 @@ namespace GettingStarted.Views
                     ChildViewPlaceholderPanel.PerformLayout();
                 }
 
-                _childView = value;
+                field = value;
 
-                if (_childView != null)
-                    ChildViewPlaceholderPanel.Controls.Add(_childView);
+                if (field != null)
+                    ChildViewPlaceholderPanel.Controls.Add(field);
             }
         }
 

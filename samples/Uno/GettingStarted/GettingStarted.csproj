@@ -7,6 +7,7 @@
     <TargetPlatformMinVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</TargetPlatformMinVersion>
 
     <OutputType>Exe</OutputType>
+    <LangVersion>14</LangVersion>
     <UnoSingleProject>true</UnoSingleProject>
     <!--
       UnoFeatures are used to quickly add and manage features enabled for your app.

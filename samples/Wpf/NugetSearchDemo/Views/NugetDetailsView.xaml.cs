@@ -16,7 +16,7 @@ namespace NugetSearchDemo.Views
 
         protected override void OnViewActivated(ViewActivationLifetime activationLifetime)
         {
-            // Our 4th parameter we convert from Url into a BitmapImage. 
+            // Our 4th parameter we convert from Url into a BitmapImage.
             // This is an easy way of doing value conversion using ReactiveMvvm binding.
             this.BindOneWay(ViewModel,
                 viewModel => viewModel.IconUrl,

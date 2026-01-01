@@ -49,7 +49,7 @@ namespace GettingStarted.ViewModels
             SelectFileInteraction = new Interaction<Unit, string>();
         }
 
-        // use rmcd snippet to quickly insert commands 
+        // use rmcd snippet to quickly insert commands
         public ReactiveCommand<Unit, Unit> ToggleChildCommand { get; }
 
         public ReactiveCommand<Unit, Unit> StartInteractionCommand { get; }
@@ -58,35 +58,29 @@ namespace GettingStarted.ViewModels
         public Interaction<Unit, string> SelectFileInteraction { get; }
 
         // use rprop snippet to quickly insert properties which notifies of changes
-        private bool _canToggleChild;
-        public bool CanToggleChild
-        {
-            get => _canToggleChild;
-            set => Change(ref _canToggleChild, value);
-        }
+        public bool CanToggleChild { get; set => Change(ref field, value); }
 
-        private ChildViewModel _child;
         public ChildViewModel Child
         {
-            get => _child;
+            get;
             set
             {
-                if (_child == value)
+                if (field == value)
                     return;
 
-                if (_child != null)
+                if (field != null)
                 {
                     // child is about to discarded so dispose of it right now
-                    _child.DetachFrom(this);
-                    _child.Dispose();
+                    field.DetachFrom(this);
+                    field.Dispose();
                 }
 
                 // change child and notify about the change
-                Change(ref _child, value);
+                Change(ref field, value);
 
-                if (_child != null)
+                if (field != null)
                     // make sure that child is disposed together with this instance
-                    _child.AttachTo(this);
+                    field.AttachTo(this);
             }
         }
 

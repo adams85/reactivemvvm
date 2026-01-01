@@ -28,18 +28,15 @@ public partial class App : Application
         this.InitializeComponent();
     }
 
-    private Window? _mainWindow;
     public Window MainWindow
     {
-        get => _mainWindow ?? throw new InvalidOperationException("Main window is not available yet.");
-        set => _mainWindow = value;
+        get => field ?? throw new InvalidOperationException("Main window is not available yet.");
+        set;
     }
-
-    private IHost? _host;
     public IHost Host
     {
-        get => _host ?? throw new InvalidOperationException("Host is not available yet.");
-        set => _host = value;
+        get => field ?? throw new InvalidOperationException("Host is not available yet.");
+        set;
     }
 
     protected override void OnLaunched(LaunchActivatedEventArgs args)

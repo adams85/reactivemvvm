@@ -11,12 +11,11 @@ namespace NugetSearchDemo.ViewModels
     public class NugetDetailsViewModel : ReactiveObject
     {
         private readonly IPackageSearchMetadata _metadata;
-        private readonly Uri _defaultUrl;
 
         public NugetDetailsViewModel(IPackageSearchMetadata metadata)
         {
             _metadata = metadata;
-            _defaultUrl = new Uri("https://raw.githubusercontent.com/NuGet/Media/main/Images/MainLogo/128x128/nuget_128.png");
+            IconUrl = new Uri("https://raw.githubusercontent.com/NuGet/Media/main/Images/MainLogo/128x128/nuget_128.png");
 
             OpenPage = new Action(() => Process.Start(
                 new ProcessStartInfo(ProjectUrl.ToString())
@@ -27,7 +26,7 @@ namespace NugetSearchDemo.ViewModels
                 .ToCommand(this);
         }
 
-        public Uri IconUrl => _metadata.IconUrl ?? _defaultUrl;
+        public Uri IconUrl => _metadata.IconUrl ?? field;
         public string Description => _metadata.Description;
         public Uri ProjectUrl => _metadata.ProjectUrl;
         public string Title => _metadata.Title;
