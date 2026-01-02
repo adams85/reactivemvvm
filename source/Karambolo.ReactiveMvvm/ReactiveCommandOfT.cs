@@ -25,7 +25,8 @@ namespace Karambolo.ReactiveMvvm
                 return async (param, ct) =>
                 {
                     try { return await execute(param, ct).ConfigureAwait(false); }
-                    catch (Exception ex) when (!(ex is OperationCanceledException)) { return await errorFilter(ex); }
+                    catch (OperationCanceledException) when (ct.IsCancellationRequested) { throw; }
+                    catch (Exception ex) { return await errorFilter(ex); }
                 };
             }
 
@@ -162,11 +163,7 @@ namespace Karambolo.ReactiveMvvm
             else
                 throw new ArgumentException(string.Format(Resources.IncompatibleCommandParamType, typeof(TParam), parameter.GetType()), nameof(parameter));
 
-            ExecuteAsync(param).FireAndForget(ex =>
-            {
-                if (!(ex is OperationCanceledException))
-                    OnError(ex);
-            });
+            ExecuteAsync(param).FireAndForget(OnError);
         }
     }
 }

@@ -34,9 +34,15 @@ namespace Karambolo.ReactiveMvvm
             {
                 IEqualityComparer<ObservedValue<TValue>> valueComparer;
                 if (comparer != null)
+                {
+#if NET8_0_OR_GREATER
+                    valueComparer = EqualityComparer<ObservedValue<TValue>>.Create(
+#else
                     valueComparer = DelegatedEqualityComparer.Create<ObservedValue<TValue>>(
+#endif
                         (x, y) => x.IsAvailable == y.IsAvailable && (!x.IsAvailable || comparer.Equals(x.Value, y.Value)),
                         x => x.IsAvailable ? comparer.GetHashCode() : 0);
+                }
                 else
                     valueComparer = EqualityComparer<ObservedValue<TValue>>.Default;
 

@@ -4,7 +4,10 @@ using System.Collections.Generic;
 using System.Reflection;
 using Avalonia;
 using Avalonia.VisualTree;
+#if USES_COMMON_PACKAGE
 using Karambolo.Common;
+#endif
+using Karambolo.ReactiveMvvm.Internal;
 
 namespace Karambolo.ReactiveMvvm.Helpers
 {

@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+#if USES_COMMON_PACKAGE
 using Karambolo.Common;
+#endif
+using Karambolo.ReactiveMvvm.Internal;
 using Microsoft.Maui;
 
 namespace Karambolo.ReactiveMvvm.Helpers

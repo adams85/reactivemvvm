@@ -14,7 +14,7 @@ namespace Karambolo.ReactiveMvvm.ChangeNotification.Internal
     {
         public bool NotifiesBeforeChange => false;
 
-        public IEnumerable<Type> SupportedLinkTypes => EnumerableUtils.Return(typeof(IndexerAccessLink));
+        public IEnumerable<Type> SupportedLinkTypes => new[] { typeof(IndexerAccessLink) };
 
         public bool CanProvideFor(object container, DataMemberAccessLink link)
         {

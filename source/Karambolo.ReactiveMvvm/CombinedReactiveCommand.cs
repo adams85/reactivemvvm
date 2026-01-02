@@ -5,7 +5,6 @@ using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Karambolo.Common;
 using Karambolo.ReactiveMvvm.ErrorHandling;
 
 namespace Karambolo.ReactiveMvvm
@@ -30,7 +29,7 @@ namespace Karambolo.ReactiveMvvm
             {
                 IObservable<bool> combinedCanExecute = Observable
                     .CombineLatest(_commands.Select(command => command.WhenCanExecuteChanged))
-                    .Select(canExecs => canExecs.TrueForAll(canExec => canExec));
+                    .Select(canExecs => canExecs.All(canExec => canExec));
 
                 return base.GetCanExecute(canExecute, errorFilter)
                     .CombineLatest(combinedCanExecute, (canExec, combCanExec) => canExec && combCanExec);

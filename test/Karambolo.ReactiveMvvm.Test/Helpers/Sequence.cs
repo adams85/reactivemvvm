@@ -2,7 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reactive;
+#if USES_COMMON_PACKAGE
 using Karambolo.Common;
+#endif
+using Karambolo.ReactiveMvvm.Internal;
 
 namespace Karambolo.ReactiveMvvm.Test.Helpers
 {

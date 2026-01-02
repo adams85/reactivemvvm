@@ -6,12 +6,14 @@
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>Karambolo.Public.snk</AssemblyOriginatorKeyFile>
     <LangVersion>7.3</LangVersion>
+    <UseCommonPackage Condition="'$(UseCommonPackage)' == ''">false</UseCommonPackage>
+    <DefineConstants Condition="'$(UseCommonPackage)' == 'true'">USES_COMMON_PACKAGE;$(DefineConstants)</DefineConstants>
   </PropertyGroup>
 
   <Import Project="Properties\AssemblyInfo.props" />
 
   <ItemGroup>
-    <PackageReference Include="Karambolo.Common" Version="3.4.1" />
+    <PackageReference Condition="'$(UseCommonPackage)' == 'true'" Include="Karambolo.Common" Version="3.4.1" />
   </ItemGroup>
 
   <Choose>
@@ -79,13 +81,20 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>ChangeNotificationExtensions.Generated.tt</DependentUpon>
     </Compile>
+    <Compile Update="Properties\CommonUtilsResources.Designer.cs">
+      <DependentUpon>CommonUtilsResources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
     <Compile Update="Properties\Resources.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
   </ItemGroup>
+
   <ItemGroup>
+
     <EmbeddedResource Update="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -100,4 +109,32 @@
       <LastGenOutput>ChangeNotificationExtensions.Generated.cs</LastGenOutput>
     </None>
   </ItemGroup>
+
+  <Choose>
+    <When Condition="'$(UseCommonPackage)' == 'true'">
+      <ItemGroup>
+        <EmbeddedResource Remove="Properties\CommonUtilsResources.resx" />
+      </ItemGroup>
+      <ItemGroup>
+         <Compile Remove="Internal\CommonUtils\**" />
+         <Compile Remove="Properties\CommonUtilsResources.Designer.cs" />
+      </ItemGroup>
+    </When>
+    <Otherwise>
+      <ItemGroup>
+        <EmbeddedResource Update="Properties\CommonUtilsResources.resx">
+          <LastGenOutput>CommonUtilsResources.Designer.cs</LastGenOutput>
+          <Generator>ResXFileCodeGenerator</Generator>
+          <CustomToolNamespace></CustomToolNamespace>
+        </EmbeddedResource>
+      </ItemGroup>
+      <ItemGroup>
+        <Compile Update="Properties\CommonUtilsResources.Designer.cs">
+           <DependentUpon>CommonUtilsResources.resx</DependentUpon>
+           <DesignTime>True</DesignTime>
+           <AutoGen>True</AutoGen>
+        </Compile>
+      </ItemGroup>
+    </Otherwise>
+  </Choose>
 </Project>

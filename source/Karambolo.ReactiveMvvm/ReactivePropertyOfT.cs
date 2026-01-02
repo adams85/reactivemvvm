@@ -4,8 +4,11 @@ using System.Reactive.Concurrency;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Threading;
+#if USES_COMMON_PACKAGE
 using Karambolo.Common;
+#endif
 using Karambolo.ReactiveMvvm.ErrorHandling;
+using Karambolo.ReactiveMvvm.Internal;
 
 namespace Karambolo.ReactiveMvvm
 {

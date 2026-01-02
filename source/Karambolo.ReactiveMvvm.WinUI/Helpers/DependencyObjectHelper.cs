@@ -3,7 +3,10 @@
 using System;
 using System.Collections.Concurrent;
 using System.Reflection;
+#if USES_COMMON_PACKAGE
 using Karambolo.Common;
+#endif
+using Karambolo.ReactiveMvvm.Internal;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Markup;

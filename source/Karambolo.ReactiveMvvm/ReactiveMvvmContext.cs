@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Reactive.Concurrency;
 using System.Threading;
+#if USES_COMMON_PACKAGE
 using Karambolo.Common;
+#endif
 using Karambolo.ReactiveMvvm.ErrorHandling;
+using Karambolo.ReactiveMvvm.Internal;
 using Karambolo.ReactiveMvvm.Internal.Platform;
 using Karambolo.ReactiveMvvm.Properties;
 using Microsoft.Extensions.DependencyInjection;

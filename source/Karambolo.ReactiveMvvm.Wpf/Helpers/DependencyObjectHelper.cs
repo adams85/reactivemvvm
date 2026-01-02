@@ -5,7 +5,10 @@ using System.Linq;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Media;
+#if USES_COMMON_PACKAGE
 using Karambolo.Common;
+#endif
+using Karambolo.ReactiveMvvm.Internal;
 
 namespace Karambolo.ReactiveMvvm.Helpers
 {

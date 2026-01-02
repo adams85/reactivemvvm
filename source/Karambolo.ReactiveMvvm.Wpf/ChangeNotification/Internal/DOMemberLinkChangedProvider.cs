@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Windows;
-using Karambolo.Common;
 using Karambolo.ReactiveMvvm.Expressions;
 using Karambolo.ReactiveMvvm.Helpers;
 
@@ -13,7 +12,7 @@ namespace Karambolo.ReactiveMvvm.ChangeNotification.Internal
     {
         public bool NotifiesBeforeChange => false;
 
-        public IEnumerable<Type> SupportedLinkTypes => EnumerableUtils.Return(typeof(FieldOrPropertyAccessLink));
+        public IEnumerable<Type> SupportedLinkTypes => new[] { typeof(FieldOrPropertyAccessLink) };
 
         public bool CanProvideFor(object container, DataMemberAccessLink link)
         {
