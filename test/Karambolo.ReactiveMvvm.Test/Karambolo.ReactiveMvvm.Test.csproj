@@ -8,8 +8,6 @@
     <IsTestProject>true</IsTestProject>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\..\source\Karambolo.ReactiveMvvm\Karambolo.Public.snk</AssemblyOriginatorKeyFile>
-    <DebugType>full</DebugType>
-    <DebugSymbols>true</DebugSymbols>
     <LangVersion>7.3</LangVersion>
   </PropertyGroup>
 

@@ -7,8 +7,6 @@
     <CheckEolWorkloads>false</CheckEolWorkloads>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\Karambolo.ReactiveMvvm\Karambolo.Public.snk</AssemblyOriginatorKeyFile>
-    <DebugType>full</DebugType>
-    <DebugSymbols>true</DebugSymbols>
     <LangVersion>9</LangVersion>
     <UseMaui>true</UseMaui>
     <SingleProject>true</SingleProject>

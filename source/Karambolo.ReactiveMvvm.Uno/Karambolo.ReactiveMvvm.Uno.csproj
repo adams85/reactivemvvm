@@ -5,8 +5,6 @@
     <TargetFrameworks>net9.0;net9.0-windows10.0.19041.0</TargetFrameworks>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\Karambolo.ReactiveMvvm\Karambolo.Public.snk</AssemblyOriginatorKeyFile>
-    <DebugType>full</DebugType>
-    <DebugSymbols>true</DebugSymbols>
     <LangVersion>10.0</LangVersion>
     <UnoSingleProject>true</UnoSingleProject>
     <!-- See also: https://aka.platform.uno/singleproject-features -->
