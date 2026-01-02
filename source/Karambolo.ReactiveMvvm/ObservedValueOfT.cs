@@ -47,7 +47,7 @@ namespace Karambolo.ReactiveMvvm
 
         public override bool Equals(object obj)
         {
-            return obj is ObservedValue<T> other ? Equals(other) : false;
+            return obj is ObservedValue<T> other && Equals(other);
         }
 
         public override int GetHashCode()

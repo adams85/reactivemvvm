@@ -16,7 +16,7 @@ namespace Karambolo.ReactiveMvvm.Internal
             _serviceProvider = serviceProvider;
         }
 
-        private ObjectFactory GetCachedFactory<TViewModel>(object[] parameters) where TViewModel : class
+        private static ObjectFactory GetCachedFactory<TViewModel>(object[] parameters) where TViewModel : class
         {
             Type[] paramTypes = !ArrayUtils.IsNullOrEmpty(parameters) ? parameters.Select(param => param?.GetType()).ToArray() : Type.EmptyTypes;
 

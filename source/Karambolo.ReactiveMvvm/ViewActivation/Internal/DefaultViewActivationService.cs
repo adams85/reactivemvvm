@@ -83,7 +83,7 @@ namespace Karambolo.ReactiveMvvm.ViewActivation.Internal
             // TODO: cache by type?
 
             IViewActivationEventProvider eventProvider;
-            for (int i = 0, n = _eventProviders.Length; i < n; i++)
+            for (int i = 0; i < _eventProviders.Length; i++)
                 if ((eventProvider = _eventProviders[i]).CanProvideFor(view))
                     return eventProvider.GetActivationEvents(view);
 

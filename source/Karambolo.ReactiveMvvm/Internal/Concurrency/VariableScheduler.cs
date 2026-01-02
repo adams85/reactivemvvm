@@ -40,9 +40,6 @@ namespace Karambolo.ReactiveMvvm.Internal.Concurrency
             return Current.Schedule(state, dueTime, action);
         }
 
-        public DateTimeOffset Now
-        {
-            get { return Current.Now; }
-        }
+        public DateTimeOffset Now => Current.Now;
     }
 }

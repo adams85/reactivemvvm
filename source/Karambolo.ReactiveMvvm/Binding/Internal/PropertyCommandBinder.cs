@@ -20,7 +20,7 @@ namespace Karambolo.ReactiveMvvm.Binding.Internal
         private static readonly (string Name, Type ReturnType) s_commandParameterProperty = ("CommandParameter", typeof(object));
         private static readonly ConcurrentDictionary<Type, ContainerMetadata> s_containerMetadataCache = new ConcurrentDictionary<Type, ContainerMetadata>();
 
-        private ContainerMetadata CreateContainerMetadata(PropertyInfo commandProperty, PropertyInfo commandParameterProperty)
+        protected virtual ContainerMetadata CreateContainerMetadata(PropertyInfo commandProperty, PropertyInfo commandParameterProperty)
         {
             return new ContainerMetadata
             {

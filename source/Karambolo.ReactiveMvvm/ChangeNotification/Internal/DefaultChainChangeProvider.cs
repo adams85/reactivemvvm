@@ -35,7 +35,7 @@ namespace Karambolo.ReactiveMvvm.ChangeNotification.Internal
             ILinkChangeProvider[] changeProviders = _changeProvidersLookup[(link.GetType(), beforeChange)];
 
             ILinkChangeProvider changeProvider;
-            for (int i = 0, n = changeProviders.Length; i < n; i++)
+            for (int i = 0; i < changeProviders.Length; i++)
                 if ((changeProvider = changeProviders[i]).CanProvideFor(container, link))
                     return changeProvider.GetChanges(container, link);
 

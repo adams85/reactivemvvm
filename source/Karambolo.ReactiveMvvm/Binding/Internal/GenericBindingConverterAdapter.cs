@@ -24,7 +24,7 @@ namespace Karambolo.ReactiveMvvm.Binding.Internal
 
         public bool TryConvert(ObservedValue<TFrom> value, object parameter, CultureInfo culture, out ObservedValue<TTo> result)
         {
-            if (TryConvert(value.Cast<object>(), typeof(TTo), parameter, culture, out ObservedValue<object> resultValue))
+            if (TryConvert(value.Cast<object>(), typeof(TTo), parameter, culture, out _))
             {
                 result = value.Cast<TTo>();
                 return true;

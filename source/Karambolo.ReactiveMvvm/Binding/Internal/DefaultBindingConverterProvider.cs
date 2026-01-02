@@ -9,7 +9,7 @@ namespace Karambolo.ReactiveMvvm.Binding.Internal
     public class DefaultBindingConverterProvider : IBindingConverterProvider
     {
         private static readonly ConcurrentDictionary<(Type, Type), IBindingConverter> s_converterCache = new ConcurrentDictionary<(Type, Type), IBindingConverter>();
-        private readonly IReadOnlyList<IBindingConverter> _globalConverters;
+        private readonly IBindingConverter[] _globalConverters;
 
         public DefaultBindingConverterProvider(IOptions<ReactiveMvvmOptions> options)
         {
@@ -22,7 +22,7 @@ namespace Karambolo.ReactiveMvvm.Binding.Internal
             {
                 (Type fromType, Type toType) = key;
                 IBindingConverter converter;
-                for (int i = 0, n = _globalConverters.Count; i < n; i++)
+                for (int i = 0; i < _globalConverters.Length; i++)
                     if ((converter = _globalConverters[i]).CanConvert(fromType, toType))
                         return converter is IBindingConverter<TFrom, TTo> ? converter : new GenericBindingConverterAdapter<TFrom, TTo>(converter);
 
