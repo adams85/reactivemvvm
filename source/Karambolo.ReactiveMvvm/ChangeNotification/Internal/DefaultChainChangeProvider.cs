@@ -32,7 +32,7 @@ namespace Karambolo.ReactiveMvvm.ChangeNotification.Internal
         {
             var beforeChange = options.HasOptions(ChangeNotificationOptions.BeforeChange);
 
-            ILinkChangeProvider[] changeProviders = _changeProvidersLookup[(link.GetType(), beforeChange)];
+            ILinkChangeProvider[] changeProviders = _changeProvidersLookup[(link.BaseType, beforeChange)];
 
             ILinkChangeProvider changeProvider;
             for (int i = 0; i < changeProviders.Length; i++)
@@ -41,7 +41,7 @@ namespace Karambolo.ReactiveMvvm.ChangeNotification.Internal
 
             if (!options.HasOptions(ChangeNotificationOptions.SuppressWarnings) && !s_nonObservableMembers.ContainsKey((link, beforeChange)))
             {
-                _logger.LogWarning(string.Format(Resources.ChangeNotificationNotPossible, nameof(ILinkChangeProvider)), link.InputType.Name + link, beforeChange);
+                _logger.LogWarning(string.Format(Resources.ChangeNotificationNotPossible, nameof(ILinkChangeProvider), nameof(AotHelper.AsPreserved)), link.InputType.Name + link, beforeChange);
                 ReactiveMvvmContext.RecommendVerifyingInitialization(_logger);
 
                 s_nonObservableMembers.TryAdd((link, beforeChange), Unit.Default);

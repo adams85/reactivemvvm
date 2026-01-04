@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Reactive;
 using System.Reactive.Concurrency;
 using System.Reactive.Disposables;
@@ -16,7 +17,12 @@ namespace Karambolo.ReactiveMvvm.Binding.Internal
             public PropertyInfo EnabledProperty;
         }
 
-        protected override EventCommandBinder.ContainerMetadata CreateContainerMetadata(Type containerType, EventInfo @event, Type eventArgType)
+        protected override EventCommandBinder.ContainerMetadata CreateContainerMetadata(
+#if NET5_0_OR_GREATER
+            [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.PublicEvents)]
+#endif
+            Type containerType,
+            EventInfo @event, Type eventArgType)
         {
             return new ContainerMetadata
             {
@@ -29,12 +35,19 @@ namespace Karambolo.ReactiveMvvm.Binding.Internal
             };
         }
 
-        protected override IDisposable Bind<TEventHandler, TEventArgs, TParam>(ICommand command, object container, IObservable<TParam> commandParameters, EventCommandBinder.ContainerMetadata containerMetadata,
-            IScheduler scheduler, Action<Exception> onError)
+        protected override IDisposable Bind<
+#if NET5_0_OR_GREATER
+            [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.PublicEvents)]
+#endif
+            TContainer,
+            TParam
+            >(
+                ICommand command, TContainer container, IObservable<TParam> commandParameters, EventCommandBinder.ContainerMetadata containerMetadata,
+                IScheduler scheduler, Action<Exception> onError)
         {
             var actualContainerMetadata = (ContainerMetadata)containerMetadata;
 
-            IDisposable commandBindingDisposable = base.Bind<TEventHandler, TEventArgs, TParam>(command, container, commandParameters, actualContainerMetadata, scheduler, onError);
+            IDisposable commandBindingDisposable = base.Bind<TContainer, TParam>(command, container, commandParameters, actualContainerMetadata, scheduler, onError);
 
             if (actualContainerMetadata.EnabledProperty == null)
                 return commandBindingDisposable;

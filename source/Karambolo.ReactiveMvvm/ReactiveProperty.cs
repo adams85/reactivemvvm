@@ -76,16 +76,38 @@ namespace Karambolo.ReactiveMvvm
             Expression expression = DataMemberAccessExpressionNormalizer.Instance.Visit(propertyExpression.Body);
 
             string propertyName;
-            switch (expression)
+            switch (expression.NodeType)
             {
-                case MemberExpression memberExpression when memberExpression.Expression.NodeType == ExpressionType.Parameter:
-                    propertyName = memberExpression.Member.Name;
+                case ExpressionType.MemberAccess:
+                    var memberExpression = (MemberExpression)expression;
+                    if (memberExpression.Expression.NodeType == ExpressionType.Parameter)
+                        propertyName = memberExpression.Member.Name;
+                    else 
+                        goto default;
                     break;
-                case IndexExpression indexExpression when indexExpression.Object.NodeType == ExpressionType.Parameter:
-                    propertyName = indexExpression.Indexer.Name + "[]";
+                case ExpressionType.ArrayLength:
+                    var unaryExpression = (UnaryExpression)expression;
+                    if (unaryExpression.Operand.NodeType == ExpressionType.Parameter)
+                        propertyName = ReflectionHelper.LengthPropertyName;
+                    else
+                        goto default;
+                    break;
+                case ExpressionType.Index:
+                    var indexExpression = (IndexExpression)expression;
+                    if (indexExpression.Object.NodeType == ExpressionType.Parameter)
+                        propertyName = indexExpression.Indexer.Name + "[]";
+                    else
+                        goto default;
+                    break;
+                case ExpressionType.ArrayIndex:
+                    var binaryExpression = (BinaryExpression)expression;
+                    if (binaryExpression.Left.NodeType == ExpressionType.Parameter)
+                        propertyName = ReflectionHelper.IndexerPropertyName + "[]";
+                    else
+                        goto default;
                     break;
                 default:
-                    throw new ArgumentException(Resources.InvalidPropertyExpression);
+                    throw new ArgumentException(string.Format(Resources.InvalidPropertyExpression, expression));
             }
 
             return ToPropertyCore(source, container, propertyName, initialValue, options, scheduler, errorHandler, comparer);

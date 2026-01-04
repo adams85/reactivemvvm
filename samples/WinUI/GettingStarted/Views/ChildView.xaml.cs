@@ -28,7 +28,7 @@ namespace GettingStarted.Views
         {
             // WinUI controls don't like when one tries to set their Text properties to null,
             // so we need a BindingConverter which deals with unavailable values to keep them happy
-            this.BindOneWay(ViewModel, vm => vm.CurrentTime, v => v.CurrentTimeTextBlock.Text, new SafeTimeConverter())
+            this.BindOneWay(ViewModel, vm => vm.CurrentTime, v => v.CurrentTimeTextBlock.AsPreserved().Text, new SafeTimeConverter())
                 .AttachTo(activationLifetime);
 
             ReactiveMvvmContext.Current.MessageBus.Publish(new LogMessage { Message = $"{nameof(ChildView)} activated" });

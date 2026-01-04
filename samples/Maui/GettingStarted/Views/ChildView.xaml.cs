@@ -22,7 +22,7 @@ namespace GettingStarted.Views
 
         protected override void OnViewActivated(ViewActivationLifetime activationLifetime)
         {
-            this.BindOneWay(ViewModel, vm => vm.CurrentTime, v => v.CurrentTimeLabel.Text,
+            this.BindOneWay(ViewModel, vm => vm.CurrentTime, v => v.CurrentTimeLabel.AsPreserved().Text,
                 value => value.ToLocalTime().TimeOfDay.ToString("hh':'mm':'ss"))
                 .AttachTo(activationLifetime);
 

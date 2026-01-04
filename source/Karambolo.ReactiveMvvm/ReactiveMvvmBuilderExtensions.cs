@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Reactive.Concurrency;
 using System.Reflection;
 using Karambolo.ReactiveMvvm.ErrorHandling;
@@ -11,6 +12,10 @@ namespace Karambolo.ReactiveMvvm
 {
     public static class ReactiveMvvmBuilderExtensions
     {
+#if NET5_0_OR_GREATER
+        internal const string AssemblyTypesMayBeTrimmedMessage = "Types contained by the specified assemblies may have trimmed. Ensure all required types are preserved.";
+#endif
+
         public static IReactiveMvvmBuilder ConfigureServices(this IReactiveMvvmBuilder builder, Action<IServiceCollection> configure)
         {
             if (builder == null)
@@ -24,6 +29,9 @@ namespace Karambolo.ReactiveMvvm
             return builder;
         }
 
+#if NET5_0_OR_GREATER
+        [RequiresUnreferencedCode(AssemblyTypesMayBeTrimmedMessage)]
+#endif
         public static IReactiveMvvmBuilder ConfigureServices(this IReactiveMvvmBuilder builder, Action<IServiceCollection, Type> configure, params Assembly[] assemblies)
         {
             if (builder == null)

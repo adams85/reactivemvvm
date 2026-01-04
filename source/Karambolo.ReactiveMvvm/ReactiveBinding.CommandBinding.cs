@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq.Expressions;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
@@ -19,8 +20,17 @@ namespace Karambolo.ReactiveMvvm
     {
         private static readonly ICommandBinderProvider s_commandBinderProvider = ReactiveMvvmContext.ServiceProvider.GetRequiredService<ICommandBinderProvider>();
 
-        private static void OnCommandBindingFailure<TViewModel, TCommand, TView, TContainer>(CommandBindingEvent<TCommand, TContainer> bindingEvent, TView view,
-            DataMemberAccessChain commandAccessChain, DataMemberAccessChain containerAccessChain, string eventName)
+        private static void OnCommandBindingFailure<
+            TViewModel, TCommand, TView,
+#if NET5_0_OR_GREATER
+            [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.PublicEvents)]
+#endif
+            TContainer>(
+                CommandBindingEvent<TCommand, TContainer> bindingEvent,
+                TView view,
+                DataMemberAccessChain commandAccessChain,
+                DataMemberAccessChain containerAccessChain,
+                string eventName)
             where TViewModel : class
             where TView : IBoundView<TViewModel>
             where TCommand : ICommand
@@ -31,7 +41,9 @@ namespace Karambolo.ReactiveMvvm
             if (eventName == null)
                 eventName =
                     (bindingEvent.Binder != null && bindingEvent.TargetValue.IsAvailable && bindingEvent.TargetValue.Value != null ?
+#pragma warning disable IL2072 // in theory, covariance allows a less derived container type but that's unrealistic, so we ignore this edge case
                     bindingEvent.Binder.GetContainerMember(bindingEvent.TargetValue.Value.GetType(), eventName) :
+#pragma warning restore IL2072
                     null)?.Name ?? "<Default>";
 
             var sourcePath = viewModelType.Name + commandAccessChain.Slice(1);
@@ -42,7 +54,13 @@ namespace Karambolo.ReactiveMvvm
             ReactiveMvvmContext.RecommendVerifyingInitialization(logger);
         }
 
-        public static CommandBinding<TViewModel, TCommand, TView, TContainer, TParam> BindCommand<TViewModel, TCommand, TView, TContainer, TParam>(
+        public static CommandBinding<TViewModel, TCommand, TView, TContainer, TParam> BindCommand<
+            TViewModel, TCommand, TView,
+#if NET5_0_OR_GREATER
+            [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.PublicEvents)]
+#endif
+            TContainer,
+            TParam>(
                 this TView view,
                 TViewModel witnessViewModel,
                 Expression<Func<TViewModel, TCommand>> commandAccessExpression,
@@ -110,7 +128,13 @@ namespace Karambolo.ReactiveMvvm
             return new CommandBinding<TViewModel, TCommand, TView, TContainer, TParam>(view, commandAccessChain, containerAccessChain, commandParameters, whenBind, bindingDisposable);
         }
 
-        public static CommandBinding<TViewModel, TCommand, TView, TContainer, TParam> BindCommand<TViewModel, TCommand, TView, TContainer, TParam>(
+        public static CommandBinding<TViewModel, TCommand, TView, TContainer, TParam> BindCommand<
+            TViewModel, TCommand, TView,
+#if NET5_0_OR_GREATER
+            [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.PublicEvents)]
+#endif
+            TContainer,
+            TParam>(
                 this TView view,
                 TViewModel witnessViewModel,
                 Expression<Func<TViewModel, TCommand>> commandAccessExpression,
@@ -133,13 +157,19 @@ namespace Karambolo.ReactiveMvvm
             return view.BindCommand(witnessViewModel, commandAccessExpression, containerAccessExpression, commandParameters, eventName, errorHandler);
         }
 
-        public static CommandBinding<TViewModel, TCommand, TView, TContainer, object> BindCommand<TViewModel, TCommand, TView, TContainer>(
-            this TView view,
-            TViewModel witnessViewModel,
-            Expression<Func<TViewModel, TCommand>> commandAccessExpression,
-            Expression<Func<TView, TContainer>> containerAccessExpression,
-            string eventName = null,
-            ObservedErrorHandler errorHandler = null)
+        public static CommandBinding<TViewModel, TCommand, TView, TContainer, object> BindCommand<
+            TViewModel, TCommand, TView,
+#if NET5_0_OR_GREATER
+            [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.PublicEvents)]
+#endif
+            TContainer
+            >(
+                this TView view,
+                TViewModel witnessViewModel,
+                Expression<Func<TViewModel, TCommand>> commandAccessExpression,
+                Expression<Func<TView, TContainer>> containerAccessExpression,
+                string eventName = null,
+                ObservedErrorHandler errorHandler = null)
             where TViewModel : class
             where TView : IBoundView<TViewModel>
             where TCommand : ICommand

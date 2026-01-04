@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.Diagnostics.CodeAnalysis;
 using System.Reactive.Concurrency;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
@@ -29,7 +30,12 @@ namespace Karambolo.ReactiveMvvm.Binding.Internal
             };
         }
 
-        private ContainerMetadata GetCachedContainerMetadata(Type containerType, string eventName)
+        private ContainerMetadata GetCachedContainerMetadata(
+#if NET5_0_OR_GREATER
+            [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.PublicEvents)]
+#endif
+            Type containerType,
+            string eventName)
         {
             if (eventName != null)
                 return null;
@@ -50,13 +56,41 @@ namespace Karambolo.ReactiveMvvm.Binding.Internal
             return containerMetadata;
         }
 
-        public bool CanBind(Type containerType, string eventName)
+        public bool CanBind(
+#if NET5_0_OR_GREATER
+            [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.PublicEvents)]
+#endif
+            Type containerType,
+            string eventName)
         {
             return GetCachedContainerMetadata(containerType, eventName) != null;
         }
 
-        protected virtual IDisposable Bind<TParam>(ICommand command, object container, IObservable<TParam> commandParameters, ContainerMetadata containerMetadata,
-            IScheduler scheduler, Action<Exception> onError)
+        public IDisposable Bind<
+#if NET5_0_OR_GREATER
+            [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.PublicEvents)]
+#endif
+            TContainer,
+            TParam>(
+                ICommand command, TContainer container, IObservable<TParam> commandParameters, string eventName,
+                IScheduler scheduler, Action<Exception> onError)
+        {
+#pragma warning disable IL2072 // in theory, covariance allows a less derived container type but that's unrealistic, so we ignore this edge case
+            ContainerMetadata containerMetadata = GetCachedContainerMetadata(container.GetType(), eventName);
+#pragma warning restore IL2072
+
+            return Bind(command, container, commandParameters, containerMetadata, scheduler, onError);
+        }
+
+        protected virtual IDisposable Bind<
+#if NET5_0_OR_GREATER
+            [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.PublicEvents)]
+#endif
+            TContainer,
+            TParam
+            >(
+                ICommand command, TContainer container, IObservable<TParam> commandParameters, ContainerMetadata containerMetadata,
+                IScheduler scheduler, Action<Exception> onError)
         {
             var originalCommand = containerMetadata.CommandProperty.GetValue(container, null);
             var originalCommandParam = containerMetadata.CommandParameterProperty.GetValue(container, null);
@@ -78,13 +112,12 @@ namespace Karambolo.ReactiveMvvm.Binding.Internal
             return new CompositeDisposable(restoreDisposable, commandParameterSubscription);
         }
 
-        public IDisposable Bind<TParam>(ICommand command, object container, IObservable<TParam> commandParameters, string eventName, IScheduler scheduler, Action<Exception> onError)
-        {
-            ContainerMetadata containerMetadata = GetCachedContainerMetadata(container.GetType(), eventName);
-            return Bind(command, container, commandParameters, containerMetadata, scheduler, onError);
-        }
-
-        public MemberInfo GetContainerMember(Type containerType, string eventName)
+        public MemberInfo GetContainerMember(
+#if NET5_0_OR_GREATER
+            [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.PublicEvents)]
+#endif
+            Type containerType,
+            string eventName)
         {
             return GetCachedContainerMetadata(containerType, eventName)?.CommandProperty;
         }

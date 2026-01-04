@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Reflection;
 using Karambolo.ReactiveMvvm.Internal;
 using Karambolo.ReactiveMvvm.Properties;
 
@@ -9,13 +10,17 @@ namespace Karambolo.ReactiveMvvm.Expressions.Internal
 {
     internal sealed class DataMemberAccessExpressionNormalizer : ExpressionVisitor
     {
+        private static readonly MethodInfo s_asPreservedMethodDefinition =
+            new Func<object, object>(AotHelper.AsPreserved).Method.GetGenericMethodDefinition();
+
         public static readonly DataMemberAccessExpressionNormalizer Instance = new DataMemberAccessExpressionNormalizer();
 
         private DataMemberAccessExpressionNormalizer() { }
 
         public override Expression Visit(Expression node)
         {
-            MethodCallExpression methodCallNode;
+            MethodCallExpression methodCall;
+            MethodInfo method;
             switch (node.NodeType)
             {
                 case ExpressionType.ArrayIndex:
@@ -23,8 +28,10 @@ namespace Karambolo.ReactiveMvvm.Expressions.Internal
                 case ExpressionType.ArrayLength:
                     return VisitUnary((UnaryExpression)node);
                 case ExpressionType.Call
-                when (methodCallNode = (MethodCallExpression)node).Method.IsSpecialName && methodCallNode.Method.Name == ReflectionHelper.IndexerGetMethodName:
-                    return VisitMethodCall(methodCallNode);
+                when (method = (methodCall = (MethodCallExpression)node).Method).IsSpecialName && method.Name == ReflectionHelper.IndexerGetMethodName
+                    || method.DeclaringType.IsArray && method.Name == ReflectionHelper.ArrayGetMethodName
+                    || method.IsGenericMethod && method.GetGenericMethodDefinition() == s_asPreservedMethodDefinition:
+                    return VisitMethodCall(methodCall);
                 case ExpressionType.Index:
                     return VisitIndex((IndexExpression)node);
                 case ExpressionType.MemberAccess:
@@ -36,7 +43,7 @@ namespace Karambolo.ReactiveMvvm.Expressions.Internal
                 case ExpressionType.Convert:
                     return VisitUnary((UnaryExpression)node);
                 default:
-                    throw new NotSupportedException(string.Format(Resources.UnsupportedExpressionType, node.NodeType));
+                    throw new NotSupportedException(string.Format(Resources.UnsupportedExpressionType, node, node.NodeType));
             }
         }
 
@@ -51,11 +58,7 @@ namespace Karambolo.ReactiveMvvm.Expressions.Internal
                     if (!(node.Right is ConstantExpression))
                         throw new NotSupportedException(Resources.NonConstantIndexExpression);
 
-                    Expression left = Visit(node.Left);
-                    Expression right = Visit(node.Right);
-
-                    // translate ArrayIndex into normal index expression
-                    return Expression.MakeIndex(left, left.Type.GetProperty(ReflectionHelper.IndexerPropertyName), new[] { right });
+                    return base.VisitBinary(node);
                 default:
                     throw new InvalidOperationException();
             }
@@ -66,11 +69,10 @@ namespace Karambolo.ReactiveMvvm.Expressions.Internal
             switch (node.NodeType)
             {
                 case ExpressionType.ArrayLength:
-                    Expression expression = Visit(node.Operand);
-
-                    // translate ArrayLength into normal member expression
-                    return Expression.MakeMemberAccess(expression, expression.Type.GetProperty(ReflectionHelper.LengthPropertyName));
                 case ExpressionType.Convert:
+                    if (node.Operand is ConstantExpression)
+                        throw new NotSupportedException(Resources.ConstantSourceExpression);
+
                     return base.VisitUnary(node);
                 default:
                     throw new InvalidOperationException();
@@ -82,6 +84,9 @@ namespace Karambolo.ReactiveMvvm.Expressions.Internal
             switch (node.NodeType)
             {
                 case ExpressionType.Call:
+                    if (node.Object == null) // AsAssignable
+                        return Visit(node.Arguments[0]);
+
                     if (node.Object is ConstantExpression)
                         throw new NotSupportedException(Resources.ConstantSourceExpression);
 
@@ -92,8 +97,10 @@ namespace Karambolo.ReactiveMvvm.Expressions.Internal
                     Expression instance = Visit(node.Object);
                     IEnumerable<Expression> arguments = Visit(node.Arguments);
 
-                    // translate Call to get_Item into normal index expression
+                    // translate call to get_Item into normal index expression
+#pragma warning disable IL2075 // tests suggest that this is safe with trimming enabled (however, the setter is not preserved by NativeAOT without further action!)
                     return Expression.MakeIndex(instance, instance.Type.GetProperty(ReflectionHelper.IndexerPropertyName), arguments);
+#pragma warning restore IL2075
                 default:
                     throw new InvalidOperationException();
             }

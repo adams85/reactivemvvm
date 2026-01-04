@@ -22,14 +22,14 @@ namespace Karambolo.ReactiveMvvm.Properties {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "18.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class CommonUtilsResources {
+    internal class AvaloniaResources {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal CommonUtilsResources() {
+        internal AvaloniaResources() {
         }
         
         /// <summary>
@@ -39,7 +39,7 @@ namespace Karambolo.ReactiveMvvm.Properties {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Karambolo.ReactiveMvvm.Properties.CommonUtilsResources", typeof(CommonUtilsResources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Karambolo.ReactiveMvvm.Properties.AvaloniaResources", typeof(AvaloniaResources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -61,11 +61,11 @@ namespace Karambolo.ReactiveMvvm.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Type is not an interface..
+        ///   Looks up a localized string similar to The corresponding {0} could not be found for property {{PROPERTY_NAME}}. If trimming or AOT compilation is enabled, it may have been trimmed. In that case, ensure it is preserved, e.g. &apos;v =&gt; v.{1}().Property&apos;..
         /// </summary>
-        internal static string NotInterfaceType {
+        internal static string AvaloniaPropertyNotFound {
             get {
-                return ResourceManager.GetString("NotInterfaceType", resourceCulture);
+                return ResourceManager.GetString("AvaloniaPropertyNotFound", resourceCulture);
             }
         }
     }

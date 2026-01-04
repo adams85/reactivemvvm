@@ -1,10 +1,14 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using Karambolo.ReactiveMvvm.ViewActivation;
 using Microsoft.Maui.Controls;
 
 namespace Karambolo.ReactiveMvvm
 {
-    public abstract partial class ReactiveMultiPage<TPage, TViewModel> : MultiPage<TPage>, IReactiveView<TViewModel>
+    public abstract partial class ReactiveMultiPage<
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.PublicMethods)] TPage,
+        TViewModel>
+        : MultiPage<TPage>, IReactiveView<TViewModel>
         where TPage : Page
         where TViewModel : class
     {

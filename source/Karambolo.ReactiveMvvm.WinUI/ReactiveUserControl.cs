@@ -1,6 +1,7 @@
 ﻿#if TARGETS_WINUI || IS_UNO
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using Karambolo.ReactiveMvvm.ViewActivation;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -11,7 +12,9 @@ namespace Karambolo.ReactiveMvvm.Windows
 namespace Karambolo.ReactiveMvvm
 #endif
 {
-    public abstract partial class ReactiveUserControl<TViewModel> : UserControl, IReactiveView<TViewModel>
+    public abstract partial class ReactiveUserControl<
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.NonPublicConstructors | DynamicallyAccessedMemberTypes.PublicConstructors)] TViewModel>
+        : Page, IReactiveView<TViewModel>
         where TViewModel : class
     {
         public static readonly DependencyProperty ViewModelProperty = DependencyProperty.Register(

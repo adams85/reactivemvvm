@@ -19,7 +19,7 @@ namespace Karambolo.ReactiveMvvm.Properties {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "18.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class Resources {
@@ -61,7 +61,7 @@ namespace Karambolo.ReactiveMvvm.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to None of the registered {0} implementations are able to observe changes of the data member {{MEMBER}} (BeforeChange={{BEFORE}})..
+        ///   Looks up a localized string similar to None of the registered {0} implementations are able to observe changes of the data member {{MEMBER}} (BeforeChange={{BEFORE}}). If trimming or AOT compilation is enabled, it may have been trimmed. In that case, ensure it is preserved, e.g. &apos;obj =&gt; obj.{1}().Member&apos;..
         /// </summary>
         internal static string ChangeNotificationNotPossible {
             get {
@@ -124,6 +124,24 @@ namespace Karambolo.ReactiveMvvm.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Index expression &apos;{0}&apos; is not supported. The related member must be readable..
+        /// </summary>
+        internal static string IndexExpressionNotAccessible {
+            get {
+                return ResourceManager.GetString("IndexExpressionNotAccessible", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Index expression &apos;{0}&apos; is not supported. The related indexer must be contained by a reference type and writable. If trimming or AOT compilation is enabled, it may have been trimmed. In that case, ensure it is preserved, e.g. &apos;obj =&gt; obj.{1}()[0]&apos;..
+        /// </summary>
+        internal static string IndexExpressionNotAssignable {
+            get {
+                return ResourceManager.GetString("IndexExpressionNotAssignable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Service provider is already in use, thus initialization is not possible any more..
         /// </summary>
         internal static string InitializationNotPossible {
@@ -133,11 +151,29 @@ namespace Karambolo.ReactiveMvvm.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Property expression is invalid. It must be specified like &apos;obj =&gt; obj.Property&apos;..
+        ///   Looks up a localized string similar to Property expression &apos;{0}&apos; is invalid. It must be specified like &apos;obj =&gt; obj.Property&apos;..
         /// </summary>
         internal static string InvalidPropertyExpression {
             get {
                 return ResourceManager.GetString("InvalidPropertyExpression", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Member expression &apos;{0}&apos; is not supported. The related member must be readable..
+        /// </summary>
+        internal static string MemberExpressionNotAccessible {
+            get {
+                return ResourceManager.GetString("MemberExpressionNotAccessible", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Member expression &apos;{0}&apos; is not supported. The related member must be contained by a reference type and writable. If trimming or AOT compilation is enabled, it may have been trimmed. In that case, ensure it is preserved, e.g. &apos;obj =&gt; obj.{1}().Property&apos;..
+        /// </summary>
+        internal static string MemberExpressionNotAssignable {
+            get {
+                return ResourceManager.GetString("MemberExpressionNotAssignable", resourceCulture);
             }
         }
         
@@ -178,7 +214,7 @@ namespace Karambolo.ReactiveMvvm.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Expression type {0} is not supported..
+        ///   Looks up a localized string similar to Expression &apos;{0}&apos; is not supported. Expression type must be {1}..
         /// </summary>
         internal static string UnsupportedExpressionType {
             get {

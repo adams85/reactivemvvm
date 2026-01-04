@@ -15,12 +15,16 @@ namespace Karambolo.ReactiveMvvm.ChangeNotification.Internal
 
         public bool CanProvideFor(object container, DataMemberAccessLink link)
         {
-            return container is AvaloniaObject && AvaloniaObjectHelper.GetAvaloniaPropertyCached(container.GetType(), ((FieldOrPropertyAccessLink)link).Member.Name) != null;
+#pragma warning disable IL2072 // valid but we can't do anything about it without sourcegen (AsPreserved can be used as a workaround)
+            return container is AvaloniaObject && AvaloniaObjectHelper.GetAvaloniaPropertyCached(container.GetType(), ((FieldOrPropertyAccessLink)link).MemberName) != null;
+#pragma warning restore IL2072
         }
 
         public IObservable<ObservedChange> GetChanges(object container, DataMemberAccessLink link)
         {
-            AvaloniaProperty ap = AvaloniaObjectHelper.GetAvaloniaPropertyCached(container.GetType(), ((FieldOrPropertyAccessLink)link).Member.Name);
+#pragma warning disable IL2072 // see CanProvideFor
+            AvaloniaProperty ap = AvaloniaObjectHelper.GetAvaloniaPropertyCached(container.GetType(), ((FieldOrPropertyAccessLink)link).MemberName);
+#pragma warning restore IL2072
 
             return ap.Changed
                 .Where(change => change.Sender == container)

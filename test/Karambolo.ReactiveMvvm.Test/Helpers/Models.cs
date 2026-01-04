@@ -70,5 +70,4 @@ namespace Karambolo.ReactiveMvvm.Test.Helpers
             set => Change(ref _value, value);
         }
     }
-
 }

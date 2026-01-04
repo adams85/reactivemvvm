@@ -25,7 +25,7 @@ namespace Karambolo.ReactiveMvvm.ChangeNotification.Internal
 
             return Observable.FromEventPattern<PropertyChangedEventHandler, PropertyChangedEventArgs>(
                 handler => npc.PropertyChanged += handler, handler => npc.PropertyChanged -= handler)
-                .Where(e => string.IsNullOrEmpty(e.EventArgs.PropertyName) || e.EventArgs.PropertyName == memberLink.Member.Name)
+                .Where(e => string.IsNullOrEmpty(e.EventArgs.PropertyName) || e.EventArgs.PropertyName == memberLink.MemberName)
                 .Select(_ => new ObservedChange(npc, memberLink));
         }
     }

@@ -1,16 +1,12 @@
-﻿using System.Linq.Expressions;
+﻿using System;
+using System.Linq.Expressions;
 
 namespace Karambolo.Common.Internal
 {
-    internal sealed class ParameterReplacerVisitor : ExpressionVisitor
+    internal sealed class ParameterReplacerVisitor<TParam, TResult> : ExpressionVisitor
     {
         private readonly ParameterExpression _param;
         private readonly Expression _expression;
-
-        public ParameterReplacerVisitor(ParameterExpression param)
-        {
-            _expression = _param = param;
-        }
 
         public ParameterReplacerVisitor(LambdaExpression lambda)
         {
@@ -20,7 +16,7 @@ namespace Karambolo.Common.Internal
 
         protected override Expression VisitLambda<TLambda>(Expression<TLambda> node)
         {
-            return Expression.Lambda(Visit(node.Body), _param);
+            return Expression.Lambda<Func<TParam, TResult>>(Visit(node.Body), _param);
         }
 
         protected override Expression VisitParameter(ParameterExpression node)

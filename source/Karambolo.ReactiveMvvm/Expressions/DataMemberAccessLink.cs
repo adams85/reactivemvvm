@@ -1,33 +1,24 @@
 ﻿using System;
-using System.Collections.Concurrent;
-using System.Reflection;
 
 namespace Karambolo.ReactiveMvvm.Expressions
 {
     public abstract class DataMemberAccessLink
     {
-        protected static readonly ConstructorInfo ObservedValueCtor = typeof(ObservedValue<object>).GetConstructor(new[] { typeof(object).MakeByRefType() });
-        private static readonly ConcurrentDictionary<MemberInfo, ValueAccessor> s_valueAccessorCache = new ConcurrentDictionary<MemberInfo, ValueAccessor>();
-        private static readonly ConcurrentDictionary<MemberInfo, ValueAssigner> s_valueAssignerCache = new ConcurrentDictionary<MemberInfo, ValueAssigner>();
+#if NET5_0_OR_GREATER
+        private protected const string MemberMayBeTrimmedMessage = "The member related to " + nameof(DataMemberAccessLink) + " may have been trimmed. Ensure all required members are preserved.";
+#endif
 
-        protected static ValueAccessor GetCachedValueAccessor(MemberInfo member, Func<MemberInfo, ValueAccessor> valueAccessorFactory)
-        {
-            return s_valueAccessorCache.GetOrAdd(member, valueAccessorFactory);
-        }
-
-        protected static ValueAssigner GetCachedValueAssigner(MemberInfo member, Func<MemberInfo, ValueAssigner> valueAssignerFactory)
-        {
-            return s_valueAssignerCache.GetOrAdd(member, valueAssignerFactory);
-        }
-
-        protected DataMemberAccessLink(ValueAccessor valueAccessor)
+        protected DataMemberAccessLink(ValueAccessor valueAccessor, ValueAssigner valueAssigner)
         {
             ValueAccessor = valueAccessor;
+            ValueAssigner = valueAssigner;
         }
+
+        public abstract Type BaseType { get; }
 
         public abstract Type InputType { get; }
         public abstract Type OutputType { get; }
         public ValueAccessor ValueAccessor { get; }
-        public abstract ValueAssigner ValueAssigner { get; }
+        public ValueAssigner ValueAssigner { get; }
     }
 }

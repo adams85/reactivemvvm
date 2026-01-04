@@ -4,7 +4,7 @@
 
 // Source: https://github.com/dotnet/reactive/blob/rxnet-v6.0.1/Rx.NET/Source/src/System.Reactive/Platforms/Desktop/Concurrency/DispatcherScheduler.cs
 
-#if BACKPORT_SCHEDULER
+#if BACKPORTS_SCHEDULER
 
 using System.Reactive.Disposables;
 using System.Threading;

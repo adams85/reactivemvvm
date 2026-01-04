@@ -1,11 +1,21 @@
-﻿namespace Karambolo.ReactiveMvvm
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace Karambolo.ReactiveMvvm
 {
     public interface IViewModelFactory
     {
-        TViewModel CreateViewModel<TViewModel>(params object[] parameters)
+        TViewModel CreateViewModel<
+#if NET5_0_OR_GREATER
+            [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
+#endif
+            TViewModel>(params object[] parameters)
             where TViewModel : class;
 
-        TViewModel CreateViewModelScoped<TViewModel>(params object[] parameters)
+        TViewModel CreateViewModelScoped<
+#if NET5_0_OR_GREATER
+            [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
+#endif    
+            TViewModel>(params object[] parameters)
             where TViewModel : class, ILifetime;
     }
 }

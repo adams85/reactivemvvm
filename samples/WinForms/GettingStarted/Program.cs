@@ -1,10 +1,11 @@
 ﻿using System;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
+using GettingStarted.ViewModels;
+using GettingStarted.Views;
 using Karambolo.ReactiveMvvm;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using GettingStarted.ViewModels;
-using GettingStarted.Views;
 
 namespace GettingStarted
 {
@@ -16,6 +17,10 @@ namespace GettingStarted
         [STAThread]
         static void Main()
         {
+#if SUPPORTS_AOT
+            ComWrappers.RegisterForMarshalling(WinFormsComInterop.WinFormsComWrappers.Instance);
+#endif
+
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 

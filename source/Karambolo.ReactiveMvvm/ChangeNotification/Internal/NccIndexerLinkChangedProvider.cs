@@ -19,12 +19,9 @@ namespace Karambolo.ReactiveMvvm.ChangeNotification.Internal
         public bool CanProvideFor(object container, DataMemberAccessLink link)
         {
             var indexerLink = (IndexerAccessLink)link;
-            Type[] argTypes = indexerLink.ArgumentTypes.Take(2).ToArray();
-            Type sourceType;
             return
-                argTypes.Length == 1 && argTypes[0] == typeof(int) &&
-                container is INotifyCollectionChanged &&
-                (sourceType = container.GetType()).HasInterface(typeof(IEnumerable<>).MakeGenericType(sourceType.GetItemType(argTypes)));
+                indexerLink.ArgumentCount == 1 && indexerLink.GetArgumentType(0) == typeof(int) &&
+                container is INotifyCollectionChanged;
         }
 
         public IObservable<ObservedChange> GetChanges(object container, DataMemberAccessLink link)

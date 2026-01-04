@@ -1,89 +1,161 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+using System.Collections.Concurrent;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq.Expressions;
 using System.Reflection;
-using Karambolo.Common;
+using Karambolo.ReactiveMvvm.Properties;
 
 namespace Karambolo.ReactiveMvvm.Expressions
 {
-    public class IndexerAccessLink : DataMemberAccessLink
+    public abstract class IndexerAccessLink : DataMemberAccessLink
     {
-        private static ValueAccessor BuildValueAccessor(IndexExpression indexExpression)
+        internal sealed class IndexImpl : IndexerAccessLink
         {
-            // declaring type must be used instead of parameter type!!!
-            // https://github.com/dotnet/roslyn/issues/30636
-            Type containerType = indexExpression.Indexer.DeclaringType;
-            ParameterExpression param = Expression.Parameter(typeof(object));
+            private static ValueAssigner GetCachedValueAssigner(IndexExpression expression)
+            {
+                return GetCachedValueAssigner(expression.Indexer, expression, (_, expr) =>
+                    ValueAccessorBuilder.CanBuildIndexerAssigner(expr) ?
+                    ValueAccessorBuilder.Current.BuildIndexerAssigner(expr) :
+                    throw new NotSupportedException(string.Format(Resources.IndexExpressionNotAssignable, expr, nameof(AotHelper.AsPreserved))));
+            }
 
-            DefaultExpression defaultResult = Expression.Default(typeof(ObservedValue<object>));
-            Expression body = Expression.Condition(
-                Expression.TypeIs(param, containerType),
-                Expression.New(ObservedValueCtor, Expression.Convert(indexExpression.Update(Expression.Convert(param, containerType), indexExpression.Arguments), param.Type)),
-                defaultResult);
+            private readonly IndexExpression _expression;
 
-            body = Expression.TryCatch(body,
-                Expression.Catch(Expression.Parameter(typeof(IndexOutOfRangeException)), defaultResult),
-                Expression.Catch(Expression.Parameter(typeof(ArgumentOutOfRangeException)), defaultResult));
+            public IndexImpl(IndexExpression expression, bool canSetValue)
+                : base(
+                      GetCachedValueAccessor(expression.Indexer, expression, (_, expr) => ValueAccessorBuilder.Current.BuildIndexerAccessor(expr)),
+                      canSetValue ? GetCachedValueAssigner(expression) : null)
+            {
+                _expression = expression;
+            }
 
-            var lambda = Expression.Lambda<ValueAccessor>(body, param);
+            public override Type InputType => _expression.Object.Type;
+            public override Type OutputType => _expression.Type;
+            public override PropertyInfo Indexer
+            {
+#if NET5_0_OR_GREATER
+                [RequiresUnreferencedCode(MemberMayBeTrimmedMessage)]
+#endif
+                get => _expression.Indexer;
+            }
 
-            return lambda.Compile();
+            public override int ArgumentCount => _expression.Arguments.Count;
+
+            public override Type GetArgumentType(int index)
+            {
+                return _expression.Arguments[index].Type;
+            }
+
+            public override object GetArgument(int index)
+            {
+                return ((ConstantExpression)_expression.Arguments[index]).Value;
+            }
         }
 
-        private static ValueAssigner BuildValueAssigner(IndexExpression indexExpression)
+        internal sealed class ArrayIndexImpl : IndexerAccessLink
         {
-            // declaring type must be used instead of parameter type!!!
-            // https://github.com/dotnet/roslyn/issues/30636
-            Type containerType = indexExpression.Indexer.DeclaringType;
-            ParameterExpression param = Expression.Parameter(typeof(object));
-            ParameterExpression valueParam = Expression.Parameter(typeof(object));
+            private readonly BinaryExpression _expression;
 
-            LabelTarget returnTarget = Expression.Label(typeof(bool));
+            public ArrayIndexImpl(BinaryExpression expression, bool canSetValue)
+                : base(
+                      GetCachedValueAccessor(expression.Left.Type, expression, (_, expr) => ValueAccessorBuilder.Current.BuildIndexerAccessor(expr)),
+                      canSetValue ? GetCachedValueAssigner(expression.Left.Type, expression, (_, expr) => ValueAccessorBuilder.Current.BuildIndexerAssigner(expr)) : null)
+            {
+                _expression = expression;
+            }
 
-            Expression valueParamCheck = Expression.TypeIs(valueParam, indexExpression.Type);
-            if (indexExpression.Type.AllowsNull())
-                valueParamCheck = Expression.OrElse(Expression.Equal(valueParam, Expression.Constant(null, typeof(object))), valueParamCheck);
+            public override Type InputType => _expression.Left.Type;
+            public override Type OutputType => _expression.Type;
+#pragma warning disable IL2046 // false positive (there's nothing to be trimmed away)
+            public override PropertyInfo Indexer => null;
+#pragma warning restore IL2046
 
-            BlockExpression body = Expression.Block(typeof(bool),
-                Expression.IfThenElse(
-                    Expression.AndAlso(Expression.TypeIs(param, containerType), valueParamCheck),
-                    Expression.Assign(Expression.MakeIndex(Expression.Convert(param, containerType), indexExpression.Indexer, indexExpression.Arguments), Expression.Convert(valueParam, indexExpression.Type)),
-                    Expression.Return(returnTarget, Expression.Constant(false))),
-                Expression.Label(returnTarget, Expression.Constant(true)));
+            public override int ArgumentCount => 1;
 
-            var lambda = Expression.Lambda<ValueAssigner>(body, param, valueParam);
+            public override Type GetArgumentType(int index)
+            {
+                return index == 0 ? _expression.Right.Type : throw new IndexOutOfRangeException();
+            }
 
-            return lambda.Compile();
+            public override object GetArgument(int index)
+            {
+                return index == 0 ? ((ConstantExpression)_expression.Right).Value : throw new IndexOutOfRangeException();
+            }
         }
 
-        private readonly IndexExpression _expression;
+        private static readonly ConcurrentDictionary<MemberInfo, ValueAccessor> s_valueAccessorCache = new ConcurrentDictionary<MemberInfo, ValueAccessor>();
+        private static readonly ConcurrentDictionary<MemberInfo, ValueAssigner> s_valueAssignerCache = new ConcurrentDictionary<MemberInfo, ValueAssigner>();
 
-        public IndexerAccessLink(IndexExpression expression)
-            : base(expression != null ? GetCachedValueAccessor(expression.Indexer, _ => BuildValueAccessor(expression)) : throw new ArgumentNullException(nameof(expression)))
+        protected static ValueAccessor GetCachedValueAccessor<TState>(MemberInfo member, TState state, Func<MemberInfo, TState, ValueAccessor> valueAccessorFactory)
         {
-            _expression = expression;
+#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP2_0_OR_GREATER || NET472_OR_GREATER
+            return s_valueAccessorCache.GetOrAdd(member, valueAccessorFactory, state);
+#else
+            if (!s_valueAccessorCache.TryGetValue(member, out ValueAccessor valueAccessor))
+                valueAccessor = s_valueAccessorCache.GetOrAdd(member, key => valueAccessorFactory(key, state));
+
+            return valueAccessor;
+#endif
         }
 
-        public override Type InputType => _expression.Object.Type;
-        public override Type OutputType => _expression.Type;
-        public PropertyInfo Indexer => _expression.Indexer;
-        public IEnumerable<Type> ArgumentTypes => _expression.Arguments.Select(arg => arg.Type);
-        public override ValueAssigner ValueAssigner => GetCachedValueAssigner(_expression.Indexer, _ => BuildValueAssigner(_expression));
-
-        public object GetArgument(int index)
+        protected static ValueAssigner GetCachedValueAssigner<TState>(MemberInfo member, TState state, Func<MemberInfo, TState, ValueAssigner> valueAssignerFactory)
         {
-            return ((ConstantExpression)_expression.Arguments[index]).Value;
+#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP2_0_OR_GREATER || NET472_OR_GREATER 
+            return s_valueAssignerCache.GetOrAdd(member, valueAssignerFactory, state);
+#else
+            if (!s_valueAssignerCache.TryGetValue(member, out ValueAssigner valueAssigner))
+                valueAssigner = s_valueAssignerCache.GetOrAdd(member, key => valueAssignerFactory(key, state));
+
+            return valueAssigner;
+#endif
         }
 
-        public IEnumerable<object> GetArguments()
+        public static IndexerAccessLink From(IndexExpression indexExpression, bool canSetValue)
         {
-            return _expression.Arguments.Cast<ConstantExpression>().Select(expr => expr.Value);
+            if (indexExpression == null)
+                throw new ArgumentNullException(nameof(indexExpression));
+
+            return ValueAccessorBuilder.CanBuildIndexerAccessor(indexExpression) ?
+                new IndexImpl(indexExpression, canSetValue) :
+                throw new ArgumentException(string.Format(Resources.IndexExpressionNotAccessible, indexExpression), nameof(indexExpression));
         }
+
+        public static IndexerAccessLink From(BinaryExpression arrayIndexExpression, bool canSetValue)
+        {
+            if (arrayIndexExpression == null)
+                throw new ArgumentNullException(nameof(arrayIndexExpression));
+
+            if (arrayIndexExpression.NodeType != ExpressionType.ArrayIndex)
+                throw new ArgumentException(string.Format(Resources.UnsupportedExpressionType, arrayIndexExpression, ExpressionType.ArrayIndex.ToString()), nameof(arrayIndexExpression));
+
+            return new ArrayIndexImpl(arrayIndexExpression, canSetValue);
+        }
+
+        protected IndexerAccessLink(ValueAccessor valueAccessor, ValueAssigner valueAssigner)
+            : base(valueAccessor, valueAssigner) { }
+
+        public sealed override Type BaseType => typeof(IndexerAccessLink);
+
+        public abstract PropertyInfo Indexer
+        {
+#if NET5_0_OR_GREATER
+            [RequiresUnreferencedCode(MemberMayBeTrimmedMessage)]
+#endif
+            get;
+        }
+
+        public abstract int ArgumentCount { get; }
+        public abstract Type GetArgumentType(int index);
+        public abstract object GetArgument(int index);
 
         public override string ToString()
         {
-            return "[" + string.Join(", ", _expression.Arguments) + "]";
+            var argCount = ArgumentCount;
+            var args = new string[argCount];
+            for (int i = 0; i < argCount; i++)
+                args[i] = GetArgument(i)?.ToString();
+
+            return "[" + string.Join(", ", args) + "]";
         }
     }
 }

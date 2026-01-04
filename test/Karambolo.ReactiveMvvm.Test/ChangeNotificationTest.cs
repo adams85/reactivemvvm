@@ -9,7 +9,7 @@ using Xunit;
 
 namespace Karambolo.ReactiveMvvm
 {
-    public class ChangeNotificationsTest
+    public class ChangeNotificationTest
     {
         [Fact]
         public void EmptyChain()

@@ -23,7 +23,7 @@ namespace Karambolo.ReactiveMvvm.ChangeNotification.Internal
             var obj = (ReactiveObject)container;
 
             return obj.WhenChanged
-                .Where(e => string.IsNullOrEmpty(e.EventArgs.PropertyName) || e.EventArgs.PropertyName == memberLink.Member.Name)
+                .Where(e => string.IsNullOrEmpty(e.EventArgs.PropertyName) || e.EventArgs.PropertyName == memberLink.MemberName)
                 .Select(_ => new ObservedChange(obj, memberLink));
         }
     }

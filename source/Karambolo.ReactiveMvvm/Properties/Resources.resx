@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ChangeNotificationNotPossible" xml:space="preserve">
-    <value>None of the registered {0} implementations are able to observe changes of the data member {{MEMBER}} (BeforeChange={{BEFORE}}).</value>
+    <value>None of the registered {0} implementations are able to observe changes of the data member {{MEMBER}} (BeforeChange={{BEFORE}}). If trimming or AOT compilation is enabled, it may have been trimmed. In that case, ensure it is preserved, e.g. 'obj =&gt; obj.{1}().Member'.</value>
   </data>
   <data name="CommandBindingNotPossible" xml:space="preserve">
     <value>None of the registered {0} implementations are able to establish the command binding {{SOURCEPATH}} -&gt; {{TARGETPATH}}.</value>
@@ -142,7 +142,7 @@
     <value>Service provider is already in use, thus initialization is not possible any more.</value>
   </data>
   <data name="InvalidPropertyExpression" xml:space="preserve">
-    <value>Property expression is invalid. It must be specified like 'obj =&gt; obj.Property'.</value>
+    <value>Property expression '{0}' is invalid. It must be specified like 'obj =&gt; obj.Property'.</value>
   </data>
   <data name="NonConstantIndexExpression" xml:space="preserve">
     <value>Non-constant index expressions are not supported.</value>
@@ -156,13 +156,25 @@
   <data name="UnhandledObservedError" xml:space="preserve">
     <value>An error was encountered while consuming an observable sequence. To prevent this, ensure the sequence does not produce an error or define error filtering for the consuming component by specifying a custom {0}.</value>
   </data>
-  <data name="UnsupportedExpressionType" xml:space="preserve">
-    <value>Expression type {0} is not supported.</value>
-  </data>
   <data name="VerifyPlatformRegistration" xml:space="preserve">
     <value>Please verify if your platform is registered at application startup in {0}.{1}.</value>
   </data>
   <data name="ViewActivationNotPossible" xml:space="preserve">
     <value>None of the registered {0} implementations are able to install view activation for views of type {{TYPE}}.</value>
+  </data>
+  <data name="UnsupportedExpressionType" xml:space="preserve">
+    <value>Expression '{0}' is not supported. Expression type must be {1}.</value>
+  </data>
+  <data name="MemberExpressionNotAccessible" xml:space="preserve">
+    <value>Member expression '{0}' is not supported. The related member must be readable.</value>
+  </data>
+  <data name="MemberExpressionNotAssignable" xml:space="preserve">
+    <value>Member expression '{0}' is not supported. The related member must be contained by a reference type and writable. If trimming or AOT compilation is enabled, it may have been trimmed. In that case, ensure it is preserved, e.g. 'obj =&gt; obj.{1}().Property'.</value>
+  </data>
+  <data name="IndexExpressionNotAccessible" xml:space="preserve">
+    <value>Index expression '{0}' is not supported. The related member must be readable.</value>
+  </data>
+  <data name="IndexExpressionNotAssignable" xml:space="preserve">
+    <value>Index expression '{0}' is not supported. The related indexer must be contained by a reference type and writable. If trimming or AOT compilation is enabled, it may have been trimmed. In that case, ensure it is preserved, e.g. 'obj =&gt; obj.{1}()[0]'.</value>
   </data>
 </root>

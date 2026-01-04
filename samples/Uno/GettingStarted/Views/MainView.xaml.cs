@@ -133,7 +133,7 @@ namespace GettingStarted.Views
             // (use rbtw snippet to quickly insert a command binding)
 
             // it's worth noting that the value coming from the view model takes precedence (in other words, the view model "wins") when the binding is being initialized
-            this.BindTwoWay(ViewModel, vm => vm.CanToggleChild, v => v.CanToggleChildViewCheckBox.IsChecked,
+            this.BindTwoWay(ViewModel, vm => vm.CanToggleChild, v => v.CanToggleChildViewCheckBox.AsPreserved().IsChecked,
                 value => value, value => value ?? false)
                 .AttachTo(activationLifetime);
 

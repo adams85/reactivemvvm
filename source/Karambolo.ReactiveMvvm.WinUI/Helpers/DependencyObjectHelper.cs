@@ -2,7 +2,10 @@
 
 using System;
 using System.Collections.Concurrent;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
+using Karambolo.ReactiveMvvm.Expressions;
+
 #if USES_COMMON_PACKAGE
 using Karambolo.Common;
 #endif
@@ -18,7 +21,12 @@ namespace Karambolo.ReactiveMvvm.Helpers
     {
         private static readonly ConcurrentDictionary<(Type, string), DependencyProperty> s_dependencyPropertyCache = new ConcurrentDictionary<(Type, string), DependencyProperty>();
 
-        internal static DependencyProperty GetDependencyProperty(Type type, string propertyName)
+        internal static DependencyProperty GetDependencyProperty(
+#if NET5_0_OR_GREATER
+            [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.NonPublicFields | DynamicallyAccessedMemberTypes.PublicFields | DynamicallyAccessedMemberTypes.NonPublicProperties | DynamicallyAccessedMemberTypes.PublicProperties)]
+#endif
+            Type type,
+            string propertyName)
         {
             propertyName += "Property";
 
@@ -36,176 +44,24 @@ namespace Karambolo.ReactiveMvvm.Helpers
                     return field.GetValue(null) as DependencyProperty;
                 }
             }
+#pragma warning disable IL2072 // false positive (base type properties should be preserved)
             while ((type = type.BaseType) != null);
+#pragma warning restore IL2072
 
             return null;
         }
 
-        internal static DependencyProperty GetDependencyPropertyCached(Type type, string propertyName)
-        {
-            return s_dependencyPropertyCache.GetOrAdd((type, propertyName), ((Type type, string propertyName) key) => GetDependencyProperty(key.type, key.propertyName));
-        }
-
-        // Based on: https://github.com/CommunityToolkit/Windows/blob/v8.2.251219/components/Extensions/src/Tree/FrameworkElementExtensions.LogicalTree.cs#L525
-        public static T FindLogicalAncestor<T>(this DependencyObject root, Func<T, bool> match = null, bool includeRoot = true)
-#if IS_MAUI && !TARGETS_WINUI
-            where T : class, DependencyObject
-#else
-            where T : class
+        internal static DependencyProperty GetDependencyPropertyCached(
+#if NET5_0_OR_GREATER
+            [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.NonPublicFields | DynamicallyAccessedMemberTypes.PublicFields | DynamicallyAccessedMemberTypes.NonPublicProperties | DynamicallyAccessedMemberTypes.PublicProperties)]
 #endif
+            Type type,
+            string propertyName)
         {
-            if (root == null)
-                throw new ArgumentNullException(nameof(root));
-
-            if (!(root is FrameworkElement fe))
-                return null;
-
-            if (match == null)
-                match = CachedDelegates.True<T>.Func;
-
-            if (!includeRoot)
-                fe = fe.Parent as FrameworkElement;
-
-            while (fe != null)
-            {
-                if (fe is T castObj && match(castObj))
-                    return castObj;
-
-                fe = fe.Parent as FrameworkElement;
-            }
-
-            return null;
-        }
-
-        // Based on: https://github.com/CommunityToolkit/Windows/blob/v8.2.251219/components/Extensions/src/Tree/FrameworkElementExtensions.LogicalTree.cs#L668
-        private static UIElement GetContentControl(this FrameworkElement element)
-        {
-            Type type = element.GetType();
-            TypeInfo typeInfo = type.GetTypeInfo();
-
-            do
-            {
-                foreach (CustomAttributeData attribute in typeInfo.CustomAttributes)
-                {
-                    if (attribute.AttributeType == typeof(ContentPropertyAttribute))
-                    {
-                        string propertyName = (string)attribute.NamedArguments[0].TypedValue.Value;
-                        PropertyInfo propertyInfo = type.GetProperty(propertyName);
-
-                        return propertyInfo?.GetValue(element) as UIElement;
-                    }
-                }
-            }
-            while ((typeInfo = typeInfo.BaseType?.GetTypeInfo()) != null);
-
-            return null;
-        }
-
-        private static T FindLogicalDescendantCore<T>(this DependencyObject obj, Func<T, bool> match)
-#if IS_MAUI && !TARGETS_WINUI
-            where T : class, DependencyObject
-#else
-            where T : class
-#endif
-        {
-            T result;
-            FrameworkElement fe;
-            int i, n;
-
-        Reenter:
-            if (obj is Panel panel)
-            {
-                UIElementCollection children = panel.Children;
-                for (i = 0, n = children.Count; i < n; i++)
-                {
-                    if ((fe = children[i] as FrameworkElement) == null)
-                        continue;
-                    else if ((result = fe as T) != null && match(result))
-                        return result;
-                    else if ((result = fe.FindLogicalDescendantCore(match)) != null)
-                        return result;
-                }
-            }
-            else if (obj is ItemsControl itemsControl)
-            {
-                ItemCollection items = itemsControl.Items;
-                for (i = 0, n = items.Count; i < n; i++)
-                {
-                    if ((fe = items[i] as FrameworkElement) == null)
-                        continue;
-                    else if ((result = fe as T) != null && match(result))
-                        return result;
-                    else if ((result = fe.FindLogicalDescendantCore(match)) != null)
-                        return result;
-                }
-            }
-            else if (obj is ContentControl contentControl)
-            {
-                fe = contentControl.Content as FrameworkElement;
-                goto CheckSingleChild;
-            }
-            else if (obj is Border border)
-            {
-                fe = border.Child as FrameworkElement;
-                goto CheckSingleChild;
-            }
-            else if (obj is ContentPresenter contentPresenter)
-            {
-                fe = contentPresenter.Content as FrameworkElement;
-                goto CheckSingleChild;
-            }
-            else if (obj is Viewbox viewbox)
-            {
-                fe = viewbox.Child as FrameworkElement;
-                goto CheckSingleChild;
-            }
-            else if (obj is UserControl userControl)
-            {
-                fe = userControl.Content as FrameworkElement;
-                goto CheckSingleChild;
-            }
-            else if ((fe = obj as FrameworkElement) != null)
-            {
-                fe = fe.GetContentControl() as FrameworkElement;
-                goto CheckSingleChild;
-            }
-
-            return null;
-
-        CheckSingleChild:
-            if (fe != null)
-            {
-                if ((result = fe as T) != null && match(result))
-                    return result;
-
-                obj = fe;
-                goto Reenter;
-            }
-
-            return null;
-        }
-
-        // Based on: https://github.com/CommunityToolkit/Windows/blob/v8.2.251219/components/Extensions/src/Tree/FrameworkElementExtensions.LogicalTree.cs#L98
-        public static T FindLogicalDescendant<T>(this DependencyObject root, Func<T, bool> match = null, bool includeRoot = true)
-#if IS_MAUI && !TARGETS_WINUI
-            where T : class, DependencyObject
-#else
-            where T : class
-#endif
-        {
-            if (root == null)
-                throw new ArgumentNullException(nameof(root));
-
-            if (!(root is FrameworkElement))
-                return null;
-
-            if (match == null)
-                match = CachedDelegates.True<T>.Func;
-
-            if (includeRoot && root is T castRoot && match(castRoot))
-                return castRoot;
-
-            return root.FindLogicalDescendantCore(match);
+            return s_dependencyPropertyCache.GetOrAdd((type, propertyName), ((Type type, string propertyName) key) =>
+#pragma warning disable IL2077 // false positive (analyzer is unable to follow the control flow)
+                GetDependencyProperty(key.type, key.propertyName));
+#pragma warning restore IL2077
         }
 
         public static T FindVisualAncestor<T>(this DependencyObject root, Func<T, bool> match = null, bool includeRoot = true)

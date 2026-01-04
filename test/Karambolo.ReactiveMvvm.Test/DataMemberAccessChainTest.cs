@@ -5,7 +5,7 @@ using Xunit;
 
 namespace Karambolo.ReactiveMvvm
 {
-    public class ExpressionsTest
+    public class DataMemberAccessChainTest
     {
         [Fact]
         public void GetChainPropertyValue()
@@ -53,7 +53,7 @@ namespace Karambolo.ReactiveMvvm
             var itemVM = new ItemVM(new Item()) { Collection = collection };
             var mainVM = new MainVM { Item = itemVM };
 
-            var chain = DataMemberAccessChain.From<ChangeNotifier, string>(mainVM, vm => ((LeafVM)((MainVM)vm).Item.Collection[0]).Value);
+            var chain = DataMemberAccessChain.From<ChangeNotifier, string>(mainVM, vm => ((LeafVM)((MainVM)vm).Item.Collection[0]).Value, canSetValue: true);
 
             Assert.False(chain.TrySetValue(mainVM, 1));
 
@@ -73,7 +73,7 @@ namespace Karambolo.ReactiveMvvm
             var itemVM = new ItemVM(new Item()) { Collection = collection };
             var mainVM = new MainVM { Item = itemVM };
 
-            var chain = DataMemberAccessChain.From<ChangeNotifier, LeafVM>(mainVM, vm => ((LeafVM)((MainVM)vm).Item.Collection[0]));
+            var chain = DataMemberAccessChain.From<ChangeNotifier, LeafVM>(mainVM, vm => ((LeafVM)((MainVM)vm).Item.Collection[0]), canSetValue: true);
 
             Assert.True(chain.TrySetValue(mainVM, null));
             Assert.Null(collection[0]);

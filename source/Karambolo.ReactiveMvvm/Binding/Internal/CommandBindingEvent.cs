@@ -1,9 +1,15 @@
-﻿using System.Windows.Input;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Windows.Input;
 
 namespace Karambolo.ReactiveMvvm.Binding.Internal
 {
-    internal sealed class CommandBindingEvent<TCommand, TContainer> : ICommandBindingEvent<TCommand, TContainer>
-        where TCommand : ICommand
+    internal sealed class CommandBindingEvent<
+        TCommand,
+#if NET5_0_OR_GREATER
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.PublicEvents)]
+#endif
+        TContainer>
+        : ICommandBindingEvent<TCommand, TContainer> where TCommand : ICommand
     {
         public CommandBindingEvent(ObservedValue<TCommand> command, ObservedValue<TContainer> container, string eventName, ICommandBinderProvider binderProvider)
         {

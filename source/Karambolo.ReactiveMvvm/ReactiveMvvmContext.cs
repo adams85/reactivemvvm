@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Reactive.Concurrency;
+using System.Runtime.CompilerServices;
 using System.Threading;
 #if USES_COMMON_PACKAGE
 using Karambolo.Common;
@@ -15,6 +17,26 @@ namespace Karambolo.ReactiveMvvm
 {
     public class ReactiveMvvmContext : IReactiveMvvmContext
     {
+        // About feature switches: https://learn.microsoft.com/en-us/dotnet/core/whats-new/dotnet-9/runtime#attribute-model-for-feature-switches-with-trimming-support
+
+#if NET9_0_OR_GREATER
+        // This should be a good enough heuristic to detect whether trimming is disabled or enabled.
+        // See also: https://learn.microsoft.com/en-us/dotnet/core/deploying/trimming/trimming-options#framework-features-disabled-when-trimming
+        [FeatureSwitchDefinition("System.StartupHookProvider.IsSupported")]
+        [FeatureGuard(typeof(RequiresUnreferencedCodeAttribute))]
+#endif
+        internal static bool IsUntrimmed { get; } = !AppContext.TryGetSwitch("System.StartupHookProvider.IsSupported", out bool isSupported) || isSupported;
+
+#if NET9_0_OR_GREATER
+        [FeatureGuard(typeof(RequiresDynamicCodeAttribute))]
+#endif
+        internal static bool IsDynamicCodeCompiled { get; } =
+#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_0_OR_GREATER
+            RuntimeFeature.IsDynamicCodeCompiled;
+#else
+            !AppContext.TryGetSwitch("System.Runtime.CompilerServices.RuntimeFeature.IsDynamicCodeSupported", out bool isDynamicCodeSupported) || isDynamicCodeSupported;
+#endif
+
         private static readonly Func<IReactiveMvvmContext> s_getCurrentCached = () => ServiceProvider.GetRequiredService<IReactiveMvvmContext>();
         private static IReactiveMvvmContext s_current;
         public static IReactiveMvvmContext Current => LazyInitializer.EnsureInitialized(ref s_current, s_getCurrentCached);

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 using Karambolo.Common;
@@ -30,6 +31,9 @@ namespace Karambolo.ReactiveMvvm
 
             public IServiceCollection Services { get; }
 
+#if NET5_0_OR_GREATER
+            [RequiresUnreferencedCode(ReactiveMvvmBuilderExtensions.AssemblyTypesMayBeTrimmedMessage)]
+#endif
             public IReactiveMvvmBuilder ConfigureServices(Action<IServiceCollection, IEnumerable<Type>> configure, params Assembly[] assemblies)
             {
                 if (configure == null)

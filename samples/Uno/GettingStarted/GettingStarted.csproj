@@ -32,8 +32,9 @@
     <!-- Package Description -->
     <Description>GettingStarted powered by Uno Platform.</Description>
 
-    <!-- ReactiveMvvm doesn't support trimming yet. -->
-    <PublishTrimmed Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">false</PublishTrimmed>
+    <!-- When publishing for Windows, '-p:UseMonoRuntime=false' should be added (see https://github.com/dotnet/maui/issues/27215#issuecomment-2619186785) -->
+    <PublishTrimmed Condition="'$(Configuration)' != 'Debug'">true</PublishTrimmed>
+    <SelfContained>true</SelfContained>
   </PropertyGroup>
 
   <ItemGroup>

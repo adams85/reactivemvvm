@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Reflection;
+using System.Diagnostics.CodeAnalysis;
 using Avalonia;
 using Avalonia.VisualTree;
 #if USES_COMMON_PACKAGE
@@ -15,15 +15,33 @@ namespace Karambolo.ReactiveMvvm.Helpers
     {
         private static readonly ConcurrentDictionary<(Type, string), AvaloniaProperty> s_avaloniaPropertyCache = new ConcurrentDictionary<(Type, string), AvaloniaProperty>();
 
-        internal static AvaloniaProperty GetAvaloniaProperty(Type type, string propertyName)
+        internal static AvaloniaProperty GetAvaloniaProperty(
+#if NET5_0_OR_GREATER
+            [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicFields | DynamicallyAccessedMemberTypes.PublicProperties)]
+#endif
+            Type type,
+            string propertyName)
         {
-            FieldInfo field = type.GetField(propertyName + "Property", BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy);
-            return field?.GetValue(null) as AvaloniaProperty;
+            IReadOnlyList<AvaloniaProperty> apList = AvaloniaPropertyRegistry.Instance.GetRegistered(type);
+            AvaloniaProperty ap;
+            for (int i = 0, n = apList.Count; i < n; i++)
+                if ((ap = apList[i]).Name == propertyName)
+                    return ap;
+
+            return null;
         }
 
-        internal static AvaloniaProperty GetAvaloniaPropertyCached(Type type, string propertyName)
+        internal static AvaloniaProperty GetAvaloniaPropertyCached(
+#if NET5_0_OR_GREATER
+            [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicFields | DynamicallyAccessedMemberTypes.PublicProperties)]
+#endif
+            Type type,
+            string propertyName)
         {
-            return s_avaloniaPropertyCache.GetOrAdd((type, propertyName), ((Type type, string propertyName) key) => GetAvaloniaProperty(key.type, key.propertyName));
+            return s_avaloniaPropertyCache.GetOrAdd((type, propertyName), ((Type type, string propertyName) key) =>
+#pragma warning disable IL2077 // false positive (analyzer is unable to follow the control flow)
+                GetAvaloniaProperty(key.type, key.propertyName));
+#pragma warning restore IL2077
         }
 
         public static T FindVisualAncestor<T>(this Visual root, Func<T, bool> match = null, bool includeRoot = true)

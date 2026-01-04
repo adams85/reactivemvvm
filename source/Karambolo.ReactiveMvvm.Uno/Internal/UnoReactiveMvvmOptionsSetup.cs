@@ -1,4 +1,5 @@
 ﻿using Karambolo.ReactiveMvvm.Binding.Internal;
+using Karambolo.ReactiveMvvm.ChangeNotification.Internal;
 using Karambolo.ReactiveMvvm.ViewActivation.Internal;
 using Microsoft.Extensions.Options;
 
@@ -11,7 +12,7 @@ namespace Karambolo.ReactiveMvvm.Internal
             options.CommandBinders.Add(new PropertyCommandBinder());
             options.CommandBinders.Add(new EventCommandBinder());
 
-            options.LinkChangeProviders.Insert(0, new ChangeNotification.Internal.DOMemberLinkChangedProvider());
+            options.LinkChangeProviders.Insert(0, new DOMemberLinkChangedProvider());
 
             options.ViewActivationEventProviders.Add(new FEActivationEventProvider());
         }

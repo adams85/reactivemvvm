@@ -125,7 +125,7 @@ namespace Karambolo.ReactiveMvvm
             if (targetAccessExpression == null)
                 throw new ArgumentNullException(nameof(targetAccessExpression));
 
-            var targetAccessChain = DataMemberAccessChain.From(targetAccessExpression);
+            var targetAccessChain = DataMemberAccessChain.From(targetAccessExpression, canSetValue: true);
 
             if (converter == null)
                 converter = s_bindingConverterProvider.Provide<TSource, TTarget>();
@@ -192,7 +192,7 @@ namespace Karambolo.ReactiveMvvm
 
             Expression<Func<TView, TViewModel>> viewModelFromViewExpression = v => v.ViewModel;
             var viewModelAccessChain = DataMemberAccessChain.From(viewModelFromViewExpression.Chain(viewModelAccessExpression));
-            var viewAccessChain = DataMemberAccessChain.From(viewAccessExpression);
+            var viewAccessChain = DataMemberAccessChain.From(viewAccessExpression, canSetValue: true);
 
             if (converter == null)
                 converter = s_bindingConverterProvider.Provide<TViewModelValue, TViewValue>();
@@ -262,12 +262,12 @@ namespace Karambolo.ReactiveMvvm
                 throw new ArgumentNullException(nameof(viewAccessExpression));
 
             Expression<Func<TView, TViewModel>> viewModelFromViewExpression = v => v.ViewModel;
-            var viewModelAccessChain = DataMemberAccessChain.From(viewModelFromViewExpression.Chain(viewModelAccessExpression));
+            var viewModelAccessChain = DataMemberAccessChain.From(viewModelFromViewExpression.Chain(viewModelAccessExpression), canSetValue: true);
             var index = viewModelAccessChain.Length - 1;
             DataMemberAccessChain viewModelContainerAccessChain = viewModelAccessChain.Slice(0, index);
             DataMemberAccessLink viewModelValueAccessLink = viewModelAccessChain[index];
 
-            var viewAccessChain = DataMemberAccessChain.From(viewAccessExpression);
+            var viewAccessChain = DataMemberAccessChain.From(viewAccessExpression, canSetValue: true);
             index = viewAccessChain.Length - 1;
             DataMemberAccessChain viewContainerAccessChain = viewAccessChain.Slice(0, index);
             DataMemberAccessChain viewValueAccessChain = viewAccessChain.Slice(index);
@@ -311,7 +311,7 @@ namespace Karambolo.ReactiveMvvm
                             var value = bindingEvent.FlowsToSource ? bindingEvent.SourceValue.GetValueOrDefault() : (object)bindingEvent.TargetValue.GetValueOrDefault();
 
                             // updating the value will likely trigger a change notification, which would cause an update of the binding in the opposite direction,
-                            // that is, result in undesired recursion (even worse, infinite recursion if the new value cannot be agreed);
+                            // that is, result in undesired recursion (even worse, infinite recursion if the new value cannot be agreed on);
                             // this should be avoided if possible, so a flag is stored into the current ExecutionContext (via AsyncLocal.Value)
                             // which can be used to detect recursive updates (unless the bound property's setter does something very weird
                             // like scheduling the change notification to another thread while not flowing ExecutionContext)

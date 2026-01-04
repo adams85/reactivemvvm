@@ -117,7 +117,7 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="NotInterfaceType" xml:space="preserve">
-    <value>Type is not an interface.</value>
+  <data name="AvaloniaPropertyNotFound" xml:space="preserve">
+    <value>The corresponding {0} could not be found for property {{PROPERTY_NAME}}. If trimming or AOT compilation is enabled, it may have been trimmed. In that case, ensure it is preserved, e.g. 'v =&gt; v.{1}().Property'.</value>
   </data>
 </root>
