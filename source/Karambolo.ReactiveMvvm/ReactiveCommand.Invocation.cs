@@ -18,7 +18,7 @@ namespace Karambolo.ReactiveMvvm
             IScheduler scheduler, ObservedErrorHandler errorHandler)
         {
             return executionInfo
-                .ObserveOnSafe(scheduler)
+                .ObserveOnIfNotNull(scheduler)
                 .Subscribe(info =>
                 {
                     try
@@ -88,7 +88,7 @@ namespace Karambolo.ReactiveMvvm
         {
             return executionInfo
                 .Where(info => info.canExecute)
-                .ObserveOnSafe(scheduler)
+                .ObserveOnIfNotNull(scheduler)
                 .Subscribe(info => info.command.ExecuteAsync(info.param, cancellationTokenFactory(info.param)).FireAndForget(errorHandler.Handle), errorHandler.Handle);
         }
 

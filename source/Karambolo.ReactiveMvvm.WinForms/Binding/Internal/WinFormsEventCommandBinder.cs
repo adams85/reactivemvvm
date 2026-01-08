@@ -58,7 +58,7 @@ namespace Karambolo.ReactiveMvvm.Binding.Internal
                 .StartWith(default(EventPattern<object>))
                 .WithLatestFrom(commandParameters.StartWith(default(TParam)), (_, param) => param)
                 .Select(param => command.CanExecute(param))
-                .ObserveOnSafe(scheduler)
+                .ObserveOnIfNotNull(scheduler)
                 .Subscribe(
                     canExec => actualContainerMetadata.EnabledProperty.SetValue(container, canExec, null),
                     onError);

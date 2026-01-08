@@ -101,7 +101,7 @@ namespace Karambolo.ReactiveMvvm
                 .RefCount();
 
             IDisposable bindingSubscription = bindingEvents
-                .ObserveOnSafe(GetViewThreadScheduler())
+                .ObserveOnIfNotNull(GetViewThreadScheduler())
                 .Subscribe(
                     bindingEvent =>
                     {

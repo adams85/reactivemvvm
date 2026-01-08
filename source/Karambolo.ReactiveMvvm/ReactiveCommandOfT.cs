@@ -65,7 +65,7 @@ namespace Karambolo.ReactiveMvvm
             WhenCanExecuteChanged = CreateWhenCanExecuteChanged(canExecute);
 
             _onCanExecuteChangedSubscription = WhenCanExecuteChanged
-                .ObserveOnSafe(scheduler)
+                .ObserveOnIfNotNull(scheduler)
                 .Subscribe(_ => OnCanExecuteChanged(), OnError);
         }
 

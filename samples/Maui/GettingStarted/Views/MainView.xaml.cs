@@ -42,7 +42,7 @@ namespace GettingStarted.Views
             // (usually this would go into OnViewActivated but in this case we need to subscribe as soon as possible
             // in order not to miss early messages)
             ReactiveMvvmContext.Current.MessageBus.Listen<LogMessage>()
-                .ObserveOnSafe(DispatcherScheduler.Current)
+                .ObserveOnIfNotNull(DispatcherScheduler.Current)
                 .Subscribe(msg => LogTextEditor.Text += msg.Message + Environment.NewLine)
                 .AttachTo(this);
 

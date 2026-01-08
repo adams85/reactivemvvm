@@ -102,7 +102,7 @@ namespace Karambolo.ReactiveMvvm.Binding.Internal
             });
 
             IDisposable commandParameterSubscription = commandParameters
-                .ObserveOnSafe(scheduler)
+                .ObserveOnIfNotNull(scheduler)
                 .Subscribe(
                     param => containerMetadata.CommandParameterProperty.SetValue(container, param, null),
                     onError);

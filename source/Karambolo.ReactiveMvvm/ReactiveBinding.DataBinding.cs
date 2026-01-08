@@ -141,7 +141,7 @@ namespace Karambolo.ReactiveMvvm
                 .RefCount();
 
             IDisposable bindingDisposable = bindingEvents
-                .ObserveOnSafe(scheduler)
+                .ObserveOnIfNotNull(scheduler)
                 .Subscribe(
                     bindingEvent =>
                     {
@@ -207,7 +207,7 @@ namespace Karambolo.ReactiveMvvm
                 .RefCount();
 
             IDisposable bindingDisposable = bindingEvents
-                .ObserveOnSafe(GetViewThreadScheduler())
+                .ObserveOnIfNotNull(GetViewThreadScheduler())
                 .Subscribe(
                     bindingEvent =>
                     {
@@ -301,7 +301,7 @@ namespace Karambolo.ReactiveMvvm
                 .RefCount();
 
             IDisposable bindingDisposable = bindingEvents
-                .ObserveOnSafe(GetViewThreadScheduler())
+                .ObserveOnIfNotNull(GetViewThreadScheduler())
                 .Subscribe(
                     bindingEvent =>
                     {

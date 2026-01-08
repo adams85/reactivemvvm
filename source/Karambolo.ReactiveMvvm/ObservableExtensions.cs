@@ -10,7 +10,7 @@ namespace Karambolo.ReactiveMvvm
     {
         #region Scheduling
 
-        public static IObservable<T> SubscribeOnSafe<T>(this IObservable<T> observable, IScheduler scheduler)
+        public static IObservable<T> SubscribeOnIfNotNull<T>(this IObservable<T> observable, IScheduler scheduler)
         {
             if (observable == null)
                 throw new ArgumentNullException(nameof(observable));
@@ -18,7 +18,7 @@ namespace Karambolo.ReactiveMvvm
             return scheduler != null ? observable.SubscribeOn(scheduler) : observable;
         }
 
-        public static IObservable<T> SubscribeOnSafe<T>(this IObservable<T> observable, SynchronizationContext synchronizationContext)
+        public static IObservable<T> SubscribeOnIfNotNull<T>(this IObservable<T> observable, SynchronizationContext synchronizationContext)
         {
             if (observable == null)
                 throw new ArgumentNullException(nameof(observable));
@@ -26,7 +26,7 @@ namespace Karambolo.ReactiveMvvm
             return synchronizationContext != null ? observable.SubscribeOn(synchronizationContext) : observable;
         }
 
-        public static IObservable<T> ObserveOnSafe<T>(this IObservable<T> observable, IScheduler scheduler)
+        public static IObservable<T> ObserveOnIfNotNull<T>(this IObservable<T> observable, IScheduler scheduler)
         {
             if (observable == null)
                 throw new ArgumentNullException(nameof(observable));
@@ -34,7 +34,7 @@ namespace Karambolo.ReactiveMvvm
             return scheduler != null ? observable.ObserveOn(scheduler) : observable;
         }
 
-        public static IObservable<T> ObserveOnSafe<T>(this IObservable<T> observable, SynchronizationContext synchronizationContext)
+        public static IObservable<T> ObserveOnIfNotNull<T>(this IObservable<T> observable, SynchronizationContext synchronizationContext)
         {
             if (observable == null)
                 throw new ArgumentNullException(nameof(observable));

@@ -99,7 +99,7 @@ namespace Karambolo.ReactiveMvvm
         private IDisposable Subscribe()
         {
             return _source
-                .ObserveOnSafe(_scheduler)
+                .ObserveOnIfNotNull(_scheduler)
                 .Subscribe(OnNext, OnError);
         }
 
