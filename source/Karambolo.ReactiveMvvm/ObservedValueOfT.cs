@@ -1,21 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 
 namespace Karambolo.ReactiveMvvm
 {
     public readonly struct ObservedValue<T> : IEquatable<ObservedValue<T>>
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static implicit operator ObservedValue<T>(ObservedValue _)
         {
             return default;
         }
 
-        public static implicit operator ObservedValue<T>(in T value)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static implicit operator ObservedValue<T>(T value)
         {
             return new ObservedValue<T>(value);
         }
 
-        public ObservedValue(in T value)
+        public ObservedValue(T value)
         {
             Value = value;
             IsAvailable = true;
@@ -47,7 +50,10 @@ namespace Karambolo.ReactiveMvvm
 
         public override bool Equals(object obj)
         {
-            return obj is ObservedValue<T> other && Equals(other);
+            return
+                obj is ObservedValue<T> other ?
+                Equals(other) :
+                obj is ObservedValue && Equals(default);
         }
 
         public override int GetHashCode()

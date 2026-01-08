@@ -45,9 +45,9 @@ namespace Karambolo.ReactiveMvvm.Expressions
                 return container =>
                 {
                     if (containerType.IsAssignableFrom(container?.GetType()))
-                        return new ObservedValue<object>(getValue(container, state));
+                        return ObservedValue.From(getValue(container, state));
                     else
-                        return default;
+                        return ObservedValue.None;
                 };
             }
 
@@ -148,9 +148,9 @@ namespace Karambolo.ReactiveMvvm.Expressions
                     try
                     {
                         if (containerType.IsAssignableFrom(container?.GetType()))
-                            return new ObservedValue<object>(getValue(container, state, indices));
+                            return ObservedValue.From(getValue(container, state, indices));
                         else
-                            return default;
+                            return ObservedValue.None;
                     }
                     catch (IndexOutOfRangeException) { return default; }
                     catch (ArgumentOutOfRangeException) { return default; }

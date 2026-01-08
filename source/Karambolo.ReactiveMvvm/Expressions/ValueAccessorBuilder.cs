@@ -5,7 +5,7 @@ namespace Karambolo.ReactiveMvvm.Expressions
 {
     internal abstract partial class ValueAccessorBuilder
     {
-        private static readonly ConstructorInfo s_observedValueCtor = typeof(ObservedValue<object>).GetConstructor(new[] { typeof(object).MakeByRefType() });
+        private static readonly ConstructorInfo s_observedValueCtor = typeof(ObservedValue<object>).GetConstructor(new[] { typeof(object) });
 
         public static readonly ValueAccessorBuilder Current = ReactiveMvvmContext.IsDynamicCodeCompiled ? new CodegenImpl() : (ValueAccessorBuilder)new ReflectionImpl();
 
